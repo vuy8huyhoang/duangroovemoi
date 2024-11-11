@@ -28,12 +28,12 @@
 
 //     const accessToken = localStorage.getItem("accessToken");
 
-//     // if (!accessToken) {
-//     //   router.push("/");
-//     //   setShowLogin(true);
-//     //   setLoading(false);
-//     //   return;
-//     // }
+//     if (!accessToken) {
+//       router.push("/");
+//       setShowLogin(true);
+//       setLoading(false);
+//       return;
+//     }
 
 //     axios
 //       .get("/profile", { headers: { Authorization: `Bearer ${accessToken}` } })

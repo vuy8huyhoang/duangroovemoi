@@ -8,15 +8,16 @@ import AdminHeader from './component/AdminHeader';
 import MusicPlayer from './component/musicplayer';
 import { createContext, useReducer } from 'react';
 import { initialState, reducer } from "./global";
-// import useAuthGuard from './admin/authguard/authguard';
+import useAuthGuard from './admin/authguard/authguard';
 
 export const AppContext = createContext<any>(undefined);
+
 export default function Layout({ children }: any) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
   const [state, dispatch] = useReducer(reducer, initialState);
-  // useAuthGuard();
-  
+  // const authguard = useAuthGuard();
+
   return (
     <html lang="en">
       <head>
@@ -41,16 +42,15 @@ export default function Layout({ children }: any) {
               </div>
             </div>
           ) : (
-            <div className="admin-container">
-              <AdminSidebar />
-
-              <div className="admin-content">
-                <AdminHeader />
-                {children}
+            // authguard && (
+              <div className="admin-container">
+                <AdminSidebar />
+                <div className="admin-content">
+                  <AdminHeader />
+                  {children}
+                </div>
               </div>
-
-
-            </div>
+            // )
           )}
         </AppContext.Provider>
       </body>

@@ -21,8 +21,6 @@ interface Type {
 interface Composer {
   id_composer: string;
   name: string;
-  created_at: string;
-  last_update: string;
 }
 
 interface Song {
@@ -33,7 +31,8 @@ interface Song {
   url_cover: string;
   total_duration: string | null;
   producer: string;
-  composer: any;
+  composer: string;
+  id_composer: string;
   release_date: string | null;
   created_at: string;
   last_update: string;
@@ -54,6 +53,7 @@ export default function AddMusic() {
     total_duration: null,
     producer: "",
     composer: null,
+    id_composer: null,
     release_date: null,
     created_at: new Date().toISOString(),
     last_update: new Date().toISOString(),
@@ -263,7 +263,7 @@ export default function AddMusic() {
           <option value="">Chọn nhạc sĩ</option>
           {composers.map((composer) => (
             <option key={composer.id_composer} value={composer.id_composer}>
-              {composer}
+              {composer.name}
             </option>
           ))}
         </select>
