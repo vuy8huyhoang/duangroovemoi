@@ -23,7 +23,7 @@ export default function AddArtist() {
         url_cover: "",
         created_at: new Date().toISOString(),
         last_update: new Date().toISOString(),
-        is_show: 1,
+        is_show: 1, 
         followers: 0,
     });
 
@@ -35,6 +35,11 @@ export default function AddArtist() {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setArtist({ ...artist, [name]: value });
+    };
+
+    const handleVisibilityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseInt(e.target.value);
+        setArtist({ ...artist, is_show: value });
     };
 
     const removeVietnameseTones = (str: string) => {
@@ -87,7 +92,7 @@ export default function AddArtist() {
 
             if (response?.result?.url) {
                 const imageUrl = response.result.url;
-                setMessage("Tải lên thành công: " + imageUrl);
+                // setMessage("Tải lên thành công: " + imageUrl);
 
                 const artistResponse: any = await axios.post("/artist", {
                     ...artist,
@@ -136,6 +141,30 @@ export default function AddArtist() {
                     style={{ display: 'none' }}
                     onChange={handleFileChange}
                 />
+
+                <div className={styles.visibilityRadioButtons}>
+                    <div className={styles.hien}>
+                        <label>Hiện</label>
+                        <input
+                            type="radio"
+                            name="is_show"
+                            value="1"
+                            checked={artist.is_show === 1}
+                            onChange={handleVisibilityChange}
+                        />
+                    </div>
+                    <div className={styles.an}>
+                        <label>Ẩn</label>
+                        <input
+                            type="radio"
+                            name="is_show"
+                            value="0"
+                            checked={artist.is_show === 0}
+                            onChange={handleVisibilityChange}
+                        />
+                    </div>
+                </div>
+
                 <button onClick={handleSubmit} disabled={loading}>
                     {loading ? "Đang gửi..." : "Thêm nghệ sĩ"}
                 </button>

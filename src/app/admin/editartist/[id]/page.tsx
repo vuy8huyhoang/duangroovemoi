@@ -52,6 +52,13 @@ export default function EditArtist({ params }: { params: { id: string } }) {
         }
     };
 
+    const handleVisibilityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseInt(e.target.value);
+        if (artist) {
+            setArtist({ ...artist, is_show: value });
+        }
+    };
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             setFile(e.target.files[0]);
@@ -68,7 +75,6 @@ export default function EditArtist({ params }: { params: { id: string } }) {
         try {
             let imageUrl = artist.url_cover;
 
-            // If a new file is selected, upload it first
             if (file) {
                 const formData = new FormData();
                 formData.append("file", file);
@@ -136,7 +142,28 @@ export default function EditArtist({ params }: { params: { id: string } }) {
                     onChange={handleFileChange}
                 />
 
-                
+                <div className={styles.visibilityRadioButtons}>
+                    <div className={styles.hien}>
+                        <label>Hiện</label>
+                        <input
+                            type="radio"
+                            name="is_show"
+                            value="1"
+                            checked={artist.is_show === 1}
+                            onChange={handleVisibilityChange}
+                        />
+                    </div>
+                    <div className={styles.an}>
+                        <label>Ẩn</label>
+                        <input
+                            type="radio"
+                            name="is_show"
+                            value="0"
+                            checked={artist.is_show === 0}
+                            onChange={handleVisibilityChange}
+                        />
+                    </div>
+                </div>
 
                 <button onClick={handleSubmit} disabled={loading}>
                     {loading ? "Đang gửi..." : "Cập nhật nghệ sĩ"}

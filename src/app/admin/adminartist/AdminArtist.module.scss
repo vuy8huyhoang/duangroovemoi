@@ -37,12 +37,10 @@
 
 .addButton:hover {
     background-color: #45a049;
-    /* Màu xanh đậm hơn khi hover */
 }
 
 .tableContainer {
     overflow-x: auto;
-    /* Cho phép cuộn khi bảng quá rộng */
 }
 
 .artistTable {
@@ -89,7 +87,6 @@
 .editButton:hover,
 .deleteButton:hover {
     opacity: 0.8;
-    /* Giảm độ mờ khi hover */
 }
 
 .loading {

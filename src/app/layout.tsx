@@ -8,7 +8,7 @@ import AdminHeader from './component/AdminHeader';
 import MusicPlayer from './component/musicplayer';
 import { createContext, useReducer } from 'react';
 import { initialState, reducer } from "./global";
-import useAuthGuard from './admin/authguard/authguard';
+// import useAuthGuard from './admin/authguard/authguard';
 
 export const AppContext = createContext<any>(undefined);
 

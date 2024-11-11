@@ -93,3 +93,25 @@
         color: #999;
     }
 }
+.visibilityRadioButtons {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+
+    .an {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .hien {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.visibilityRadioButtons label {
+    font-size: 16px;
+    cursor: pointer;
+}

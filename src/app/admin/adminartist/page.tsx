@@ -25,6 +25,7 @@ export default function AdminArtist() {
     const [artists, setArtists] = useState<Artist[]>([]);
     const [musicByArtist, setMusicByArtist] = useState<{ [key: string]: Music[] }>({});
     const [loading, setLoading] = useState<boolean>(true);
+    const [loadingMusic, setLoadingMusic] = useState<{ [key: string]: boolean }>({});
     const [currentPage, setCurrentPage] = useState<number>(1);
     const artistsPerPage = 10; // Number of artists per page
 
@@ -51,21 +52,37 @@ export default function AdminArtist() {
     }, []);
 
     const fetchMusicByArtists = async (artists: Artist[]) => {
+        const loadingStatus: { [key: string]: boolean } = {};
+        artists.forEach((artist) => {
+            loadingStatus[artist.id_artist] = true;
+        });
+        setLoadingMusic(loadingStatus);
+
         try {
-            const musicData: { [key: string]: Music[] } = {};
-            for (const artist of artists) {
-                const response:any = await axios.get(`/music?id_artist=${artist.id_artist}`);
-                if (response?.result?.data) {
-                    musicData[artist.id_artist] = response.result.data;
-                } else {
-                    musicData[artist.id_artist] = [];
-                }
-            }
-            setMusicByArtist(musicData);
+            const musicData = await Promise.all(
+                artists.map(async (artist) => {
+                    const response: any = await axios.get(`/music?id_artist=${artist.id_artist}`);
+                    return {
+                        id_artist: artist.id_artist,
+                        music: response?.result?.data || [],
+                    };
+                })
+            );
+
+            const newMusicByArtist: { [key: string]: Music[] } = {};
+            const newLoadingStatus: { [key: string]: boolean } = {};
+            musicData.forEach(({ id_artist, music }) => {
+                newMusicByArtist[id_artist] = music;
+                newLoadingStatus[id_artist] = false;
+            });
+
+            setMusicByArtist(newMusicByArtist);
+            setLoadingMusic(newLoadingStatus);
         } catch (error) {
             console.error("Error fetching music by artist:", error);
         }
     };
+
 
     const handleDeleteArtist = async (id_artist: string, url: string) => {
         try {
@@ -108,6 +125,7 @@ export default function AdminArtist() {
                             <th>Tên ca sĩ</th>
                             <th>Bài hát</th>
                             <th>Ngày tạo</th>
+                            <th>Ẩn hiện</th>
                             <th>Tính năng</th>
                         </tr>
                     </thead>
@@ -128,7 +146,9 @@ export default function AdminArtist() {
                                     <td><img src={artist.url_cover} alt={artist.name} /></td>
                                     <td>{artist.name}</td>
                                     <td>
-                                        {musicByArtist[artist.id_artist]?.length > 0 ? (
+                                        {loadingMusic[artist.id_artist] ? (
+                                            "Đang tải bài hát..."
+                                        ) : musicByArtist[artist.id_artist]?.length > 0 ? (
                                             <ul>
                                                 {musicByArtist[artist.id_artist].map((music) => (
                                                     <li key={music.id_music}>{music.name}</li>
@@ -144,6 +164,7 @@ export default function AdminArtist() {
                                         day: '2-digit',
                                         hour12: false
                                     })}</td>
+                                    <td>{artist.is_show===1?"Hiện":"Ẩn"}</td>
                                     <td className={styles.actions}>
                                         <button className={styles.editButton}>
                                             <Link href={`/admin/editartist/${artist.id_artist}`} passHref>
