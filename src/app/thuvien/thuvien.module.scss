@@ -1,0 +1,39 @@
+.mymusicoverivew {
+    width: auto;
+    padding-left: 50px;
+}
+
+.mymusicoverivew .header {
+    display: flex;
+    align-items: center;
+    color:white;
+}
+
+.mymusicoverivew .header .text {
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 48px
+}
+
+.zmbtnbutton {
+    background-color: transparent; /* Làm nền trong suốt */
+    border: none; /* Xóa viền nếu có */
+}
+
+.content{
+    width: 100%;
+    color: white;
+    display: flex;
+    justify-content: space-between; // Căn chỉnh các phần tử ở hai bên
+    align-items: center; // Căn giữa theo chiều dọc
+
+}
+
+.content h3 p{
+    color: white;
+    margin-top: 50px;
+    font-size: 25px;
+}
+.content p{
+    margin-right: 50px;
+}

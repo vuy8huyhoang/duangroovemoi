@@ -1,0 +1,102 @@
+.albumGrid {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 40px;
+}
+
+.albumCard {
+    width: 32%;
+    height: 150px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+}
+
+.albumCard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+
+.typeLink {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex; /* Sử dụng flexbox */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    height: 100%; /* Đảm bảo chiều cao 100% để có thể nhấp được */
+  }
+  
+  
+  
+  
+  .typeLink:hover {
+    color: #e0e0e0;
+  }
+
+
+
+.albumCard:nth-child(1) {
+    background: linear-gradient(135deg, #7c4df5, #0e0496);
+  }
+  
+  .albumCard:nth-child(2) {
+    background: linear-gradient(135deg, #5fffa2, #047952);
+  }
+  
+  .albumCard:nth-child(3) {
+    background: linear-gradient(135deg, #fa4949, #8b0303);
+  }
+  
+  .albumCard:nth-child(4) {
+    background: linear-gradient(135deg, #527ef7, #033078);
+  }
+  
+  .albumCard:nth-child(5) {
+    background: linear-gradient(135deg, #af5bfe, #3f037f);
+  }
+  .albumCard:nth-child(6) {
+    background: linear-gradient(135deg, #8a5cff, #0c047e);
+  }
+  
+  .albumCard:nth-child(7) {
+    background: linear-gradient(135deg, #ce3851, #02583e);
+  }
+  
+  .albumCard:nth-child(8) {
+    background: linear-gradient(135deg, #5060d8, #640303);
+  }
+  
+  .albumCard:nth-child(9) {
+    background: linear-gradient(135deg, #4bd7bb, #032760);
+  }
+  
+  .albumCard:nth-child(10) {
+    background: linear-gradient(135deg, #d0497a, #35036a);
+  }
+  .albumCard:nth-child(11) {
+    background: linear-gradient(135deg, #47d783, #03603e);
+  }
+  
+  .albumCard:nth-child(12) {
+    background: linear-gradient(135deg, #c84c50, #740404);
+  }
+  
+  .albumCard:nth-child(13) {
+    background: linear-gradient(135deg, #cd974b, #3b82f6);
+  }
+  
+  .albumCard:nth-child(14) {
+    background: linear-gradient(135deg, #3ecfcc, #7b00ff);
+  }

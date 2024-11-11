@@ -1,0 +1,130 @@
+.container {
+    max-width: 600px;
+    margin: 30px auto; /* Giữa trang */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px; /* Kích thước chữ lớn hơn cho tiêu đề */
+        color: #333; /* Màu chữ tối */
+    }
+
+    .formGroup {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Hai cột */
+        gap: 15px; /* Khoảng cách giữa các trường */
+        margin-bottom: 20px;
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+
+            &:focus {
+                border-color: #4CAF50; /* Màu viền khi focus */
+                outline: none; /* Ẩn outline mặc định */
+            }
+        }
+
+        input[type="date"] {
+            grid-column: span 2; /* Cho phép trường nhập date chiếm toàn bộ chiều rộng */
+        }
+
+        select {
+            grid-column: span 2; /* Chiếm toàn bộ chiều rộng */
+        }
+    }
+
+    h3 {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 18px; /* Kích thước chữ cho tiêu đề h3 */
+        color: #555; /* Màu chữ tối hơn */
+        text-align: center; /* Căn giữa tiêu đề h3 */
+    }
+
+    select[multiple] {
+        height: 150px; 
+        width: 100%;
+
+    }
+
+    .songGroup {
+        
+        display: flex;
+        justify-content: space-between; /* Giữa các phần tử */
+        align-items: center; /* Căn giữa theo chiều dọc */
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 5px; /* Khoảng cách giữa các bài hát */
+    }
+
+    button {
+        width: 20%; /* Chiều rộng đầy đủ */
+        padding: 10px;
+        background-color: #4CAF50; /* Màu nền */
+        color: white; /* Màu chữ */
+        border: none; /* Không viền */
+        border-radius: 5px; /* Bo góc */
+        font-size: 16px; /* Kích thước chữ */
+        cursor: pointer; /* Con trỏ khi rê chuột vào nút */
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: #45a049; /* Màu nền khi rê chuột vào */
+        }
+
+        &:active {
+            background-color: #3e8e41; /* Màu nền khi nhấn */
+            transform: translateY(1px); /* Di chuyển xuống một chút khi nhấn */
+        }
+
+        &:disabled {
+            background-color: #ccc; /* Màu nền khi vô hiệu hóa */
+            cursor: not-allowed; /* Con trỏ không cho phép */
+        }
+    }
+    
+}
+.submit {
+    display: flex;
+    justify-content: center;
+   
+    margin-top: 20px;
+}
+
+.submit button {
+    padding: 10px 20px;
+    font-size: 16px;
+    width: 100%;
+    font-weight: bold;
+    color: #fff;
+    background-color: #45a049; /* Màu nền chính */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submit button:hover {
+    background-color: #3b1f75; /* Màu khi hover */
+}
+
+.submit button:active {
+    transform: scale(0.95); /* Hiệu ứng khi nhấn */
+}
+
+.submit button:disabled {
+    background-color: #bbb; /* Màu khi disable */
+    cursor: not-allowed;
+    opacity: 0.7;
+}

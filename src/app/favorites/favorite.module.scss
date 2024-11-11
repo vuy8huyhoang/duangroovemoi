@@ -1,0 +1,43 @@
+// favorite.module.scss
+
+.favoritePage {
+    height: 100vh;
+    padding: 20px;
+    color: #fff;
+}
+
+.tabContainer {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.tabContainer button {
+    padding: 10px 20px;
+    border: none;
+    background-color: transparent;
+    color: #aaa;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.3s, background-color 0.3s;
+    border-radius: 4px;
+}
+
+.tabContainer button:hover {
+    color: #fff;
+    background-color: #444;
+}
+
+.tabContainer .activeTab {
+    color: #fff;
+    background-color: #6c5ce7;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(108, 92, 231, 0.3);
+}
+
+.contentContainer {
+    margin-top: 20px;
+    padding: 20px;
+    // background-color: #333;
+    border-radius: 8px;
+}

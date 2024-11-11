@@ -1,0 +1,40 @@
+.partnerSection {
+    text-align: center;
+    padding: 20px;
+    color: #fff;
+}
+
+.partnerSection h2 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.logoGrid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    /* Điều chỉnh để các cột đều nhau */
+    justify-content: center;
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.logoCard {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    transition: transform 0.3s;
+    aspect-ratio: 4 / 3;
+}
+
+.logoCard img {
+    width: 100%;
+    height: 60%;
+    object-fit: contain;
+}
+
+.logoCard:hover {
+    transform: scale(1.1);
+}

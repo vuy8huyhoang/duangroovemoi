@@ -1,0 +1,74 @@
+.musicPlayer {
+    width: 99%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: #1a1a1a;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding:10px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.songInfo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.cover {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+}
+
+.controls {
+    width: 30%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.controls button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.rangeSlider {
+    width: 20%;
+}
+
+.rangeSlider input {
+    appearance: none;
+    width: 100%;
+    height: 5px;
+    background: #555;
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+}
+
+.rangeSlider input::-webkit-slider-thumb {
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+}
+
+.volumeControl {
+    width: 5%;
+}
+
+.volumeControl input {
+    width: 100%;
+}

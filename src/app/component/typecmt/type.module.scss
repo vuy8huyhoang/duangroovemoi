@@ -1,0 +1,126 @@
+.title {
+  text-align: left;
+  margin-bottom: 2.5%;
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: bold;
+  padding-left: 40px;
+  padding-right: 40px;
+
+}
+
+.typeList {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding-left: 40px;
+  padding-right: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  list-style-type: none;
+
+}
+
+.typeItem {
+  height: 150px;
+  border-radius: 10px;
+  text-align: center;
+  color: #fff;
+  transition: transform 0.3s ease-in-out;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background-color: #ff6b6b;
+}
+
+.typeLink {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.typeLink:hover {
+  color: #e0e0e0;
+}
+
+.loading,
+.error {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 20px;
+  color: #ff6b6b;
+}
+
+.showAllButton {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  color: #fff;
+  background-color: transparent;
+  border: 2px solid #2B2335;
+  border-radius: 20px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+.typeItem:nth-child(1) {
+  background: linear-gradient(135deg, #7c4df5, #0e0496);
+}
+
+.typeItem:nth-child(2) {
+  background: linear-gradient(135deg, #5fffa2, #047952);
+}
+
+.typeItem:nth-child(3) {
+  background: linear-gradient(135deg, #fa4949, #8b0303);
+}
+
+.typeItem:nth-child(4) {
+  background: linear-gradient(135deg, #527ef7, #033078);
+}
+
+.typeItem:nth-child(5) {
+  background: linear-gradient(135deg, #af5bfe, #3f037f);
+}
+
+.typeItem:nth-child(6) {
+  background: linear-gradient(135deg, #8a5cff, #0c047e);
+}
+
+.typeItem:nth-child(7) {
+  background: linear-gradient(135deg, #ce3851, #02583e);
+}
+
+.typeItem:nth-child(8) {
+  background: linear-gradient(135deg, #5060d8, #640303);
+}
+
+.typeItem:nth-child(9) {
+  background: linear-gradient(135deg, #4bd7bb, #032760);
+}
+
+.typeItem:nth-child(10) {
+  background: linear-gradient(135deg, #d0497a, #35036a);
+}
+
+.typeItem:nth-child(11) {
+  background: linear-gradient(135deg, #47d783, #03603e);
+}
+
+.typeItem:nth-child(12) {
+  background: linear-gradient(135deg, #c84c50, #740404);
+}
+
+.typeItem:nth-child(13) {
+  background: linear-gradient(135deg, #cd974b, #3b82f6);
+}
+
+.typeItem:nth-child(14) {
+  background: linear-gradient(135deg, #3ecfcc, #7b00ff);
+}

@@ -1,0 +1,109 @@
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/font/Inter-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/font/Inter-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/font/Inter-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/font/Inter-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/font/Inter-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/font/Inter-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/font/Inter-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/font/Inter-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/font/Inter-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+.contain {
+    margin-top: 100px;
+    margin-left: 250px;
+    width: 100%;
+
+}
+
+.container {
+
+    display: flex;
+
+    flex-wrap: wrap;
+    margin-bottom: 100px;
+}
+
+body {
+
+    background-color: #170F23;
+    background-color: #170F23;
+    margin: 0;
+    padding: 0;
+    font-family: inter, Arial, Helvetica, sans-serif;
+
+}
+
+* {
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.admin-container {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #011E40;
+}
+
+.admin-content {
+    width: 85%;
+    background-color: #F5F5F5;
+
+}
+
+.admin-children {
+    padding-left: 40px;
+    padding-right: 40px;
+}

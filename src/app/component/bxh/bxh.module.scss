@@ -1,0 +1,127 @@
+.headerSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 40px;
+    padding-right: 40px;
+    margin-bottom: 20px;
+}
+
+.headerSection h2 {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.all {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.viewAllButton {
+    color: #89858F;
+    font-size: 16px;
+    text-decoration: none;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    transition: color 0.3s ease;
+}
+
+.viewAllButton:hover {
+    color: #6c63ff;
+}
+
+.csvg {
+    fill: #ffffff;
+    transition: fill 0.3s ease;
+}
+
+.csvg:hover {
+    fill: #6c63ff;
+}
+
+.musicGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 20px;
+    justify-items: center;
+    padding: 20px;
+}
+
+.musicCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.albumWrapper {
+    position: relative;
+    width: 90%;
+    height: 90%;
+}
+
+.musciCover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.musicTitle {
+    color: #FFFFFF;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    padding: 0 30px;
+    transition: opacity 0.3s ease;
+}
+
+.albumWrapper:hover .overlay {
+    opacity: 1;
+}
+
+.playButton,
+.likeButton,
+.moreButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.likeButton svg,
+.playButton svg,
+.moreButton svg {
+    width: 30px;
+    height: 30px;
+    stroke: #FFFFFF;
+    fill: none !important;
+}
+
+.artistName {
+    color: #726E79;
+}
+

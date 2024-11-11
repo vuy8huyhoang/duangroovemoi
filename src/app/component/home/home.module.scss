@@ -1,0 +1,89 @@
+.contentwrapper {
+    width: 100%;
+    padding: 2.5%;
+    box-sizing: border-box;
+    
+}
+
+.title {
+    text-align: left;
+    margin-bottom: 2.5%;
+    color: #fff;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* Album List */
+.albumList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.albumCard {
+    border-radius: 10px;
+    text-align: center;
+    color: #fff;
+    flex-basis: 30%;
+    height: 230px;
+    transition: transform 0.3s ease-in-out;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.albumCard img {
+    width: 100%;
+    object-fit: cover;
+}
+
+
+
+.albumCover {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    object-fit: cover;
+}
+
+.albumName {
+    font-size: 1.8rem;
+    margin: 10px 0;
+    font-weight: bold;
+    color: #fff;
+}
+
+.artistName {
+    font-size: 1.3rem;
+    color: #ccc;
+    margin-bottom: 15px;
+}
+
+.musicList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    padding-top: 10px;
+}
+
+.musicListItem {
+    background: #383838;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.musicListItem:hover {
+    background-color: #505050;
+}
+
+.musicTitle {
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.musicArtist {
+    font-size: 1rem;
+    color: #ccc;
+}
+
