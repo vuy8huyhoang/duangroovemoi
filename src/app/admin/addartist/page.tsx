@@ -49,7 +49,6 @@ export default function AddArtist() {
     };
 
     useEffect(() => {
-        // Update slug whenever the name changes
         if (artist.name) {
             setArtist(prev => ({
                 ...prev,
