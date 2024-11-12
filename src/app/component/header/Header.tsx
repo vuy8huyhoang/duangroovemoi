@@ -1,10 +1,11 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import styles from './Header.module.scss';
-import Login from '../auth';
-import Link from 'next/link';
-import Search from '../search';
-import axios from '@/lib/axios';
+"use client";
+import React, { useState, useEffect, useContext } from "react";
+import styles from "./Header.module.scss";
+import Login from "../auth";
+import Link from "next/link";
+import Search from "../search";
+import axios from "@/lib/axios";
+import { AppContext } from "@/app/layout";
 
 interface Profile {
   birthday: string;
@@ -19,11 +20,25 @@ interface Profile {
   url_avatar: string;
 }
 const Header: React.FC = () => {
-  const [showLogin, setShowLogin] = useState(false);
+  const { state, dispatch } = useContext(AppContext);
+  const [showLogin, setShowLogin] = useState(state.showLogin);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [profileData, setProfileData] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (state.showLogin !== showLogin) {
+      dispatch({ type: "SHOW_LOGIN", payload: showLogin });
+    }
+  }, [showLogin]);
+
+  useEffect(() => {
+    if (state.showLogin !== showLogin) {
+      setShowLogin(state.showLogin);
+    }
+  }, [state.showLogin]);
+
   const toggleLoginPopup = () => {
     if (!isLoggedIn) {
       setShowLogin((prev) => !prev);
@@ -35,9 +50,9 @@ const Header: React.FC = () => {
       setShowDropdown((prev) => !prev);
     }
   };
-  const closeDropdown=()=>{
+  const closeDropdown = () => {
     setShowDropdown(false);
-  }
+  };
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("profileData");
@@ -55,7 +70,8 @@ const Header: React.FC = () => {
     }
   }, [showLogin]);
   useEffect(() => {
-    axios.get("profile")
+    axios
+      .get("profile")
       .then((response: any) => {
         console.log(response);
 
@@ -63,11 +79,11 @@ const Header: React.FC = () => {
           setProfileData(response.result.data);
           console.log(setProfileData);
         } else {
-          console.error('Response data is undefined or null', response);
+          console.error("Response data is undefined or null", response);
         }
       })
       .catch((error: any) => {
-        console.error('Error fetching profile details', error);
+        console.error("Error fetching profile details", error);
       })
       .finally(() => {
         setLoading(false);
@@ -80,7 +96,7 @@ const Header: React.FC = () => {
         <i className="fa fa-arrow-right"></i>
       </div>
       <div className={styles.headerCenter}>
-        <Search /> 
+        <Search />
       </div>
       <div className={styles.headerRight}>
         <img src="/Vector.svg" alt="" />
@@ -90,19 +106,26 @@ const Header: React.FC = () => {
           {isLoggedIn ? (
             <>
               <img
-                src={profileData?.url_avatar ? profileData.url_avatar : "/Setting.svg"}
+                src={
+                  profileData?.url_avatar
+                    ? profileData.url_avatar
+                    : "/Setting.svg"
+                }
                 className={styles.avt}
                 alt="Settings"
                 onClick={toggleDropdown}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: "pointer" }}
               />
               {showDropdown && (
                 <div className={styles.dropdownMenu}>
                   <ul>
-                  <li onClick={closeDropdown}><Link href="/profile">Tài Khoản</Link></li>
-                  <li onClick={closeDropdown}><Link href="/change-password">Đổi mật khẩu</Link></li>
+                    <li onClick={closeDropdown}>
+                      <Link href="/profile">Tài Khoản</Link>
+                    </li>
+                    <li onClick={closeDropdown}>
+                      <Link href="/change-password">Đổi mật khẩu</Link>
+                    </li>
                     <li onClick={handleLogout}>Đăng xuất</li>
-                    
                   </ul>
                 </div>
               )}
@@ -112,7 +135,7 @@ const Header: React.FC = () => {
               src="/Setting.svg"
               alt="Settings"
               onClick={toggleLoginPopup}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: "pointer" }}
             />
           )}
         </div>
