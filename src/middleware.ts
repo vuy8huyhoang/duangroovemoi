@@ -77,7 +77,6 @@ import { NextResponse } from "next/server";
 //     }
 //   }
 // };
-
 export function middleware(request) {
   //   const userRoutes = ["/thuvien", "/profile"];
   //   const adminRoutes = [];
