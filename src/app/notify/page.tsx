@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import styles from "./notify.module.scss";
+import Link from "next/link";
 
 interface Notification {
     msg: string;
@@ -42,12 +43,12 @@ export default function Notify() {
                     {notifications.map((notification, index) => (
                         <li key={index} className={styles.notificationItem}>
                             <p><strong>Nội dung:</strong> {notification.msg}</p>
-                            <p><strong>Thời gian:</strong> {new Date(notification.time).toLocaleString()}</p>
+                            <p><strong>Thời gian:</strong> {new Date(notification.time).toLocaleString("vi-VN")}</p>
                             {notification.url && (
                                 <p>
-                                    <a href={notification.url} target="_blank" rel="noopener noreferrer" className={styles.link}>
+                                    <Link href={notification.url} target="_blank" rel="noopener noreferrer" className={styles.link}>
                                         Xem chi tiết
-                                    </a>
+                                    </Link>
                                 </p>
                             )}
                         </li>

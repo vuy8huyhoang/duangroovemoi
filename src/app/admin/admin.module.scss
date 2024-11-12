@@ -18,15 +18,15 @@
 }
 
 .statsContainer {
-    width: 60%;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     justify-content: space-between;
 }
 .notificationSidebar {
-    width: 38%;
-    margin-left: 20px;
+    margin-top: 20px;
+    width: 100%;
     background-color: white;
     border-radius: 10px;    
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -64,12 +64,12 @@
 
 .statCard h3 {
     margin: 10px 0 5px 0;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
 }
 
 .statCard p {
-    font-size: 14px;
+    font-size: 16px;
     margin: 0;
     font-weight: normal;
 }
