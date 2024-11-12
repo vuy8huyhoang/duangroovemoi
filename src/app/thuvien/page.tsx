@@ -4,6 +4,7 @@ import style from './thuvien.module.scss';
 import { Link } from 'react-router-dom';
 import PlaylistPage from '../playlist/page';
 import FavoritePage from '../favorites/page';
+
 export default function Thuvien() {
     
 
@@ -37,7 +38,6 @@ export default function Thuvien() {
             </div> */}
             <PlaylistPage/>  
             <FavoritePage/>
-
     </div>
          
     );
