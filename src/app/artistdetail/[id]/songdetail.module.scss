@@ -188,4 +188,12 @@ opacity: 1;
   overflow: hidden;
   text-overflow: ellipsis; /* Add ellipsis if title is too long */
 }
-
+.followButton{
+  background-color: #413b3b;
+  color: #fff;
+  width: 15%;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  padding: 10px 20px;
+}
