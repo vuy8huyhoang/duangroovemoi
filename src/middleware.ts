@@ -13,6 +13,7 @@ export async function middleware(request: Request) {
   // Check if there is no token
   if (!token) {
     response.headers.set("user", "Unauthorized");
+    
     return;
   }
 
