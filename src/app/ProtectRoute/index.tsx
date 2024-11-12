@@ -19,7 +19,7 @@ const ProtectRoute = () => {
     if (typeof window !== "undefined") {
       if (localStorage.getItem("accessToken")) {
         axios("/profile").then((res: any) => {
-          if (res.result.status !== 200) {
+          if (res.status !== 200) {
             localStorage.removeItem("accessToken");
             goBack();
           }
@@ -35,7 +35,7 @@ const ProtectRoute = () => {
     if (typeof window !== "undefined") {
       if (localStorage.getItem("accessToken")) {
         axios("/profile").then((res: any) => {
-          if (res.result.status !== 200) {
+          if (res.status !== 200) {
             localStorage.removeItem("accessToken");
             goBack();
           }
