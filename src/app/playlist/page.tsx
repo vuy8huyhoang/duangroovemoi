@@ -9,7 +9,7 @@ interface Playlist {
   id_playlist: string;
   name: string;
   
-  creator_name: string; // Thêm tên người tạo vào dữ liệu playlist
+  playlist_index: number // Thêm tên người tạo vào dữ liệu playlist
    
 }
 
@@ -22,6 +22,7 @@ const PlaylistPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"all" | "mine">("all"); // Tab quản lý
   const [newPlaylistName, setNewPlaylistName] = useState("");
+  const [newPlaylistIndex, setNewPlaylistIndex] = useState<number | null>(null);
   const [creating, setCreating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái modal
   
@@ -30,6 +31,8 @@ const PlaylistPage = () => {
     try {
       const response:any = await axios.get("/playlist/me");
       const data = response.result;
+      console.log("toàn bộ dữ liệu:", response);
+      
 
       if (data && data.data) {
         setPlaylists(data.data);
@@ -46,8 +49,8 @@ const PlaylistPage = () => {
   
 
   const createPlaylist = async () => {
-    if (!newPlaylistName) {
-      setError("Playlist name cannot be empty");
+    if (!newPlaylistName || newPlaylistIndex === null) {
+      setError("Playlist name and index cannot be empty");
       return;
     }
   
@@ -56,37 +59,30 @@ const PlaylistPage = () => {
       // Gửi yêu cầu tạo playlist
       const response: any = await axios.post("/playlist/me", {
         name: newPlaylistName,
+        playlist_index: newPlaylistIndex,
       });
   
       // Kiểm tra và log phản hồi
       console.log("API Response:", response);
   
-      if (response && response.result && response.result.data) {
-        const { success , message } = response.result;
-  
-        if (success) {
+      if (response && response.result && response.result.newID) {
+        const { status , message } = response.result;
+        console.log("test success:",status);
+        
+        if (status === 201) {
           // Nếu thành công, reset các trường và fetch lại playlist
           setNewPlaylistName("");
-          
+          setNewPlaylistIndex(null);
           setIsModalOpen(false);
           fetchPlaylists();
         } else {
           // Nếu phản hồi không thành công, hiển thị thông báo lỗi
           setError(message || "Failed to create playlist");
         }
-      } else {
-        // Nếu không có dữ liệu trong phản hồi, hiển thị lỗi
-        setError("Unexpected response format");
-      }
+      } 
+      
     } catch (error: any) {
-      // Xử lý lỗi mạng hoặc các lỗi khác
-      if (axios(error)) {
-        console.error("Axios Error:", error);  // Log lỗi Axios
-        setError(error.response?.result?.message || error.message || "An error occurred while creating playlist");
-      } else {
-        console.error("Unknown Error:", error);  // Log lỗi không phải từ Axios
-        setError("An unknown error occurred");
-      }
+      setError(error.message || "Failed to fetch playlists");
     } finally {
       setCreating(false); // Đặt trạng thái tạo playlist về false khi hoàn thành
     }
@@ -109,21 +105,7 @@ const PlaylistPage = () => {
     <div className={style.playlistPage}>
       <h1 className={style.title}>Playlist</h1>
 
-      {/* Tabs chuyển đổi giữa "Tất cả" và "Của tôi" */}
-      <div className={style.tabs}>
-        <button
-          className={`${style.tabButton} ${activeTab === "all" ? style.active : ""}`}
-          onClick={() => setActiveTab("all")}
-        >
-          Tất cả
-        </button>
-        <button
-          className={`${style.tabButton} ${activeTab === "mine" ? style.active : ""}`}
-          onClick={() => setActiveTab("mine")}
-        >
-          Của tôi
-        </button>
-      </div>
+      
 
       <div className={style.playlistGrid}>
         {/* Nút để mở modal tạo playlist */}
@@ -142,6 +124,12 @@ const PlaylistPage = () => {
                 value={newPlaylistName}
                 onChange={(e) => setNewPlaylistName(e.target.value)}
                 placeholder="Tên playlist mới"
+              />
+              <input
+                type="number"
+                value={newPlaylistIndex || ""}
+                onChange={(e) => setNewPlaylistIndex(Number(e.target.value))}
+                placeholder="Playlist Index"
               />
               
 

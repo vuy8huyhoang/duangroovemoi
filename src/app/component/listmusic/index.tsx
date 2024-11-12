@@ -3,6 +3,7 @@ import axios from '@/lib/axios';
 import style from './listmusic.module.scss';
 import { ReactSVG } from 'react-svg';
 import Link from 'next/link';
+import PlaylistPage from '../../playlist/page';
 
 interface Mussic {
     id_music: number;
@@ -22,6 +23,12 @@ interface MusicHistory {
     id_music: string;
     created_at: string;
   }
+
+interface Playlist{
+    id_playlist:string;
+    id_music:string;
+    
+}
 
 const ListMusic: React.FC = () => {
     const [albums, setAlbums] = useState<Mussic[]>([]);
@@ -124,8 +131,8 @@ const ListMusic: React.FC = () => {
         const toggleMenu = (id: number) => {
             setMenuVisible((prev) => (prev === id ? null : id));
         };
-        const handleAddToPlaylist = (album: Mussic, playlistId: number) => {
-            console.log(`Thêm album ${album.name} vào playlist ${playlistId}`);
+        const handleAddToPlaylist = () => {
+            
         };
 
     return (

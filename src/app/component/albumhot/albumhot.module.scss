@@ -42,6 +42,7 @@
     fill: #6c63ff;
 }
 
+/* Album Grid: Điều chỉnh số cột dựa trên kích thước màn hình */
 .albumGrid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -110,6 +111,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
     flex-grow: 1;
 }
 
@@ -120,13 +122,5 @@
     height: 30px;
     stroke: #FFFFFF;
     fill: none !important;
-}
-
-.artistName {
-    color: #726E79;
-    text-decoration: none;
-}
-.activeHeart {
-    color: red; // Hoặc màu mà bạn muốn khi trái tim được yêu thích
 }
 

@@ -35,6 +35,8 @@ export default function AdminUser() {
             .then((response: any) => {
                 if (response && response.result && response.result.data) {
                     setUsers(response.result.data);
+                console.log("toàn bộ user", response);
+                
                 } else {
                     console.error("Response data is undefined or empty:", response);
                     setUsers([]);
@@ -75,7 +77,7 @@ export default function AdminUser() {
             
 
             // Thực hiện các thao tác khi cập nhật thành công
-            console.log(response.result);
+            console.log(response);
         } catch (error) {
             console.error('Lỗi khi cập nhật trạng thái:', error);
         }
@@ -94,12 +96,12 @@ export default function AdminUser() {
         <div className={styles.container}>
             <div className={styles.header}>
                 <h1>Quản lý user</h1>
-                {/* <Link href="/admin/adduser" passHref>
+                <Link href="/admin/adduser" passHref>
             <button className={styles.addButton}>
                 <ReactSVG className={styles.csvg} src="/plus.svg" />
                 <div className={styles.addText}>Tạo user mới</div>
             </button>
-        </Link> */}
+        </Link>
             </div>
 
             <div className={styles.tableContainer}>
@@ -115,7 +117,7 @@ export default function AdminUser() {
                             <th>Email</th>
                             <th>Vai trò</th>
                             <th>Trạng thái</th>
-                            {currentUserRole === 'admin' && <th>Tính năng</th>}
+                            <th>Tính năng</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -139,32 +141,23 @@ export default function AdminUser() {
                                     <td>
                                         {/* Select dropdown để thay đổi trạng thái */}
                                         <select
-                                            value={user.is_banned ? 'banned' : 'active'}
+                                            value={user.is_banned ? '1' : '0'}
                                             onChange={(e) => handleStatusChange(e, user.id_user)}
                                         >
-                                            <option value="active">Hoạt động</option>
-                                            <option value="banned">Bị khóa</option>
+                                            <option value="0">Hoạt động</option>
+                                            <option value="1">Bị khóa</option>
                                         </select>
                                     </td>
-                                    {currentUserRole === 'admin' && (
+                                    
                                         <td className={styles.actions}>
                                             <button className={styles.editButton}>
                                                 <Link href={`/admin/edituser/${user.id_user}`} passHref>
                                                     <ReactSVG className={styles.csvg} src="/Rectangle 80.svg" />
                                                 </Link>
                                             </button>
-                                            <button
-                                                className={styles.deleteButton}
-                                                onClick={() => handleBanUser(user.id_user, user.is_banned)}
-                                            >
-                                                <ReactSVG
-                                                    className={styles.csvg}
-                                                    src={user.is_banned ? "/unlock-icon.svg" : "/lock-icon.svg"}
-                                                />
-                                                {user.is_banned ? "Mở khóa" : "Khóa"}
-                                            </button>
+                                            
                                         </td>
-                                    )}
+                                    
                                 </tr>
                             ))
                         )}
