@@ -1,20 +1,21 @@
 "use client";
-import Sidebar from './component/sidebar';
+import Sidebar from "./component/sidebar";
 import "./globals.css";
-import Header from './component/header/Header';
-import { usePathname } from 'next/navigation';
-import AdminSidebar from './component/AdminSidebar';
-import AdminHeader from './component/AdminHeader';
-import MusicPlayer from './component/musicplayer';
-import { createContext, useReducer } from 'react';
+import Header from "./component/header/Header";
+import { usePathname } from "next/navigation";
+import AdminSidebar from "./component/AdminSidebar";
+import AdminHeader from "./component/AdminHeader";
+import MusicPlayer from "./component/musicplayer";
+import { createContext, useReducer } from "react";
 import { initialState, reducer } from "./global";
+import ProtectRoute from "./ProtectRoute";
 // import useAuthGuard from './admin/authguard/authguard';
 
 export const AppContext = createContext<any>(undefined);
 
 export default function Layout({ children }: any) {
   const pathname = usePathname();
-  const isAdmin = pathname.startsWith('/admin');
+  const isAdmin = pathname.startsWith("/admin");
   const [state, dispatch] = useReducer(reducer, initialState);
   // const authguard = useAuthGuard();
 
@@ -27,29 +28,29 @@ export default function Layout({ children }: any) {
         <link rel="icon" href="/logo.svg" />
         <link
           rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        />
       </head>
       <body>
         <AppContext.Provider value={{ state, dispatch }}>
+          <ProtectRoute />
           {!isAdmin ? (
             <div className="container">
               <Sidebar />
               <Header />
               <MusicPlayer />
 
-              <div className="contain">
-                {children}
-              </div>
+              <div className="contain">{children}</div>
             </div>
           ) : (
             // authguard && (
-              <div className="admin-container">
-                <AdminSidebar />
-                <div className="admin-content">
-                  <AdminHeader />
-                  {children}
-                </div>
+            <div className="admin-container">
+              <AdminSidebar />
+              <div className="admin-content">
+                <AdminHeader />
+                {children}
               </div>
+            </div>
             // )
           )}
         </AppContext.Provider>

@@ -32,6 +32,7 @@ axios.interceptors.response.use(
     // Xử lý dữ liệu phản hồi nếu thành công
     return {
       result: response.data,
+      newID: response.data?.newID,
       status: response.status,
     };
   },

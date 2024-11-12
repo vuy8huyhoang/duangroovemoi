@@ -77,7 +77,13 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
                             <div key={comment.id_comment} className={style.comment}>
                                 <div className={style.content}>
                                 <p><strong>{comment.user}</strong>: {comment.text}</p>
-                                <p className={style.timestamp}>Posted on: {new Date(comment.created_at).toLocaleString()}</p>
+                                    <p className={style.timestamp}>Bình luận lúc  {new Date(comment.created_at).toLocaleString('vi-VN', {
+                                        year: 'numeric',
+                                        month: 'long', 
+                                        day: 'numeric',
+                                        hour12: false 
+                                    })}
+</p>
                                 </div>
                                 <button onClick={() => handleDeleteComment(comment.id_comment)} className={style.deleteButton}>
                                     Xóa
