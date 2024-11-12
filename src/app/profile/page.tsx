@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import axios from '@/lib/axios';
 import style from './profile.module.scss';
-import { log } from 'console';
 
 interface Profile {
     birthday: string;
@@ -150,11 +149,13 @@ const handleSubmit = async (event:any) => {
                 <div className={style.profileimg}>
                     <form onSubmit={handleSubmit}>
                         <label htmlFor="file-upload">
-                            <img 
-                            src={imagePreview || profileData?.url_avatar} // Use imagePreview if available
-                            alt="Profile Avatar" 
-                            style={{ cursor: 'pointer' }} // Change cursor to pointer for better UX
-                        />
+                        {
+                                profileData?.url_avatar || imagePreview ?<img 
+                                src= {imagePreview || profileData?.url_avatar} // Use imagePreview if available
+                                alt="Profile Avatar" 
+                                style={{ cursor: 'pointer' }} // Change cursor to pointer for better UX
+                            />: <img src="/Setting.svg" alt="" />
+                            }
                         </label>
                         <input 
                             type="file" 
@@ -208,7 +209,7 @@ const handleSubmit = async (event:any) => {
                                     onChange={(e) => setEditValue(e.target.value)} 
                                 />
                             ) : (
-                                formatDate(profileData?.birthday)
+                               profileData?.birthday?formatDate(profileData?.birthday || ''): ''
                             )}
                         </p>
                         {editingField === 'birthday' ? (

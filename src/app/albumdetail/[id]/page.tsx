@@ -271,24 +271,24 @@ export default function AlbumDetail({ params }) {
                             albumDetail.musics.map((track, index) => (
                                 <li key={index} className={style.songItem}>
                                     <span className={style.songNumber}>{index + 1}.</span>
-<div
-    key={albumDetail.id_album}
-    className={`${style.songCard} ${hoveredSong === albumDetail.id_album ? style.hovered : ''}`}
-    onMouseEnter={() => setHoveredSong(albumDetail.id_album)}
-    onMouseLeave={() => setHoveredSong(null)}
->
-    <div className={style.image}>
-        <img src={track.url_cover} alt={albumDetail.name} className={style.musicCover} />
-        <div className={style.overlay}>
-            <button
-                className={style.playButton1}
-                onClick={() => playSong(track)}
-            >
-                <i className={`fas ${currentSong?.id_music === albumDetail.id_album && isPlaying ? 'fa-pause' : 'fa-play'}`}></i>
-            </button>
-        </div>
-    </div>
-</div>
+                                    <div
+                                        key={albumDetail.id_album}
+                                        className={`${style.songCard} ${hoveredSong === albumDetail.id_album ? style.hovered : ''}`}
+                                        onMouseEnter={() => setHoveredSong(albumDetail.id_album)}
+                                        onMouseLeave={() => setHoveredSong(null)}
+                                    >
+                                        <div className={style.image}>
+                                            <img src={track.url_cover} alt={albumDetail.name} className={style.musicCover} />
+                                            <div className={style.overlay}>
+                                                <button
+                                                    className={style.playButton1}
+                                                    onClick={() => playSong(track)}
+                                                >
+                                                    <i className={`fas ${currentSong?.id_music === albumDetail.id_album && isPlaying ? 'fa-pause' : 'fa-play'}`}></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <span className={style.songTitle}>
                                         {track.name ? track.name : 'Chưa có tên bài hát'}
                                     </span>
