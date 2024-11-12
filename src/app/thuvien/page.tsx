@@ -15,7 +15,7 @@ export default function Thuvien() {
         <div className={style.mymusicoverivew }>
         <div className={style.header}>
             <div className={style.text}>Thư viện</div>
-                <button className={style.zmbtnbutton} tabIndex="0">
+                <button className={style.zmbtnbutton} >
                     <i className={style.icon}>
                         <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
                         <g filter="url(#filter0_d_3141_46346)"><circle cx="22" cy="21" r="18" fill="#FEFFFF"></circle></g>
