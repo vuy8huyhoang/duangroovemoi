@@ -20,9 +20,10 @@ const ProtectRoute = () => {
       if (localStorage.getItem("accessToken")) {
         axios("/profile").then((res: any) => {
           if (res.status !== 200) {
+            console.log("chưa đăng nhập");
             localStorage.removeItem("accessToken");
             goBack();
-          }
+          } else console.log("Đã đăng nhập");
         });
       } else {
         goBack();
@@ -39,7 +40,7 @@ const ProtectRoute = () => {
             localStorage.removeItem("accessToken");
             goBack();
           }
-          if (res.result.role !== "admin") {
+          if (res.result.data.role !== "admin") {
             goBack();
           }
         });
