@@ -74,7 +74,7 @@ export default function AddComposer() {
           type="text"
           name="name"
           placeholder="Tên nhạc sĩ"
-          value={composer}
+          value={composer.name}
           onChange={handleChange}
         />
         <button onClick={handleSubmit} disabled={loading}>

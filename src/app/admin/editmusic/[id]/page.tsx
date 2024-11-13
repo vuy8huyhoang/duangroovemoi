@@ -127,10 +127,8 @@ export default function EditMusic({ params }: { params: { id: string } }) {
   };
   const handleSubmit = async () => {
       setLoading(true);
-      const slug = song?.name.toLowerCase().replace(/\s+/g, "-");
       const songData = {
           name: song?.name,
-          slug,
           url_path: song?.url_path || "",
           url_cover: song?.url_cover || "",
           producer: song?.producer || "",
