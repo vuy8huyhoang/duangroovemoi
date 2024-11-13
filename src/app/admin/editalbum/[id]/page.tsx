@@ -44,9 +44,10 @@ export default function EditAlbum({ params }: { params: { id: string } }) {
   const [musics, setMusics] = useState<Music[]>([]);
   const [album, setAlbum] = useState<Album | null>(null);
   const [artists, setArtists] = useState<Artist[]>([]);
-
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedSongs, setSelectedSongs] = useState<string[]>([]);
+  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     axios.get("/music").then((response: any) => {
@@ -93,7 +94,13 @@ export default function EditAlbum({ params }: { params: { id: string } }) {
 
   if (loading) return <p>Đang tải...</p>;
   if (!album) return <p>Không tìm thấy album.</p>;
-
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+        setFile(e.target.files[0]);
+        const fileUrl = URL.createObjectURL(e.target.files[0]);
+        setPreviewUrl(fileUrl);
+    }
+};
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -129,6 +136,14 @@ export default function EditAlbum({ params }: { params: { id: string } }) {
       }
     });
   };
+  const handleVisibilityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (album) {
+        setAlbum({
+            ...album,
+            is_show: parseInt(e.target.value, 10),
+        });
+    }
+};
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -177,7 +192,9 @@ export default function EditAlbum({ params }: { params: { id: string } }) {
     <>
       <div className={styles.container}>
         <h2>Chỉnh sửa album</h2>
+        <h3>Chọn bài hát</h3>
         <div className={styles.formGroup}>
+          
           <input
             type="text"
             name="name"
@@ -185,14 +202,9 @@ export default function EditAlbum({ params }: { params: { id: string } }) {
             value={album?.name || ""}
             onChange={handleChange}
           />
+
           <input
-            type="text"
-            name="url_cover"
-            placeholder="URL ảnh bìa"
-            value={album?.url_cover || ""}
-            onChange={handleChange}
-          />
-          <input
+          
             type="date"
             name="release_date"
             value={album?.release_date?.split("T")[0] || ""}
@@ -210,7 +222,43 @@ export default function EditAlbum({ params }: { params: { id: string } }) {
               <option>Đang tải nghệ sĩ...</option>
             )}
           </select>
+          {previewUrl && (
+                  <div className={styles.preview}>
+                      <img src={previewUrl} alt="Xem trước ảnh bìa" />
+                  </div>
+              )}
+              <label htmlFor="file-upload" className={styles.customFileUpload}>
+                  Chọn ảnh bìa
+              </label>
+              <input
+                  id="file-upload"
+                  type="file"
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+              />
         </div>
+        <div className={styles.visibilityRadioButtons}>
+                  <div className={styles.hien}>
+                      <label>Hiện</label>
+                      <input
+                          type="radio"
+                          name="is_show"
+                          value="1"
+                          checked={album.is_show === 1}
+                          onChange={handleVisibilityChange}
+                      />
+                  </div>
+                  <div className={styles.an}>
+                      <label>Ẩn</label>
+                      <input
+                          type="radio"
+                          name="is_show"
+                          value="0"
+                          checked={album.is_show === 0}
+                          onChange={handleVisibilityChange}
+                      />
+                  </div>
+              </div>
         <h3>Chọn bài hát</h3>
         <select onChange={handleMusicSelect} multiple>
           <option value="">Chọn bài hát</option>
