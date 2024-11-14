@@ -18,7 +18,10 @@ export default function Layout({ children }: any) {
   const isAdmin = pathname.startsWith("/admin");
   const [state, dispatch] = useReducer(reducer, initialState);
   // const authguard = useAuthGuard();
-
+  console.log("cc", localStorage.getItem('currentPlaylist'));
+  if (!localStorage.getItem('currentPlaylist')) {
+    localStorage.setItem('currentPlaylist', JSON.stringify([]));
+  }
   return (
     <html lang="en">
       <head>
@@ -39,7 +42,6 @@ export default function Layout({ children }: any) {
               <Sidebar />
               <Header />
               <MusicPlayer />
-
               <div className="contain">{children}</div>
             </div>
           ) : (
