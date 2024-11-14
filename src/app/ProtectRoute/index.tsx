@@ -60,8 +60,8 @@ const ProtectRoute = () => {
       pathname.startsWith("/profile") ||
       pathname.startsWith("/playlist") ||
       pathname.startsWith("/historymusic") ||
-      pathname.startsWith("/favorites") ||
-      pathname.startsWith("/notify")
+      pathname.startsWith("/notify") ||
+      pathname.startsWith("/favorites")
     ) {
       return userAuth();
     } else if (
