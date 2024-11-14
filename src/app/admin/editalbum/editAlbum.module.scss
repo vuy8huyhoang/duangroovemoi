@@ -35,12 +35,13 @@
         }
 
         input[type="date"] {
-            grid-column: span 2; /* Cho phép trường nhập date chiếm toàn bộ chiều rộng */
+            grid-column: span 2; 
         }
 
         select {
             grid-column: span 2; /* Chiếm toàn bộ chiều rộng */
         }
+       
     }
 
     h3 {
@@ -181,3 +182,32 @@
     font-size: 16px;
     cursor: pointer;
 }
+.inputGroup {
+    margin-bottom: 1.5rem; /* Khoảng cách giữa các nhóm input */
+    display: flex;
+    flex-direction: column; /* Sắp xếp các phần tử theo chiều dọc */
+  }
+  
+  .label {
+    margin-bottom: 0.5rem; /* Khoảng cách giữa label và input */
+    font-size: 1rem; /* Kích thước chữ */
+    color: #333; /* Màu chữ */
+    font-weight: bold; /* Làm đậm chữ */
+  }
+  
+  .input {
+    padding: 0.5rem; /* Khoảng cách bên trong input */
+    font-size: 1rem; /* Kích thước chữ */
+    border: 1px solid #ccc; /* Đường viền input */
+    border-radius: 4px; /* Góc bo tròn */
+    outline: none; /* Bỏ khung xanh khi focus */
+    transition: border-color 0.3s; /* Hiệu ứng khi focus */
+  }
+  
+  .input:focus {
+    border-color: #007bff; /* Đổi màu đường viền khi input được focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Tạo hiệu ứng ánh sáng */
+  }
+  
+  
+  

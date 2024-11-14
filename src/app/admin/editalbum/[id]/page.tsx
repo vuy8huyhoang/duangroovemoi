@@ -195,21 +195,29 @@ export default function EditAlbum({ params }: { params: { id: string } }) {
         <h3>Chọn bài hát</h3>
         <div className={styles.formGroup}>
           
-          <input
-            type="text"
-            name="name"
-            placeholder="Tên album"
-            value={album?.name || ""}
-            onChange={handleChange}
-          />
+        <div className={styles.inputGroup}>
+  <label className={styles.label}>Tên album</label>
+  <input
+    type="text"
+    name="name"
+    placeholder="Tên album"
+    value={album?.name || ""}
+    onChange={handleChange}
+    className={styles.input}
+  />
+</div>
 
-          <input
-          
-            type="date"
-            name="release_date"
-            value={album?.release_date?.split("T")[0] || ""}
-            onChange={handleReleaseDateChange}
-          />
+<div className={styles.inputGroup}>
+  <label className={styles.label}>Ngày phát hành</label>
+  <input
+    type="date"
+    name="release_date"
+    value={album?.release_date?.split("T")[0] || ""}
+    onChange={handleReleaseDateChange}
+    className={styles.input}
+  />
+</div>
+
           <select onChange={handleArtistSelect}>
             <option value="">Chọn nghệ sĩ</option>
             {artists && artists.length > 0 ? (
