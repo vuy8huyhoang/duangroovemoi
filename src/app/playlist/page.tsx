@@ -66,7 +66,8 @@ const PlaylistPage = () => {
       console.log("API Response:", response);
   
       if (response && response.result && response.result.newID) {
-        const { status , message } = response.result;
+        const {   message } = response.result;
+        const status = response.status  
         console.log("test success:",status);
         
         if (status === 201) {
@@ -142,7 +143,8 @@ const PlaylistPage = () => {
           </div>
         )}
 
-        {playlists.map((playlist) => (
+        
+        {playlists.sort((a,b) => b.playlist_index - a.playlist_index).map((playlist) => (
           <div key={playlist.id_playlist} className={style.playlistItem}>
             <img src="/playlist.png" alt="Playlist cover" />
             <p>{playlist.name}</p>

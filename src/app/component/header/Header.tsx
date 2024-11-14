@@ -91,15 +91,12 @@ const Header: React.FC = () => {
   }, []);
   return (
     <header className={styles.zingHeader}>
-      <div className={styles.headerLeft}>
-        <i className="fa fa-arrow-left"></i>
-        <i className="fa fa-arrow-right"></i>
-      </div>
+      
       <div className={styles.headerCenter}>
         <Search />
       </div>
       <div className={styles.headerRight}>
-        <img src="/Vector.svg" alt="" />
+        
         <img src="/Group 24.svg" alt="" />
         <Link href="/notify"><img src="/Group 283.svg" alt="" /></Link>
         <div className={styles.settingsContainer}>

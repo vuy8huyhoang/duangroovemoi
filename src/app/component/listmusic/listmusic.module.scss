@@ -218,23 +218,63 @@
 }
 .menu {
     position: absolute;
+    display: flex;
+    flex-direction: column;
+    background-color: #3b185f;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+.menu button{
+    background-color: #3b185f;
+    color: white;
+}
+.menu button:hover{
+    box-shadow: #333;
+}
+
+.submenuOverlay {
+    position: fixed;
     top: 0;
-    right: 0;
-    background-color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    padding: 10px;
-    z-index: 10;  // Đảm bảo menu không bị che khuất bởi các phần tử khác
-}
-
-.menu button {
-    display: block;
-    padding: 10px;
+    left: 0;
     width: 100%;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); // Nền mờ phủ toàn màn hình
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
 }
 
-.menu button:hover {
-    background-color: #f0f0f0;
+.submenu {
+    background-color: #2a1050; // Màu nền của menu phụ
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    width: 100%;
+    text-align: center;
+    max-height: 65px;
+    overflow-y: auto;
+}
+
+.submenu h3 {
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.submenu button {
+    background-color: #4b2386;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    margin: 5px 0;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.submenu button:hover {
+    background-color: #5a2b94;
 }
