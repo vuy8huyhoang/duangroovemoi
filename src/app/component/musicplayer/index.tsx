@@ -340,6 +340,21 @@ const MusicPlayer: React.FC = () => {
                   })
                 }
               />
+              <button
+                  onClick={() =>
+                    addMusicToTheFirst(
+                      state,
+                      dispatch,
+                      "m0001",
+                      "Ngày chưa giông bão",
+                      "http://res.cloudinary.com/dmiaubxsm/video/upload/v1727431478/rpmqyciepjvsuwjesfky.mp3",
+                      "http://res.cloudinary.com/dmiaubxsm/image/upload/v1727430608/fy9iie84ei9sybtk8mxu.jpg",
+                      "Ai biết",
+                      [{ id_artist: "a0001", name: "Sơn Tùng" }]
+                    )
+                  }>
+              </button>
+
             </div>
           </div>
         </div>
