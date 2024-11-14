@@ -39,8 +39,8 @@ interface Playlist{
 const ListMusic: React.FC = () => {
     const [albums, setAlbums] = useState<Mussic[]>([]);
     const [favoriteMusic, setFavoriteMusic] = useState<Set<number>>(new Set());
-    const [currentSong, setCurrentSong] = useState<Mussic | null>(null);
-    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    // const [currentSong, setCurrentSong] = useState<Mussic | null>(null);
+    // const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [hoveredSong, setHoveredSong] = useState<number | null>(null);
     const [activeFilter, setActiveFilter] = useState<string>('Tất cả');
     const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
@@ -112,23 +112,23 @@ const ListMusic: React.FC = () => {
     };
 
 
-    useEffect(() => {
-        if (audioRef.current && currentSong) {
-            audioRef.current.src = currentSong.url_path;
-            audioRef.current.play();
-            setIsPlaying(true);
-        }
-    }, [currentSong]);
+    // useEffect(() => {
+    //     if (audioRef.current && state.currentPlaylist[0]) {
+    //         audioRef.current.src = state.currentPlaylist[0].url_path;
+    //         audioRef.current.play();
+    //         setIsPlaying(true);
+    //     }
+    // }, [state.currentPlaylist[0]]);
 
-    const handlePlayPause = (album: Mussic) => {
-        if (currentSong?.id_music === album.id_music && isPlaying) {
-            audioRef.current?.pause();
-            setIsPlaying(false);
-        } else {
-            setCurrentSong(album);
-            setIsPlaying(true);
-        }
-    };
+    // const handlePlayPause = (album: Mussic) => {
+    //     if (state.currentPlaylist[0]?.id_music === album.id_music && isPlaying) {
+    //         audioRef.current?.pause();
+    //         setIsPlaying(false);
+    //     } else {
+    //         // setCurrentSong(album);
+    //         setIsPlaying(true);
+    //     }
+    // };
 
     const handleFilterClick = (filter: string) => setActiveFilter(filter);
 
@@ -199,6 +199,7 @@ const ListMusic: React.FC = () => {
                                         <button
                                             className={style.playButton}
                                             onClick={() =>
+                                            {
                                                 addMusicToTheFirst(
                                                     state,
                                                     dispatch,
@@ -207,11 +208,19 @@ const ListMusic: React.FC = () => {
                                                     album.url_path,
                                                     album.url_cover,
                                                     album.composer,
-                                                    album.artists.map(artist=>artist.artist)
+                                                    album.artists.map(artist => artist.artist)
                                                 )
+                                                if (album.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                                                    dispatch({
+                                                        type: "IS_PLAYING",
+                                                        payload: false
+                                                    })
+                                                     ;
+                                                }
+                                               }
                                             }
                                         >
-                                            {album.id_music === currentSong?.id_music && isPlaying ? (
+                                            {album.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
                                                 <i className="fas fa-pause"></i>
                                             ) : hoveredSong === album.id_music ? (
                                                 <i className="fas fa-play"></i>
