@@ -11,9 +11,9 @@ export default function Sidebar() {
     return (
         <div className={styles.sidebar}>
             <div className={styles.logo}>
-                <a href="/">
+                <Link href="/">
                     <img src="/logo.svg" alt="Groove Logo" />
-                </a>
+                </Link>
             </div>
             <ul className={styles.menu}>
                 <li
