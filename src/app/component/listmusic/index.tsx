@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from '@/lib/axios';
 import style from './listmusic.module.scss';
 import { ReactSVG } from 'react-svg';
 import Link from 'next/link';
 import PlaylistPage from '../../playlist/page';
+import { addMusicToTheFirst } from '../musicplayer';
+import { AppContext } from '@/app/layout';
 
 interface Mussic {
     id_music: number;
@@ -18,7 +20,10 @@ interface Mussic {
     musics:{
        id_music: string
     }
+    artists:any [
+    ]
 }
+
 interface MusicHistory {
     id_music: string;
     created_at: string;
@@ -45,7 +50,7 @@ const ListMusic: React.FC = () => {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
-    
+    const { state, dispatch } = useContext(AppContext);
       
 
     useEffect(() => {
@@ -193,7 +198,18 @@ const ListMusic: React.FC = () => {
                                     <div className={style.overlay}>
                                         <button
                                             className={style.playButton}
-                                            onClick={() => handlePlayPause(album)}
+                                            onClick={() =>
+                                                addMusicToTheFirst(
+                                                    state,
+                                                    dispatch,
+                                                    album.id_music as any,
+                                                    album.name,
+                                                    album.url_path,
+                                                    album.url_cover,
+                                                    album.composer,
+                                                    album.artists.map(artist=>artist.artist)
+                                                )
+                                            }
                                         >
                                             {album.id_music === currentSong?.id_music && isPlaying ? (
                                                 <i className="fas fa-pause"></i>
