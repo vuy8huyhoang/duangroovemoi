@@ -1,0 +1,43 @@
+
+
+.contentwrapper {
+    padding: 20px;
+}
+
+.followed {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content:first baseline;
+}
+
+.contentwrapper h2 {
+    font-size: 24px;
+    color: white;
+    margin-bottom: 20px; 
+}
+
+.artistItem {
+    display: flex;
+    margin: 30px;
+    transition: transform 0.2s; 
+    width: 150px; 
+}
+.artistItem:hover {
+    transform: scale(1.05);
+}
+
+.artistFollow img {
+    width: 100%;
+    border-radius: 50%;
+    height: 80%;
+}
+
+    .artistItem p {
+        font-size: 16px;
+        color: #fefcfc; 
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px; 
+    }
