@@ -1,9 +1,10 @@
 // app/reset-password/[token]/page.tsx
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "next/navigation"; // Sử dụng useParams để lấy token từ URL
 import axios from "@/lib/axios";
 import styles from "../reset-password.module.scss";
+import { AppContext } from "../../layout";
 
 
 const ResetPassword: React.FC = () => {
@@ -13,6 +14,8 @@ const ResetPassword: React.FC = () => {
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [success, setSuccess] = useState<boolean>(false);
+    const { state, dispatch } = useContext(AppContext);
+
     useEffect(() => {
         if (token) {
             console.log("Token từ URL:", token);
@@ -49,13 +52,21 @@ const ResetPassword: React.FC = () => {
             });
 
                 setSuccess(true);
-                window.location.href="/"; 
-                
+
+                dispatch({ type: "SHOW_LOGIN", payload: true });
+
   
         } catch (error) {
             console.error("Lỗi khi đặt lại mật khẩu:", error);
-            setError("Đã xảy ra lỗi. Vui lòng thử lại.");
-        } finally {
+
+            if (error.status === 409) {
+                setError("Mật khẩu mới bị trùng với mật khẩu cũ đã đặt.");
+            } else {
+                setError("Đã xảy ra lỗi. Vui lòng thử lại.");
+            }
+        }
+
+ finally {
             setLoading(false);
         }
     };
