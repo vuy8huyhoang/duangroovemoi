@@ -45,7 +45,6 @@ const AdminSidebar: React.FC = () => {
 
                 if (response && response.result.data) {
                     setProfileData(response.result.data);
-                    console.log(setProfileData);
                 } else {
                     console.error('Response data is undefined or null', response);
                 }

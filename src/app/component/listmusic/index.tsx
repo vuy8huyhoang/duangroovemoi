@@ -3,6 +3,7 @@ import axios from '@/lib/axios';
 import style from './listmusic.module.scss';
 import { ReactSVG } from 'react-svg';
 import Link from 'next/link';
+import PlaylistPage from '../../playlist/page';
 
 interface Mussic {
     id_music: number;
@@ -23,6 +24,13 @@ interface MusicHistory {
     created_at: string;
   }
 
+interface Playlist{
+    id_playlist:string;
+    id_music:string;
+    index_order: number;
+    name: string;
+}
+
 const ListMusic: React.FC = () => {
     const [albums, setAlbums] = useState<Mussic[]>([]);
     const [favoriteMusic, setFavoriteMusic] = useState<Set<number>>(new Set());
@@ -33,7 +41,9 @@ const ListMusic: React.FC = () => {
     const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
     const [viewCounts, setViewCounts] = useState<{ [key: number]: number }>({});
     const [menuVisible, setMenuVisible] = useState<number | null>(null); // State mới cho menu
-    const [playlists, setPlaylists] = useState<{ id_playlist: number, name: string }[]>([]); // Dữ liệu playlist
+    const [submenuVisible, setSubmenuVisible] = useState<number | null>(null); // State cho menu phụ
+    const [playlists, setPlaylists] = useState<Playlist[]>([]);
+    const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     
       
@@ -124,9 +134,26 @@ const ListMusic: React.FC = () => {
         const toggleMenu = (id: number) => {
             setMenuVisible((prev) => (prev === id ? null : id));
         };
-        const handleAddToPlaylist = (album: Mussic, playlistId: number) => {
-            console.log(`Thêm album ${album.name} vào playlist ${playlistId}`);
+        const toggleSubmenu = (id: number) => {
+            setSubmenuVisible((prev) => (prev === id ? null : id));
         };
+
+        
+        const addToPlaylist = async (id_music, id_playlist: string, index_order: number) => 
+            
+            {
+
+            try {
+              await axios.post('/playlist/add-music', { id_music, id_playlist, index_order });
+              alert(`Bài hát đã được thêm vào playlist!`);
+              console.log("dữ liệu đc thêm:", id_music, id_playlist, index_order );
+              
+            } catch (error) {
+              console.error('Error adding to playlist:', error);
+              alert(`Lỗi khi thêm bài hát vào playlist.`);
+            }
+          };
+          
 
     return (
         <>
@@ -193,14 +220,24 @@ const ListMusic: React.FC = () => {
                                 </div>
                                 {menuVisible === album.id_music && (
                             <div className={style.menu}>
-                                <button onClick={() => console.log('Thêm vào playlist')}>Thêm vào playlist</button>
+                                <button onClick={() => toggleSubmenu(album.id_music)}>Thêm vào playlist</button>
+                                {submenuVisible === album.id_music && (
+                                    <div className={style.submenu}>
+                                {playlists.map((playlist,index) => (
+                            <button
+                                key={playlist.id_playlist}
+                                    onClick={() => addToPlaylist(album.id_music, playlist.id_playlist, playlist.index_order=index )}>
+
+                                    {playlist.name}
+                            </button>
+                            ))}
+                            </div>
+                            )}
                                 <button onClick={() => console.log('Chia sẻ')}>Chia sẻ</button>
                                 <button onClick={() => console.log('Tải về')}>Tải về</button>
                             </div>
                                 )}
-                                <div className={style.viewCount}>
-                                    Lượt xem: {viewCounts[album.id_music] || 0}
-                                    </div>
+                                
                             </div>
                         )
                     )

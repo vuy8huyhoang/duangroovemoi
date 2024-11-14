@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import axios from '@/lib/axios';
 import style from './comment.module.scss';
+import { AppContext } from "../../layout";
 
 interface CommentProps {
     id_music: string;
@@ -18,6 +19,7 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
     const [newComment, setNewComment] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { state, dispatch } = useContext(AppContext);
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -51,7 +53,11 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
                 setNewComment('');
             }
         } catch (err) {
-            alert("Hãy đăng nhập để bình luận.");
+            if(err.response.status===403){
+                alert("Hãy đăng nhập để bình luận.");
+                dispatch({ type: "SHOW_LOGIN", payload: true });
+
+            }
         }
     };
 
