@@ -62,7 +62,7 @@ export default function AdminComposer() {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h1>Quản lý nghệ sĩ</h1>
+                <h1>Quản lý nhạc sĩ</h1>
                 <Link href="/admin/addcomposer" passHref>
                     <button className={styles.addButton}>
                         <ReactSVG className={styles.csvg} src="/plus.svg" />

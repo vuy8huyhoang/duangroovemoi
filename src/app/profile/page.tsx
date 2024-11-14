@@ -180,7 +180,7 @@ const handleSubmit = async (event:any) => {
                     {/* Phone Input */}
                     <div className={style.infoItem}>
                         <p>
-                            <strong>Phone:</strong> 
+                            <strong>SĐT:  </strong> 
                             {editingField === 'phone' ? (
                                 <input 
                                     type="text" 
@@ -201,7 +201,7 @@ const handleSubmit = async (event:any) => {
                     {/* Birthday Input */}
                     <div className={style.infoItem}>
                         <p>
-                            <strong>Birthday:</strong> 
+                            <strong>Ngày sinh:   </strong> 
                             {editingField === 'birthday' ? (
                                 <input 
                                     type="date" 
@@ -222,17 +222,17 @@ const handleSubmit = async (event:any) => {
                     {/* Gender Input */}
                     <div className={style.infoItem}>
                         <p>
-                            <strong>Gender:</strong> 
+                            <strong>Giới tính:    </strong> 
                             {editingField === 'gender' ? (
                                 <div>
                                     <label>
                                         <input 
                                             type="radio" 
-                                            value="male" 
+                                            value="nam" 
                                             checked={editValue === 'male'} 
                                             onChange={() => setEditValue('male')} 
                                         />
-                                        Male
+                                        Nam
                                     </label>
                                     <label>
                                         <input 
@@ -241,7 +241,7 @@ const handleSubmit = async (event:any) => {
                                             checked={editValue === 'female'} 
                                             onChange={() => setEditValue('female')} 
                                         />
-                                        Female
+                                        Nữ
                                     </label>
                                 </div>
                             ) : (
@@ -258,8 +258,8 @@ const handleSubmit = async (event:any) => {
                     {/* Country Input */}
                     <div className={style.infoItem}>
                         <p>
-                            <strong>Country:</strong> 
-                            {editingField === 'country' ? (
+                            <strong>Quốc gia:  </strong> 
+                            {editingField === 'country' ?    (
                                 <input 
                                     type="text" 
                                     value={editValue} 

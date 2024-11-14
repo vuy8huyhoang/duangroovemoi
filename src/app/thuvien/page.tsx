@@ -4,6 +4,9 @@ import style from './thuvien.module.scss';
 import { Link } from 'react-router-dom';
 import PlaylistPage from '../playlist/page';
 import FavoritePage from '../favorites/page';
+import FollowedPage from '../Followed/page'
+
+
 
 export default function Thuvien() {
     
@@ -28,14 +31,7 @@ export default function Thuvien() {
                     </i>
                 </button>
             </div>
-
-            {/* <div className={style.content}>
-                <h3>
-                    PLAYLIST
-                </h3>
-                <p>Tất Cả</p>
-
-            </div> */}
+            <FollowedPage/>
             <PlaylistPage/>  
             <FavoritePage/>
     </div>
