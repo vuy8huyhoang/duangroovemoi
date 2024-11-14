@@ -91,6 +91,7 @@ const MusicPlayer: React.FC = () => {
   useEffect(() => {
     if (currentPlaylist && currentPlaylist.length > 0) {
       setMusic(currentPlaylist[0]);
+      setCurrentTime(0);
     }
   }, [currentPlaylist]);
 
