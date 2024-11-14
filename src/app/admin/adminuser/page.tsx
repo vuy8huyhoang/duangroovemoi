@@ -134,7 +134,7 @@ export default function AdminUser() {
                                         <input type="checkbox" />
                                     </td>
                                     <td>#{user.id_user}</td>
-                                    <td><img src={user.url_avatar || "/default-avatar.png"} alt="Avatar" /></td>
+                                    <td><img src={user.url_avatar || "/Group 66.svg"} alt="Avatar" /></td>
                                     <td>{user.fullname}</td>
                                     <td>{user.email}</td>
                                     <td>{user.role}</td>

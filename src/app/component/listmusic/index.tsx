@@ -237,9 +237,7 @@ const ListMusic: React.FC = () => {
                                 <button onClick={() => console.log('Tải về')}>Tải về</button>
                             </div>
                                 )}
-                                <div className={style.viewCount}>
-                                    Lượt xem: {viewCounts[album.id_music] || 0}
-                                    </div>
+                                
                             </div>
                         )
                     )
