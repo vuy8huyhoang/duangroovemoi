@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "@/lib/axios";
 import style from "./listmusictop.module.scss";
 import { ReactSVG } from "react-svg";
 import Link from "next/link";
+import { addMusicToTheFirst } from "../musicplayer";
+import { AppContext } from "@/app/layout";
 
 interface Album {
   id_music: number;
@@ -12,12 +14,15 @@ interface Album {
   created_at: string;
   composer: string;
   url_path: string;
+  artists: any[
+  ]
 }
 
 const ListMusicTop: React.FC = () => {
   const [albums, setAlbums] = useState<Album[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const { state, dispatch } = useContext(AppContext);
 
   useEffect(() => {
     axios
@@ -83,9 +88,35 @@ const ListMusicTop: React.FC = () => {
                     alt={album.name}
                     className={style.albumCover}
                   />
-                  <div className={style.playButton}>
-                    <ReactSVG src="/play.svg" />
-                  </div>
+                    <button
+                      className={style.playButton}
+                      onClick={() => {
+                        addMusicToTheFirst(
+                          state,
+                          dispatch,
+                          album.id_music as any,
+                          album.name,
+                          album.url_path,
+                          album.url_cover,
+                          album.composer,
+                          album.artists.map(artist => artist.artist)
+                        )
+                        if (album.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                          dispatch({
+                            type: "IS_PLAYING",
+                            payload: false
+                          })
+                            ;
+                        }
+                      }
+                      }
+                    >
+                      {album.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                        <i className="fas fa-pause"></i>
+                      )  : (
+                        <i className="fas fa-play"></i>
+                      )}
+                    </button>
                 </div>
                 <div className={style.songInfo}>
                   <div className={style.songName}>
@@ -108,6 +139,7 @@ const ListMusicTop: React.FC = () => {
           <ReactSVG src="/next-arrow.svg" />
         </button>
       </div>
+
     </>
   );
 };
