@@ -18,7 +18,11 @@ $font-color-muted: #ffffff;
   justify-content: center;
   z-index: 1000;
 }
-
+.backToLogin{
+  a{
+color: #a155f1;
+  text-decoration: none;  }
+}
 .popupContent {
   background-color: $popup-bg-color;
   padding: 30px;

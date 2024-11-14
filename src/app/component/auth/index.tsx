@@ -87,16 +87,23 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
       isValid = false;
     }
 
-    if (!validateEmail(user.email)) {
+    if (!user.email) {
+      setErrors((prev) => ({ ...prev, email: "Email là bắt buộc." }));
       isValid = false;
+    } else if (!validateEmail(user.email)) {
+      isValid = false; 
     }
 
-    if (!validatePassword(user.password)) {
+    if (!user.password) {
+      setErrors((prev) => ({ ...prev, password: "Mật khẩu là bắt buộc." }));
       isValid = false;
+    } else if (!validatePassword(user.password)) {
+      isValid = false; 
     }
 
     return isValid;
   };
+
 
   const handleLogin = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
@@ -149,9 +156,14 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
       console.error("Lỗi khi đăng nhập:", error);
 
       if (error.response) {
-        alert(
-          `Lỗi đăng nhập: ${error.response.data?.message || "Kiểm tra lại thông tin đăng nhập."}`
-        );
+        if(error.response.status===401){
+          setErrors((prev) => ({ ...prev, password: "Nhập sai mật khẩu." }));
+
+        } if (error.response.status === 404) {
+          setErrors((prev) => ({ ...prev, email: "Tên đăng nhập không tồn tại." }));
+          setErrors((prev) => ({ ...prev, password: "Tên đăng nhập không tồn tại." }));
+
+        }
       } else {
         alert("Đã xảy ra lỗi khi kết nối với server.");
       }
@@ -180,9 +192,11 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
       } else {
         alert("Đăng ký không thành công.");
       }
-    } catch (error) {
-      console.error("Lỗi khi đăng ký người dùng:", error);
-      alert("Đã xảy ra lỗi khi gửi dữ liệu.");
+    } catch (error: any) {
+      if(error.response.status===409)
+      {
+        setErrors((prev) => ({ ...prev, email: "Email đã tồn tại." }));
+      }
     } finally {
       setLoading(false);
     }
@@ -211,7 +225,8 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
       if (error.response) {
         if (error.response.status === 404) {
           alert("Email không tồn tại. Vui lòng kiểm tra lại.");
-        } else {
+        }
+        else {
           alert("Đã xảy ra lỗi khi yêu cầu khôi phục mật khẩu.");
         }
       } else {
@@ -240,7 +255,6 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
                       placeholder="Email"
                       value={user.email}
                       onChange={handleChange}
-                      required
                     />
                     {errors.email && <p className={styles.errorText}>{errors.email}</p>}
                   </div>
@@ -253,7 +267,6 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
                       placeholder="Mật khẩu"
                       value={user.password}
                       onChange={handleChange}
-                      required
                     />
                     {errors.password && <p className={styles.errorText}>{errors.password}</p>}
                   </div>
@@ -276,7 +289,6 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
                       placeholder="Họ và tên"
                       value={user.fullname}
                       onChange={handleChange}
-                      required
                     />
                     {errors.fullname && <p className={styles.errorText}>{errors.fullname}</p>}
                   </div>
@@ -289,7 +301,7 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
                       placeholder="Email"
                       value={user.email}
                       onChange={handleChange}
-                      required
+                      
                     />
                     {errors.email && <p className={styles.errorText}>{errors.email}</p>}
                   </div>
@@ -302,7 +314,7 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
                       placeholder="Mật khẩu"
                       value={user.password}
                       onChange={handleChange}
-                      required
+                      
                     />
                     {errors.password && <p className={styles.errorText}>{errors.password}</p>}
                   </div>
@@ -349,7 +361,8 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
                   name="email"
                   placeholder="Email hoặc tên người dùng"
                 />
-              </div>
+                </div>
+                {errors.email && <p className={styles.errorText}>{errors.email}</p>}
               <button type="submit" className={styles.loginBtn}>
                 Tìm tài khoản
               </button>

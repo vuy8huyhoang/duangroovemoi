@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import styles from './musicplayer.module.scss';
 import { AppContext } from '@/app/layout';
+import { ReactSVG } from 'react-svg';
+
 
 interface Music {
     id_music: string;
@@ -79,7 +81,7 @@ const MusicPlayer: React.FC = () => {
             {music && music.name}
             <audio ref={audioRef} src={music?.url_path} controls></audio>
             <button onClick={handlePlayPause}>
-                {isPlaying ? <i className="fas fa-pause"></i> : <i className="fas fa-play"></i>}
+                {isPlaying ? <ReactSVG src="/musicplayer1.svg" /> : <ReactSVG src="/musicplayer-icon (3).svg" />}
             </button>
             <input
                 max={1}
