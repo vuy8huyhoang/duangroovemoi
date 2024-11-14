@@ -28,7 +28,7 @@ export const addMusicToTheFirst = (
 ) => {
   localStorage.removeItem("currentPlaylist");
   console.log(state.currentPlaylist);
-
+  dispatch({ type: "IS_PLAYING", payload: true });
   dispatch({
     type: "CURRENT_PLAYLIST",
     payload: [
@@ -59,7 +59,7 @@ export const addMusicToTheEnd = (
 ) => {
   localStorage.removeItem("currentPlaylist");
   console.log(state.currentPlaylist);
-
+  dispatch({ type: "IS_PLAYING", payload: true });
   dispatch({
     type: "CURRENT_PLAYLIST",
     payload: [
@@ -444,8 +444,6 @@ const MusicPlayer: React.FC = () => {
                   })
                 }
               />
-             
-
             </div>
           </div>
         </div>
