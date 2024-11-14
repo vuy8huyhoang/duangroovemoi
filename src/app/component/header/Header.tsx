@@ -101,7 +101,9 @@ const Header: React.FC = () => {
       <div className={styles.headerRight}>
         <img src="/Vector.svg" alt="" />
         <img src="/Group 24.svg" alt="" />
-        <Link href="/notify"><img src="/Group 283.svg" alt="" /></Link>
+        <Link href="/notify">
+          <img src="/Group 283.svg" alt="" />
+        </Link>
         <div className={styles.settingsContainer}>
           {isLoggedIn ? (
             <>
