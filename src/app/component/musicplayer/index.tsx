@@ -32,7 +32,6 @@ export const addMusicToTheFirst = (
   dispatch({
     type: "CURRENT_PLAYLIST",
     payload: [
-      ...state.currentPlaylist,
       {
         id_music,
         name,
@@ -43,6 +42,7 @@ export const addMusicToTheFirst = (
           return { artist };
         }),
       },
+      ...state.currentPlaylist,
     ],
   });
 };
@@ -63,6 +63,7 @@ export const addMusicToTheEnd = (
   dispatch({
     type: "CURRENT_PLAYLIST",
     payload: [
+      ...state.currentPlaylist,
       {
         id_music,
         name,
@@ -73,7 +74,6 @@ export const addMusicToTheEnd = (
           return { artist };
         }),
       },
-      ...state.currentPlaylist,
     ],
   });
 };
