@@ -224,6 +224,9 @@ export default function AddMusic() {
         alert("Thêm bài hát không thành công.");
       }
     } catch (error: any) {
+      if (error.response.status === 400) {
+        setMessage("File phải gửi đúng định dạng.");
+      }
       console.error("Lỗi khi gửi dữ liệu:", error);
     } finally {
       setLoading(false);
