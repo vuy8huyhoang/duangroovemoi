@@ -30,6 +30,10 @@ const HistoryMusicPage = () => {
         const historyData: MusicHistory[] = response.result.data;
         setMusicHistory(historyData);
 
+        historyData.sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+
         const counts: { [key: string]: number } = {};
         historyData.forEach((history) => {
           counts[history.id_music] = (counts[history.id_music] || 0) + 1;
