@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "@/lib/axios";
 import style from "./listmusicType.module.scss";
 import Link from "next/link";
+import { addMusicToTheFirst } from "../musicplayer";
+import { AppContext } from "@/app/layout";
 
 interface Mussic {
   id_music: number;
@@ -16,6 +18,7 @@ interface Mussic {
   musics: {
     id_music: string;
   };
+  artists: any[];
 }
 
 const ListMusic: React.FC = () => {
@@ -27,6 +30,7 @@ const ListMusic: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { state, dispatch } = useContext(AppContext);
 
   useEffect(() => {
     axios
@@ -39,23 +43,9 @@ const ListMusic: React.FC = () => {
       .catch((error: any) => console.error("Error fetching albums:", error));
   }, []);
 
-  useEffect(() => {
-    if (audioRef.current && currentSong) {
-      audioRef.current.src = currentSong.url_path;
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
-  }, [currentSong]);
+  
 
-  const handlePlayPause = (album: Mussic) => {
-    if (currentSong?.id_music === album.id_music && isPlaying) {
-      audioRef.current?.pause();
-      setIsPlaying(false);
-    } else {
-      setCurrentSong(album);
-      setIsPlaying(true);
-    }
-  };
+  
 
   const handleFilterClick = (filter: string) => setActiveFilter(filter);
 
@@ -108,12 +98,29 @@ const ListMusic: React.FC = () => {
               <div className={style.overlay}>
                 <button
                   className={style.playButton}
-                  onClick={() => handlePlayPause(album)}
+                  onClick={() => {
+                    addMusicToTheFirst(
+                      state,
+                      dispatch,
+                      album.id_music as any,
+                      album.name,
+                      album.url_path,
+                      album.url_cover,
+                      album.composer,
+                      album.artists.map(artist => artist.artist)
+                    )
+                    if (album.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                      dispatch({
+                        type: "IS_PLAYING",
+                        payload: false
+                      })
+                        ;
+                    }
+                  }
+                  }
                 >
-                  {album.id_music === currentSong?.id_music && isPlaying ? (
+                  {album.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
                     <i className="fas fa-pause"></i>
-                  ) : hoveredSong === album.id_music ? (
-                    <i className="fas fa-play"></i>
                   ) : (
                     <i className="fas fa-play"></i>
                   )}

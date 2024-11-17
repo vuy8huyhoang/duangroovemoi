@@ -16,6 +16,26 @@ interface Profile {
     url_avatar: string;
 }
 
+const fakeApiFetchCountries = () => {
+    return new Promise<string[]>((resolve) => {
+        setTimeout(() => {
+            resolve([
+                "Vietnam",
+                "USA",
+                "UK",
+                "Canada",
+                "Australia",
+                "Germany",
+                "France",
+                "Japan",
+                "India",
+                "Brazil",
+                // Add more countries as needed
+            ]);
+        }, 1000); // Simulate a 1 second delay
+    });
+};
+
 export default function Profile() {
     const [profileData, setProfileData] = useState<Profile | null>(null);
     const [loading, setLoading] = useState(true);
@@ -24,6 +44,8 @@ export default function Profile() {
     const [file, setFile] = useState(null); // Lưu trữ file người dùng chọn
     const [message, setMessage] = useState(""); // Thông báo kết quả
     const [imagePreview, setImagePreview] = useState<string | null>(null); // Add state for image preview
+    const [countries, setCountries] = useState<string[]>([]);
+
     useEffect(() => {
         axios.get("profile")
             .then((response: any) => {
@@ -41,6 +63,11 @@ export default function Profile() {
             .finally(() => {
                 setLoading(false);
             });
+
+        // Fetch countries from the fake API
+        fakeApiFetchCountries().then((data) => {
+            setCountries(data);
+        });
     }, []);
     
     const handleEditClick = (field: string, currentValue: string) => {
@@ -78,8 +105,8 @@ const handleSubmit = async (event:any) => {
     }
 
     // Validate file type and size (example: only allow images under 2MB)
-    if (!['image/jpeg', 'image/png', 'image/gif'].includes(file.type) || file.size > 2 * 1024 * 1024) {
-        alert("Vui lòng chọn một tệp hình ảnh hợp lệ dưới 2MB.");
+    if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type) || file.size > 10 * 1024 * 1024) {
+        alert("Vui lòng chọn một tệp hình ảnh hợp lệ dưới 10MB.");
         return;
     }
 
@@ -108,9 +135,11 @@ const handleSubmit = async (event:any) => {
     const handleSaveClick = () => {
         if (profileData && editingField) {
             // Validate updated profile data
-            if (editingField === 'phone' && !/^\d+$/.test(editValue)) {
-                alert("Số điện thoại không hợp lệ.");
-                return;
+            if (editingField === 'phone') {
+                if (!/^0\d{9}$/.test(editValue)) {
+                    alert("Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số.");
+                    return;
+                }   
             }
             if (editingField === 'email' && !/\S+@\S+\.\S+/.test(editValue)) {
                 alert("Email không hợp lệ.");
@@ -259,12 +288,16 @@ const handleSubmit = async (event:any) => {
                     <div className={style.infoItem}>
                         <p>
                             <strong>Quốc gia:  </strong> 
-                            {editingField === 'country' ?    (
-                                <input 
-                                    type="text" 
+                            {editingField === 'country' ? (
+                                <select 
                                     value={editValue} 
                                     onChange={(e) => setEditValue(e.target.value)} 
-                                />
+                                >
+                                    <option value="">Chọn quốc gia</option>
+                                    {countries.map((country) => (
+                                        <option key={country} value={country}>{country}</option>
+                                    ))}
+                                </select>
                             ) : (
                                 profileData?.country
                             )}

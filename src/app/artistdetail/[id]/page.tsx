@@ -1,7 +1,9 @@
 "use client";
-import { useEffect, useState,useRef } from 'react';
+import { useEffect, useState,useRef, useContext } from 'react';
 import axios from '@/lib/axios';
 import style from './songdetail.module.scss';
+import { addMusicToTheFirst } from '@/app/component/musicplayer';
+import { AppContext } from '@/app/layout';
 
 interface Artist {
     id_artist: string;
@@ -21,9 +23,7 @@ interface Music {
     composer: string;
     url_path: string;
     url_cover: string;
-    artist: {
-        name: string
-    }[];
+    artists: any[];
 }
 
 export default function ArtistDetail({ params }) {
@@ -36,12 +36,13 @@ export default function ArtistDetail({ params }) {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [currentSong, setCurrentSong] = useState<Music | null>(null);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const { state, dispatch } = useContext(AppContext);
 
     // Lấy thông tin nghệ sĩ
     useEffect(() => {
         if (id) {
             axios.get(`artist/${id}`)
-                .then((response) => {
+                .then((response:any) => {
                     if (response && response.result.data) {
                         setArtist(response.result.data);
                     } else {
@@ -82,7 +83,7 @@ const handleFollowClick = (id_artist) => {
     useEffect(() => {
         if (id) {
             axios.get(`/music?id_artist=${id}`)
-                .then((response) => {
+                .then((response:any) => {
                     if (response && response.result.data) {
                         setMusicList(response.result.data);
                     } else {
@@ -192,21 +193,42 @@ const handleFollowClick = (id_artist) => {
                         <div className={style.image}>
                             <img src={music.url_cover} alt={music.name} className={style.musicCover} />
                             <div className={style.overlay}>
-                                <button
-                                    className={style.playButton1}
-                                    onClick={() => playSong(music)}
-                                >
-                                    <i className={`fas ${currentSong?.id_music === music.id_music && isPlaying ? 'fa-pause' : 'fa-play'}`}></i>
-                                </button>
+                                            <button
+                                                className={style.playButton}
+                                                onClick={() => {
+                                                    addMusicToTheFirst(
+                                                        state,
+                                                        dispatch,
+                                                        music.id_music as any,
+                                                        music.name,
+                                                        music.url_path,
+                                                        music.url_cover,
+                                                        music.composer,
+                                                        music.artists.map(artist => artist.artist)
+                                                    )
+                                                    if (music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                                                        dispatch({
+                                                            type: "IS_PLAYING",
+                                                            payload: false
+                                                        })
+                                                            ;
+                                                    }
+                                                }
+                                                }
+                                            >
+                                                {music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                                                    <i className="fas fa-pause"></i>
+                                                ) : (
+                                                    <i className="fas fa-play"></i>
+                                                )}
+                                            </button>
                             </div>
                         </div>
                     </div>
                                     <span className={style.songTitle}>
                                         {music.name ? music.name : 'Chưa có tên bài hát'}
                                     </span>
-                                    {/* <span className={style.songArtist}>
-                                        {music.artists.length > 0 ? music.artist.map(artist => artist.name).join(', ') : 'Chưa có nghệ sĩ'}
-                                    </span> */}
+                                   
                             </li>
                         ))}
                     </ul>

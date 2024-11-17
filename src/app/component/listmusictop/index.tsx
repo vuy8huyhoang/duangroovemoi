@@ -7,7 +7,7 @@ import { addMusicToTheFirst } from "../musicplayer";
 import { AppContext } from "@/app/layout";
 
 interface Album {
-  id_music: number;
+  id_music: string;
   name: string;
   url_cover: string;
   artist: string;

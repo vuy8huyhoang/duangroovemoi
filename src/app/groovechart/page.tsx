@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import axios from "@/lib/axios";
 import styles from "./style.module.scss";
 import { ReactSVG } from "react-svg";
@@ -9,6 +9,8 @@ import ListAlbum from "../component/listalbum";
 import ListMusic from "../component/listmusic";
 import ListMusicTop from "../component/listmusictop";
 import AlbumHot from "../component/albumhot";
+import { addMusicToTheFirst } from "../component/musicplayer";
+import { AppContext } from "../layout";
 
 interface Music {
   id_music: string;
@@ -19,7 +21,7 @@ interface Music {
     name: string;
   }[];
   url_path: string;
-
+  artists: any[]
   views: number;
 }
 
@@ -30,6 +32,7 @@ export default function GrooveChartPage() {
   const [currentSong, setCurrentSong] = useState<Music | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { state, dispatch } = useContext(AppContext);
 
   useEffect(() => {
     const fetchMusicData = async () => {
@@ -86,15 +89,32 @@ export default function GrooveChartPage() {
                 <div className={styles.overlay}>
                   <button
                     className={styles.playButton}
-                    onClick={() => playSong(music)}
+                    onClick={() => {
+                      addMusicToTheFirst(
+                        state,
+                        dispatch,
+                        music.id_music as any,
+                        music.name,
+                        music.url_path,
+                        music.url_cover,
+                        music.composer,
+                        music.artists.map(artist => artist.artist)
+                      )
+                      if (music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                        dispatch({
+                          type: "IS_PLAYING",
+                          payload: false
+                        })
+                          ;
+                      }
+                    }
+                    }
                   >
-                    <i
-                      className={`fas ${
-                        currentSong?.id_music === music.id_music && isPlaying
-                          ? "fa-pause"
-                          : "fa-play"
-                      }`}
-                    ></i>
+                    {music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                      <i className="fas fa-pause"></i>
+                    ) : (
+                      <i className="fas fa-play"></i>
+                    )}
                   </button>
                 </div>
               </div>

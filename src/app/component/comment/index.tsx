@@ -19,6 +19,7 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
     const [newComment, setNewComment] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
     const { state, dispatch } = useContext(AppContext);
 
     useEffect(() => {
@@ -39,6 +40,12 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
     }, [id_music]);
 
     const handleAddComment = async () => {
+     
+        if (newComment.trim() === '') {
+           alert("Nội dung bình luận không được để trống.");
+            return;
+        }
+
         try {
             const response: any = await axios.post(`/comment`, {
                 id_music,
@@ -57,6 +64,8 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
                 alert("Hãy đăng nhập để bình luận.");
                 dispatch({ type: "SHOW_LOGIN", payload: true });
 
+            } else {
+                setError("Có lỗi xảy ra khi thêm bình luận.");
             }
         }
     };
@@ -109,7 +118,9 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
                 <input
                     type="text"
                     value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
+                    onChange={(e) => {
+                        setNewComment(e.target.value);
+                    }}
                     placeholder="Bình luận..."
                 />
                 <button onClick={handleAddComment}>Đăng bình luận</button>
