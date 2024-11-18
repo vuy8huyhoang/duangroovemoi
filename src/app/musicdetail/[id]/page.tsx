@@ -17,7 +17,7 @@ interface Music {
   producer: string;
   release_date: string;
   composer: string;
-  total_duration: string | null;
+  total_duration: string;
   artists: any[];
 }
 interface Artist {
@@ -153,11 +153,14 @@ const SongDetailPage: React.FC = ({ params }: any) => {
       </div>
       <div className={style.modalContent}>
         <div className={style.modalContentRight}>
-          <img
-            src={musicdetail.url_cover}
-            alt={musicdetail.name}
-            className={style.coverImage}
-          />
+          
+          <div className={style.imageContainer}>
+            <img
+              src={musicdetail.url_cover}
+              alt={musicdetail.name}
+              className={style.coverImage}
+            />
+          </div>
           <h2>{musicdetail.name}</h2>
           <p className={style.songDuration}>Ca sĩ: {musicdetail.composer}</p>
           <div className={style.audioPlayer}>
@@ -220,7 +223,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
               />
               <div className={style.overlay}>
                 <button
-                  className={style.playButton}
+                  className={style.playButton1}
                   onClick={() => {
                     addMusicToTheFirst(
                       state,
@@ -258,7 +261,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
               {musicdetail.total_duration &&
               time[Number(musicdetail.total_duration)]
                 ? formatTime(time[Number(musicdetail.total_duration)])
-                : "Chưa có thời lượng"}
+                : "00:00 "}
             </span>
           </div>
           <h2>Thông Tin</h2>
