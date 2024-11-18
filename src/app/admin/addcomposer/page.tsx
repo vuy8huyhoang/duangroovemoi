@@ -37,34 +37,74 @@ export default function AddComposer() {
       .toLowerCase();
   };
 
-  const handleSubmit = async () => {
+  // const handleSubmit = async () => {
+  //   setLoading(true);
+  //   const slug = removeVietnameseTones(composer.name);
+  //   const composerData = { ...composer, slug };
+
+  //   console.log("Composer data to submit:", composerData);
+
+  //   try {
+  //     const response = await axios.post("/composer", composerData, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer YOUR_TOKEN_HERE`,
+  //       },
+  //     });
+
+  //     if (response.status === 200 || response.status === 201) {
+  //       alert("Nhạc sĩ đã được thêm thành công!");
+  //       window.location.href = "/admin/admincomposer";
+  //     } else {
+  //       alert("Thêm nhạc sĩ không thành công.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Lỗi khi gửi dữ liệu nhạc sĩ:", error);
+  //     alert("Đã xảy ra lỗi khi gửi dữ liệu.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  const validate = () => {
+    // Implement your validation logic here
+    return composer.name.trim() !== ""; // Example: Ensure name is not empty
+};
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Ngăn chặn hành vi mặc định của form
     setLoading(true);
+
+    // Xác thực dữ liệu trước khi gửi
+    if (!validate()) { // Giả sử bạn đã định nghĩa hàm validate()
+        setLoading(false);
+        return; // Dừng lại nếu dữ liệu không hợp lệ
+    }
+
     const slug = removeVietnameseTones(composer.name);
     const composerData = { ...composer, slug };
 
     console.log("Composer data to submit:", composerData);
 
     try {
-      const response = await axios.post("/composer", composerData, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer YOUR_TOKEN_HERE`,
-        },
-      });
+        const response = await axios.post("/composer", composerData, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer YOUR_TOKEN_HERE`,
+            },
+        });
 
-      if (response.status === 200 || response.status === 201) {
-        alert("Nhạc sĩ đã được thêm thành công!");
-        window.location.href = "/admin/admincomposer";
-      } else {
-        alert("Thêm nhạc sĩ không thành công.");
-      }
+        if (response.status === 200 || response.status === 201) {
+            alert("Nhạc sĩ đã được thêm thành công!");
+            window.location.href = "/admin/admincomposer";
+        } else {
+            alert("Thêm nhạc sĩ không thành công.");
+        }
     } catch (error) {
-      console.error("Lỗi khi gửi dữ liệu nhạc sĩ:", error);
-      alert("Đã xảy ra lỗi khi gửi dữ liệu.");
+        console.error("Lỗi khi gửi dữ liệu nhạc sĩ:", error);
+        alert("Đã xảy ra lỗi khi gửi dữ liệu.");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   return (
     <div className={styles.container}>
