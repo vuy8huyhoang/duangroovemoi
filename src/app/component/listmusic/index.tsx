@@ -138,7 +138,7 @@ const ListMusic: React.FC = () => {
                                     );
 
                                     // Gửi dữ liệu bài hát vào lịch sử
-                                    await addMusicToHistory(album.id_music, 100);
+                                    // await addMusicToHistory(album.id_music, 100);
 
                                     // Nếu bài hát đang phát, thì tạm dừng; nếu không, thì phát bài hát mới
                                     if (
