@@ -186,7 +186,7 @@ export default function AdminDashboard() {
             <div className={styles.notificationSidebar}>
                 <h3 className={styles.sidebarTitle}>Biểu đồ lượt xem trong 30 ngày</h3>
                 <Chart />
-                <h3 className={styles.sidebarTitle}>Biểu đồ top 5 bài hát nhiều lượt xem nhất</h3>
+                <h3 className={styles.sidebarTitle}>Biểu đồ top bài hát nhiều lượt xem nhất</h3>
 
                 <ChartRanking/>
             </div>
