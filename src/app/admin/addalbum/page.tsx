@@ -49,6 +49,8 @@ export default function AddAlbum() {
   const [musics, setMusics] = useState<Music[]>([]);
   const [artists, setArtists] = useState<Artist[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     axios
@@ -102,15 +104,23 @@ export default function AddAlbum() {
       e.target.selectedOptions,
       (option) => option.value
     );
-    console.log(selectedMusics);
-    console.log({
-      ...album,
-      musics: musics.filter((music) => selectedMusics.includes(music.id_music)),
-    });
     setAlbum({
       ...album,
       musics: musics.filter((music) => selectedMusics.includes(music.id_music)),
     });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+      const fileUrl = URL.createObjectURL(e.target.files[0]);
+      setPreviewUrl(fileUrl);
+    }
+  };
+
+  const handleVisibilityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    setAlbum({ ...album, is_show: value });
   };
 
   const handleSubmit = async () => {
@@ -124,16 +134,25 @@ export default function AddAlbum() {
     const albumData: any = { ...album, slug };
 
     try {
-      console.log(albumData);
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        console.log("Đang tải lên ảnh bìa...");
+        const uploadResponse: any = await axios.post("/upload-image", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        albumData.url_cover = uploadResponse?.result?.url || "";
+      }
+
       albumData.musics = albumData.musics.map((music: any) => {
         return { id_music: music.id_music };
       });
       albumData.id_artist = album.artists[0];
       delete albumData.artists;
       delete albumData.id_album;
-      if (!albumData.url_cover) {
-        albumData.url_cover = null;
-      }
+
       const response = await axios.post("/album", albumData, {
         headers: { "Content-Type": "application/json" },
       });
@@ -164,13 +183,6 @@ export default function AddAlbum() {
           onChange={handleChange}
         />
         <input
-          type="text"
-          name="url_cover"
-          placeholder="URL ảnh bìa"
-          value={album.url_cover}
-          onChange={handleChange}
-        />
-        <input
           type="date"
           name="release_date"
           value={album.release_date || ""}
@@ -178,41 +190,59 @@ export default function AddAlbum() {
         />
         <select onChange={handleArtistSelect}>
           <option value="">Chọn nghệ sĩ</option>
-          {artists && artists.length > 0 ? (
-            artists.map((artist) => (
-              <option key={artist.id_artist} value={artist.id_artist}>
-                {artist.name}
-              </option>
-            ))
-          ) : (
-            <option>Đang tải nghệ sĩ...</option>
-          )}
+          {artists.map((artist) => (
+            <option key={artist.id_artist} value={artist.id_artist}>
+              {artist.name}
+            </option>
+          ))}
         </select>
 
         <h3>Chọn bài hát</h3>
         <select onChange={handleMusicSelect} multiple>
-          <option value="">Chọn bài hát</option>
-
-          {musics && musics.length > 0 ? (
-            musics.map((music) => (
-              <option
-                className={
-                  album.musics
-                    .map((music) => music.id_music)
-                    .includes(music.id_music)
-                    ? "selected"
-                    : ""
-                }
-                key={music.id_music}
-                value={music.id_music}
-              >
-                {music.name}
-              </option>
-            ))
-          ) : (
-            <option>Đang tải bài hát...</option>
-          )}
+          {musics.map((music) => (
+            <option key={music.id_music} value={music.id_music}>
+              {music.name}
+            </option>
+          ))}
         </select>
+
+        <div className={styles.visibilityRadioButtons}>
+          <div className={styles.hien}>
+            <label>Hiện</label>
+            <input
+              type="radio"
+              name="is_show"
+              value="1"
+              checked={album.is_show === 1}
+              onChange={handleVisibilityChange}
+            />
+          </div>
+          <div className={styles.an}>
+            <label>Ẩn</label>
+            <input
+              type="radio"
+              name="is_show"
+              value="0"
+              checked={album.is_show === 0}
+              onChange={handleVisibilityChange}
+            />
+          </div>
+        </div>
+
+        {previewUrl && (
+          <div className={styles.preview}>
+            <img src={previewUrl} alt="Xem trước ảnh bìa" />
+          </div>
+        )}
+        <label htmlFor="file-upload" className={styles.customFileUpload}>
+          Chọn ảnh bìa
+        </label>
+        <input
+          id="file-upload"
+          type="file"
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+        />
 
         <button onClick={handleSubmit} disabled={loading}>
           {loading ? "Đang gửi..." : "Thêm album"}

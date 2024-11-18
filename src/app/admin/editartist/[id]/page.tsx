@@ -26,7 +26,6 @@ export default function EditArtist({ params }: { params: { id: string } }) {
             axios
                 .get(`/artist/${params.id}`)
                 .then((response: any) => {
-                    console.log("Full API response for artist:", response);
                     if (response?.result?.data) {
                         setArtist(response.result.data);
                         setPreviewUrl(response.result.data.url_cover || null);

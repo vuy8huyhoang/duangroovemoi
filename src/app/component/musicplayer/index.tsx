@@ -16,11 +16,87 @@ interface Music {
   url_path: string;
 }
 
+export const addMusicToTheFirst = (
+  state,
+  dispatch,
+  id_music: string,
+  name: string,
+  url_path: string,
+  url_cover: string,
+  composer: string,
+  artists: { id_artist: string; name: string }[]
+) => {
+  dispatch({ type: "IS_PLAYING", payload: true });
+  dispatch({
+    type: "CURRENT_PLAYLIST",
+    payload: [
+      {
+        id_music,
+        name,
+        url_path,
+        url_cover,
+        composer,
+        artists: artists.map((artist) => {
+          return { artist };
+        }),
+      },
+      ...state.currentPlaylist.filter((song) => song.id_music !== id_music),
+    ],
+  });
+};
+
+export const addMusicToTheEnd = (
+  state,
+  dispatch,
+  id_music: string,
+  name: string,
+  url_path: string,
+  url_cover: string,
+  composer: string,
+  artists: { id_artist: string; name: string }[]
+) => {
+  localStorage.removeItem("currentPlaylist");
+  console.log(state.currentPlaylist);
+  dispatch({ type: "IS_PLAYING", payload: true });
+  dispatch({
+    type: "CURRENT_PLAYLIST",
+    payload: [
+      ...state.currentPlaylist.filter((song) => song.id_music !== id_music),
+      {
+        id_music,
+        name,
+        url_path,
+        url_cover,
+        composer,
+        artists: artists.map((artist) => {
+          return { artist };
+        }),
+      },
+    ],
+  });
+};
+
+export const addListMusicToTheFirst = (state, dispatch, list) => {
+  localStorage.removeItem("currentPlaylist");
+  console.log(state.currentPlaylist);
+  dispatch({ type: "IS_PLAYING", payload: true });
+  dispatch({
+    type: "CURRENT_PLAYLIST",
+    payload: [
+      ...list,
+      ...state.currentPlaylist.filter((song) =>
+        list.map((music) => music.id_music).includes(song.id_music)
+      ),
+    ],
+  });
+};
+
 const MusicPlayer: React.FC = () => {
   const { state, dispatch } = useContext(AppContext);
   const [music, setMusic] = useState<Music>(state.currentPlaylist[0]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(100);
   const [showingCurrentTime, setShowingCurrentTime] = useState(0);
   const { currentPlaylist, volume, isPlaying } = state;
   const router = useRouter();
@@ -28,6 +104,8 @@ const MusicPlayer: React.FC = () => {
   useEffect(() => {
     if (currentPlaylist && currentPlaylist.length > 0) {
       setMusic(currentPlaylist[0]);
+      setCurrentTime(0);
+      setShowingCurrentTime(0);
     }
   }, [currentPlaylist]);
 
@@ -36,11 +114,16 @@ const MusicPlayer: React.FC = () => {
       if (audioRef.current) {
         audioRef.current.load();
         setCurrentTime(0); // Reset time when loading new audio
+        console.log(isPlaying);
+
+        if (isPlaying) audioRef.current?.play();
+        else audioRef.current?.pause();
       }
     };
 
     // Load audio only if URL changes
     loadAudio();
+    // console.log(isPlaying, );
   }, [music?.url_path]);
 
   useEffect(() => {
@@ -68,18 +151,11 @@ const MusicPlayer: React.FC = () => {
     }
   }, [volume]);
 
-  const handlePlayPause = () => {
-    dispatch({
-      type: "IS_PLAYING",
-      payload: !isPlaying,
-    });
-  };
-
   useEffect(() => {
     const interval = setInterval(() => {
       if (
         audioRef.current &&
-        audioRef.current.currentTime >= audioRef.current.duration &&
+        audioRef.current?.currentTime >= audioRef.current?.duration &&
         currentPlaylist.length > 1
       ) {
         dispatch({
@@ -90,6 +166,16 @@ const MusicPlayer: React.FC = () => {
           type: "IS_PLAYING",
           payload: true,
         });
+      }
+
+      if (
+        audioRef.current &&
+        audioRef.current?.currentTime >= audioRef.current?.duration &&
+        currentPlaylist.length === 1
+      ) {
+        setCurrentTime(0);
+        // audioRef.current.load();
+        audioRef.current.play();
       }
     }, 1000);
 
@@ -111,7 +197,7 @@ const MusicPlayer: React.FC = () => {
 
   // useEffect(() => {
   //   const handleTimeUpdate = () => {
-  //     if (audioRef.current) setCurrentTime(audioRef.current.currentTime);
+  //     if (audioRef.current) setCurrentTime(audioRef.current?.currentTime);
   //   };
   //   const audio = audioRef.current;
   //   if (audio) audio.addEventListener("timeupdate", handleTimeUpdate);
@@ -119,9 +205,18 @@ const MusicPlayer: React.FC = () => {
   // }, []);
 
   useEffect(() => {
-    audioRef.current.currentTime = currentTime;
-    setShowingCurrentTime(currentTime);
+    if (audioRef.current) {
+      audioRef.current.currentTime = currentTime;
+      setShowingCurrentTime(currentTime);
+    }
   }, [currentTime]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "currentPlaylist",
+      JSON.stringify(state.currentPlaylist)
+    );
+  }, [state.currentPlaylist]);
 
   // useEffect(() => {
   //   const audio = audioRef.current;
@@ -155,6 +250,23 @@ const MusicPlayer: React.FC = () => {
   }
 
   return (
+    // <button
+    //     onClick={() =>
+    //       addMusicToTheFirst(
+    //         state,
+    //         dispatch,
+    //         "m0001",
+    //         "Ngày chưa giông bão",
+    //         "http://res.cloudinary.com/dmiaubxsm/video/upload/v1727431478/rpmqyciepjvsuwjesfky.mp3",
+    //         "http://res.cloudinary.com/dmiaubxsm/image/upload/v1727430608/fy9iie84ei9sybtk8mxu.jpg",
+    //         "Ai biết",
+    //         [{ id_artist: "a0001", name: "Sơn Tùng" }]
+    //       )
+    //     }
+    //   >
+    //     click to add music
+    //   </button>
+    ////////////////////////////////////////////////////////////////////////////
     // <div className={styles.musicPlayer}>
     //     {music && music.name}
     //     <audio ref={audioRef} src={music?.url_path} controls></audio>
@@ -173,7 +285,13 @@ const MusicPlayer: React.FC = () => {
     <>
       {state.currentPlaylist.length > 0 && (
         <div className={classes.musicPlayerWrapper}>
-          <audio ref={audioRef} src={music?.url_path} controls hidden></audio>
+          <audio
+            ref={audioRef}
+            src={music?.url_path}
+            controls
+            hidden
+            onLoadedData={() => setDuration(audioRef.current.duration)}
+          ></audio>
           <div className={classes.infor}>
             <img
               className={classes.avatar}
@@ -183,13 +301,14 @@ const MusicPlayer: React.FC = () => {
             <div className={classes.nameWrapper}>
               <div
                 className={clsx(classes.name)}
-                style={{ "--music-name": music.name } as any}
+                style={{ "--music-name": music?.name } as any}
                 onClick={() => router.push(`/musicdetail/${music.id_music}`)}
               >
-                {music.name} {music.composer ? <>({music.composer})</> : ""}{" "}
+                {music?.name} {music?.composer ? <>({music?.composer})</> : ""}{" "}
               </div>
               <div className={classes.artist}>
-                {music.artists.map((artist) => artist.artist.name).join(", ")}
+                {music?.artists &&
+                  music.artists.map((artist) => artist.artist.name).join(", ")}
               </div>
             </div>
             {/* <div className={classes.heart}>
@@ -199,9 +318,9 @@ const MusicPlayer: React.FC = () => {
               <div
                 className={clsx(classes.icon, classes.movingBtn)}
                 onClick={() => {
-                  // audioRef.current.currentTime =
-                  //   audioRef.current.currentTime - 10 > 0
-                  //     ? audioRef.current.currentTime - 10
+                  // audioRef.current?.currentTime =
+                  //   audioRef.current?.currentTime - 10 > 0
+                  //     ? audioRef.current?.currentTime - 10
                   //     : 0;
                   setCurrentTime((prev) => (prev - 10 > 0 ? prev - 10 : 0));
                   // dispatch({ type: "IS_PLAYING", payload: true });
@@ -232,15 +351,15 @@ const MusicPlayer: React.FC = () => {
               <div
                 className={clsx(classes.icon, classes.movingBtn)}
                 onClick={() => {
-                  // audioRef.current.currentTime =
-                  //   audioRef.current.currentTime + 10 >
-                  //   audioRef.current.duration
-                  //     ? audioRef.current.duration
-                  //     : audioRef.current.currentTime + 10;
+                  // audioRef.current?.currentTime =
+                  //   audioRef.current?.currentTime + 10 >
+                  //   audioRef.current?.duration
+                  //     ? audioRef.current?.duration
+                  //     : audioRef.current?.currentTime + 10;
                   setCurrentTime((prev) =>
-                    prev + 10 > audioRef.current.duration
-                      ? audioRef.current.duration
-                      : audioRef.current.currentTime + 10
+                    prev + 10 > audioRef.current?.duration
+                      ? audioRef.current?.duration
+                      : audioRef.current?.currentTime + 10
                   );
                   dispatch({ type: "IS_PLAYING", payload: true });
                 }}
@@ -260,7 +379,7 @@ const MusicPlayer: React.FC = () => {
                   style={
                     {
                       "--current-duration": audioRef.current?.duration
-                        ? showingCurrentTime / audioRef.current.duration
+                        ? showingCurrentTime / audioRef.current?.duration
                         : 0,
                     } as any
                   }
@@ -270,7 +389,7 @@ const MusicPlayer: React.FC = () => {
                     style={
                       {
                         "--current-duration": audioRef.current?.duration
-                          ? showingCurrentTime / audioRef.current.duration
+                          ? showingCurrentTime / audioRef.current?.duration
                           : 0,
                       } as any
                     }
@@ -280,7 +399,7 @@ const MusicPlayer: React.FC = () => {
                     style={
                       {
                         "--current-duration": audioRef.current?.duration
-                          ? currentTime / audioRef.current.duration
+                          ? currentTime / audioRef.current?.duration
                           : 0,
                       } as any
                     }
@@ -290,7 +409,7 @@ const MusicPlayer: React.FC = () => {
                     value={showingCurrentTime}
                     max={
                       audioRef.current?.duration
-                        ? audioRef.current.duration
+                        ? audioRef.current?.duration
                         : 100
                     }
                     min={0}
@@ -302,7 +421,7 @@ const MusicPlayer: React.FC = () => {
                   />
                 </div>
                 <div className={clsx(classes.time)}>
-                  {formatTime(Math.ceil(audioRef.current?.duration || 100))}
+                  {formatTime(Math.ceil(duration || 100))}
                 </div>
               </div>
             )}

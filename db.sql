@@ -140,14 +140,14 @@ CREATE TABLE MusicPlaylistDetail (
     FOREIGN KEY (id_music) REFERENCES Music(id_music) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE Lyrics (
-    id_lyrics VARCHAR(36) DEFAULT UUID() NOT NULL PRIMARY KEY,
-    id_music VARCHAR(36) NOT NULL,
-    lyrics TEXT,
-    start_time INT DEFAULT 0,
-    end_time INT DEFAULT 0,
-    FOREIGN KEY (id_music) REFERENCES Music(id_music) ON DELETE CASCADE ON UPDATE CASCADE
-);
+-- CREATE TABLE Lyrics (
+--     id_lyrics VARCHAR(36) DEFAULT UUID() NOT NULL PRIMARY KEY,
+--     id_music VARCHAR(36) NOT NULL,
+--     lyrics TEXT,
+--     start_time INT DEFAULT 0,
+--     end_time INT DEFAULT 0,
+--     FOREIGN KEY (id_music) REFERENCES Music(id_music) ON DELETE CASCADE ON UPDATE CASCADE
+-- );
 
 CREATE TABLE MusicTypeDetail (
     id_music VARCHAR(36) NOT NULL,

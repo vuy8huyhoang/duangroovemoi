@@ -154,7 +154,20 @@ export default function AddMusic() {
       setMessage("Vui lòng chọn cả tệp ảnh và tệp âm thanh.");
       return;
     }
+    if (!song.name.trim()) {
+      setMessage("Vui lòng nhập tên bài hát.");
+      return;
+    }
+    if (!song.producer.trim()) {
+      setMessage("Vui lòng nhập nhà sản xuất.");
+      return;
+    }
 
+    if (!song.composer) {
+      setMessage("Vui lòng chọn nhạc sĩ.");
+      return;
+    }
+    setMessage(null);
     setLoading(true);
 
     const songData = { ...song };
@@ -211,8 +224,10 @@ export default function AddMusic() {
         alert("Thêm bài hát không thành công.");
       }
     } catch (error: any) {
+      if (error.response.status === 400) {
+        setMessage("File phải gửi đúng định dạng.");
+      }
       console.error("Lỗi khi gửi dữ liệu:", error);
-      setMessage("Đã xảy ra lỗi khi gửi dữ liệu.");
     } finally {
       setLoading(false);
     }

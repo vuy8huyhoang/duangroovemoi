@@ -1,11 +1,13 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "@/lib/axios";
 import style from "./songdetail.module.scss";
 import AlbumHot from "@/app/component/albumhot";
 import MusicPartner from "@/app/component/musicpartner";
 import Comment from "@/app/component/comment";
 import clsx from "clsx";
+import { addMusicToTheFirst } from "@/app/component/musicplayer";
+import { AppContext } from "@/app/layout";
 interface Music {
   id_music: number;
   name: string;
@@ -15,8 +17,8 @@ interface Music {
   producer: string;
   release_date: string;
   composer: string;
-  total_duration: string | null;
-  artists: Artist[];
+  total_duration: string;
+  artists: any[];
 }
 interface Artist {
   id_artist: string;
@@ -36,6 +38,8 @@ const SongDetailPage: React.FC = ({ params }: any) => {
   const [hoveredSong, setHoveredSong] = useState<number | null>(null);
   const [time, setTime] = useState([]);
   const [heart, setHeart] = useState(false);
+  const { state, dispatch } = useContext(AppContext);
+
   function formatDate(isoString: string) {
     const date = new Date(isoString);
     const day = date.getUTCDate().toString().padStart(2, "0");
@@ -149,16 +153,45 @@ const SongDetailPage: React.FC = ({ params }: any) => {
       </div>
       <div className={style.modalContent}>
         <div className={style.modalContentRight}>
-          <img
-            src={musicdetail.url_cover}
-            alt={musicdetail.name}
-            className={style.coverImage}
-          />
+          
+          <div className={style.imageContainer}>
+            <img
+              src={musicdetail.url_cover}
+              alt={musicdetail.name}
+              className={style.coverImage}
+            />
+          </div>
           <h2>{musicdetail.name}</h2>
           <p className={style.songDuration}>Ca sĩ: {musicdetail.composer}</p>
           <div className={style.audioPlayer}>
-            <button onClick={handlePlayPause} className={style.playButton}>
-              {isPlaying ? "Dừng Bài Hát" : "Phát Bài Hát"}
+            <button
+              className={style.playButton}
+              onClick={() => {
+                addMusicToTheFirst(
+                  state,
+                  dispatch,
+                  musicdetail.id_music as any,
+                  musicdetail.name,
+                  musicdetail.url_path,
+                  musicdetail.url_cover,
+                  musicdetail.composer,
+                  musicdetail.artists.map(artist => artist.artist)
+                )
+                if (musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                  dispatch({
+                    type: "IS_PLAYING",
+                    payload: false
+                  })
+                    ;
+                }
+              }
+              }
+            >
+              {musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                "Dừng nhạc"
+              ) : (
+                "Phát nhạc"
+              )}
             </button>
             <span
               className={clsx(style.heartIcon, {
@@ -191,16 +224,32 @@ const SongDetailPage: React.FC = ({ params }: any) => {
               <div className={style.overlay}>
                 <button
                   className={style.playButton1}
-                  onClick={() => playSong(musicdetail)}
+                  onClick={() => {
+                    addMusicToTheFirst(
+                      state,
+                      dispatch,
+                      musicdetail.id_music as any,
+                      musicdetail.name,
+                      musicdetail.url_path,
+                      musicdetail.url_cover,
+                      musicdetail.composer,
+                      musicdetail.artists.map(artist => artist.artist)
+                    )
+                    if (musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                      dispatch({
+                        type: "IS_PLAYING",
+                        payload: false
+                      })
+                        ;
+                    }
+                  }
+                  }
                 >
-                  <i
-                    className={`fas ${
-                      currentSong?.id_music === musicdetail.id_music &&
-                      isPlaying
-                        ? "fa-pause"
-                        : "fa-play"
-                    }`}
-                  ></i>
+                  {musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                    <i className="fas fa-pause"></i>
+                  ) : (
+                    <i className="fas fa-play"></i>
+                  )}
                 </button>
               </div>
             </div>
@@ -212,7 +261,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
               {musicdetail.total_duration &&
               time[Number(musicdetail.total_duration)]
                 ? formatTime(time[Number(musicdetail.total_duration)])
-                : "Chưa có thời lượng"}
+                : "00:00 "}
             </span>
           </div>
           <h2>Thông Tin</h2>

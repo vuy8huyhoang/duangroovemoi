@@ -23,21 +23,7 @@ const AdminSidebar: React.FC = () => {
     const pathname = usePathname();
     const [profileData, setProfileData] = useState<Profile | null>(null);
     const [loading, setLoading] = useState(true);    console.log(profileData)
-    const handleMenuClick = (item: string) => {
-        setActiveItem(item);
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('activeAdminItem', item); 
-        }
-    };
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const storedItem = localStorage.getItem('activeAdminItem');
-            if (storedItem) {
-                setActiveItem(storedItem);
-            }
-        }
-    }, []); 
+    
     useEffect(() => {
         axios.get("profile")
             .then((response: any) => {
@@ -45,7 +31,6 @@ const AdminSidebar: React.FC = () => {
 
                 if (response && response.result.data) {
                     setProfileData(response.result.data);
-                    console.log(setProfileData);
                 } else {
                     console.error('Response data is undefined or null', response);
                 }

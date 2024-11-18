@@ -296,6 +296,7 @@ export default function EditMusic({ params }: { params: { id: string } }) {
               <label htmlFor="file-upload" className={styles.customFileUpload}>
                   Chọn ảnh bìa
               </label>
+              
               <input
                   id="file-upload"
                   type="file"
