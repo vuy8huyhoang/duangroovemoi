@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import React, { useState, useEffect, useRef, useContext } from 'react';
 // import axios from '@/lib/axios';
 // import style from './listmusic.module.scss';
@@ -266,6 +267,23 @@ import style from "./listmusic.module.scss";
 import { addMusicToTheFirst } from "../musicplayer";
 import { AppContext } from "@/app/layout";
 import Link from 'next/link';
+=======
+"use client"
+
+import React, { useState, useEffect, useRef, useContext } from 'react';
+
+import axios from '@/lib/axios';
+import style from './listmusic.module.scss';
+import { ReactSVG } from 'react-svg';
+import Link from 'next/link';
+import PlaylistPage from '../../playlist/page';
+
+import { useRouter } from 'next/navigation';
+
+import { addMusicToTheFirst } from '../musicplayer';
+import { AppContext } from '@/app/layout';
+>>>>>>> bd9a84fa8c57e5cc4d742b3f855867c57bbc84df
+
 
 interface Mussic {
     id_music: string; // Đổi về string để phù hợp với dữ liệu API
@@ -285,7 +303,23 @@ interface MusicHistory {
 const ListMusic: React.FC = () => {
     const [albums, setAlbums] = useState<Mussic[]>([]);
     const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
+<<<<<<< HEAD
     const { state, dispatch } = useContext(AppContext);
+=======
+    const [viewCounts, setViewCounts] = useState<{ [key: number]: number }>({});
+    const [menuVisible, setMenuVisible] = useState<number | null>(null); // State mới cho menu
+    const [submenuVisible, setSubmenuVisible] = useState<number | null>(null); // State cho menu phụ
+    const [playlists, setPlaylists] = useState<Playlist[]>([]);
+    const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    const router = useRouter();
+    
+
+    const { state, dispatch } = useContext(AppContext);
+
+      
+>>>>>>> bd9a84fa8c57e5cc4d742b3f855867c57bbc84df
 
     useEffect(() => {
         // Lấy danh sách bài hát
@@ -297,6 +331,7 @@ const ListMusic: React.FC = () => {
             })
             .catch((error: any) => console.error("Error fetching albums:", error));
 
+<<<<<<< HEAD
         // Lấy lịch sử nghe nhạc
         axios.get("/music-history/me")
             .then((response: any) => {
@@ -307,6 +342,55 @@ const ListMusic: React.FC = () => {
 
     // Hàm thêm bài hát vào lịch sử nghe nhạc
     const addMusicToHistory = async (id_music: string, play_duration: number = 100) => {
+=======
+            axios
+      .get('/music-history/me')
+      .then((response: any) => {
+        setMusicHistory(response.result.data);
+      })
+      .catch((error: any) => console.error('Error fetching music history:', error));
+
+       // Lấy danh sách playlist từ API
+       axios.get('/playlist/me')
+       .then((response: any) => {
+           setPlaylists(response.result.data);
+       })
+       .catch((error: any) => console.error('Error fetching playlists:', error));
+
+  }, []);
+
+  
+  useEffect(() => {
+    // Tính toán lượt xem dựa trên music history
+    const counts: { [key: number]: number } = {};
+    musicHistory.forEach((history) => {
+      const musicId = parseInt(history.id_music); // Convert id_music to number if needed
+      counts[musicId] = (counts[musicId] || 0) + 1;
+    });
+    setViewCounts(counts);
+  }, [musicHistory]);
+
+
+    const toggleFavorite = async (id_music: number) => {
+        const isFavorite = favoriteMusic.has(id_music);
+        setFavoriteMusic((prev) => {
+            const updated = new Set(prev);
+            if(isFavorite){
+                updated.delete(id_music); 
+            }else {
+                updated.add(id_music);
+            }
+            return updated;
+        });
+
+        const isLoggedIn = localStorage.getItem('accessToken'); // Thay đổi theo cách bạn lưu token
+        if (!isLoggedIn) {
+            alert('Vui lòng đăng nhập để yêu thích bài hát!');
+            // router.push('/home');  // Chuyển hướng đến trang đăng nhập
+            return;
+        }
+
+>>>>>>> bd9a84fa8c57e5cc4d742b3f855867c57bbc84df
         try {
             const response :any = await axios.post("/music-history/me", { id_music, play_duration });
             const newHistory: MusicHistory = response.result; // Dữ liệu trả về từ API

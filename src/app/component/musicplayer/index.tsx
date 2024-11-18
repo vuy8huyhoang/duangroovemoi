@@ -26,8 +26,6 @@ export const addMusicToTheFirst = (
   composer: string,
   artists: { id_artist: string; name: string }[]
 ) => {
-  localStorage.removeItem("currentPlaylist");
-  console.log(state.currentPlaylist);
   dispatch({ type: "IS_PLAYING", payload: true });
   dispatch({
     type: "CURRENT_PLAYLIST",
@@ -42,7 +40,7 @@ export const addMusicToTheFirst = (
           return { artist };
         }),
       },
-      ...state.currentPlaylist,
+      ...state.currentPlaylist.filter((song) => song.id_music !== id_music),
     ],
   });
 };
@@ -63,7 +61,7 @@ export const addMusicToTheEnd = (
   dispatch({
     type: "CURRENT_PLAYLIST",
     payload: [
-      ...state.currentPlaylist,
+      ...state.currentPlaylist.filter((song) => song.id_music !== id_music),
       {
         id_music,
         name,
@@ -74,6 +72,21 @@ export const addMusicToTheEnd = (
           return { artist };
         }),
       },
+    ],
+  });
+};
+
+export const addListMusicToTheFirst = (state, dispatch, list) => {
+  localStorage.removeItem("currentPlaylist");
+  console.log(state.currentPlaylist);
+  dispatch({ type: "IS_PLAYING", payload: true });
+  dispatch({
+    type: "CURRENT_PLAYLIST",
+    payload: [
+      ...list,
+      ...state.currentPlaylist.filter((song) =>
+        list.map((music) => music.id_music).includes(song.id_music)
+      ),
     ],
   });
 };

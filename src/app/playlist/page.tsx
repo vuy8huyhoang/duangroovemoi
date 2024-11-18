@@ -4,9 +4,11 @@ import React, { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import style from "./playlist.module.scss";
 import { ReactSVG } from "react-svg";
+import { useRouter } from "next/navigation";
 
 interface Playlist {
   id_playlist: string;
+  id_music:string
   name: string;
   
   playlist_index: number // Thêm tên người tạo vào dữ liệu playlist
@@ -15,6 +17,7 @@ interface Playlist {
 
 
 const PlaylistPage = () => {
+  const router = useRouter();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   
   
@@ -22,7 +25,7 @@ const PlaylistPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"all" | "mine">("all"); // Tab quản lý
   const [newPlaylistName, setNewPlaylistName] = useState("");
-  const [newPlaylistIndex, setNewPlaylistIndex] = useState<number | null>(null);
+  // const [newPlaylistIndex, setNewPlaylistIndex] = useState<number | null>(null);
   const [creating, setCreating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái modal
   
@@ -49,17 +52,19 @@ const PlaylistPage = () => {
   
 
   const createPlaylist = async () => {
-    if (!newPlaylistName || newPlaylistIndex === null) {
-      setError("Playlist name and index cannot be empty");
+    if (!newPlaylistName.trim()) {
+      setError("Tên playlist không được để trống");
       return;
     }
   
     setCreating(true);
     try {
+      // Tự động tính toán playlist_index dựa trên số lượng playlist hiện tại
+      const playlistIndex = playlists.length + 1;
       // Gửi yêu cầu tạo playlist
       const response: any = await axios.post("/playlist/me", {
         name: newPlaylistName,
-        playlist_index: newPlaylistIndex,
+        playlist_index: playlistIndex,
       });
   
       // Kiểm tra và log phản hồi
@@ -73,7 +78,7 @@ const PlaylistPage = () => {
         if (status === 201) {
           // Nếu thành công, reset các trường và fetch lại playlist
           setNewPlaylistName("");
-          setNewPlaylistIndex(null);
+          
           setIsModalOpen(false);
           fetchPlaylists();
         } else {
@@ -88,10 +93,8 @@ const PlaylistPage = () => {
       setCreating(false); // Đặt trạng thái tạo playlist về false khi hoàn thành
     }
   };
-  
 
-  
-  
+
 
   
 
@@ -126,16 +129,16 @@ const PlaylistPage = () => {
                 onChange={(e) => setNewPlaylistName(e.target.value)}
                 placeholder="Tên playlist mới"
               />
-              <input
+              {/* <input
                 type="number"
                 value={newPlaylistIndex || ""}
                 onChange={(e) => setNewPlaylistIndex(Number(e.target.value))}
                 placeholder="Playlist Index"
-              />
+              /> */}
               
 
 
-              <button onClick={createPlaylist} disabled={creating}>
+              <button onClick={createPlaylist} disabled={creating || !newPlaylistName.trim()}>
                 {creating ? "Creating..." : "Tạo playlist"}
               </button>
               <button onClick={() => setIsModalOpen(false)}>Đóng</button>
@@ -145,9 +148,12 @@ const PlaylistPage = () => {
 
         
         {playlists.sort((a,b) => b.playlist_index - a.playlist_index).map((playlist) => (
-          <div key={playlist.id_playlist} className={style.playlistItem}>
+          <div key={playlist.id_playlist} className={style.playlistItem}
+          onClick={() => router.push(`/playlist/${playlist.id_playlist}`)}>
             <img src="/playlist.png" alt="Playlist cover" />
+            
             <p>{playlist.name}</p>
+            
             
           </div>
         ))}

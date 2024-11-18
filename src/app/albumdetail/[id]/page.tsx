@@ -1,10 +1,13 @@
 'use client';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback, useContext } from 'react';
 import axios from '@/lib/axios';
 import style from './albumdetail.module.scss';
 import AlbumHot from '@/app/component/albumhot';
 import MusicPartner from '@/app/component/musicpartner';
 import clsx from 'clsx';
+import { addMusicToTheEnd, addMusicToTheFirst } from '@/app/component/musicplayer';
+import { AppContext } from '@/app/layout';
+import { log } from 'console';
 
 interface Artist {
     id_artist: string;
@@ -21,6 +24,8 @@ interface Music {
     artist?: Artist;
     producer: string;
     url_cover?: string;
+    id_composer: any;
+    artists: any[];
 }
 
 interface AlbumDetail {
@@ -31,26 +36,29 @@ interface AlbumDetail {
     release_date: string;
     artist: Artist;
     musics: Music[];
+    music: Music;
+    artists: any[];
 }
 
 export default function AlbumDetail({ params }) {
     const id = params.id; // Get id from URL
     const [albumDetail, setAlbumDetail] = useState<AlbumDetail | null>(null);
-  
+
     const [currentSong, setCurrentSong] = useState<Music | null>(null);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [loading, setLoading] = useState(true);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [time, setTime] = useState([]);
     const [isFollowed, setIsFollowed] = useState<boolean>(false);
-    const [heart,setHeart]= useState(false);
+    const [heart, setHeart] = useState(false);
     const [hoveredSong, setHoveredSong] = useState<string | null>(null);
+    const { state, dispatch } = useContext(AppContext);
     useEffect(() => {
         axios.get(`/album/${id}`)
             .then((response: any) => {
                 if (response && response.result.data) {
                     setAlbumDetail(response.result.data);
-                   
+
 
                 } else {
                     console.error('Response data is undefined or null', response);
@@ -82,11 +90,11 @@ export default function AlbumDetail({ params }) {
     useEffect(() => {
         axios.get("follow/me")
             .then((response: any) => {
-                console.log(response.result.data, albumDetail)
-                console.log(response.result.data.map(i => (i.id_artist)).includes(albumDetail.artist.id_artist));
+                console.log(response.result.data, albumDetail, 'chuhcuhcuh')
+                console.log(response.result.data.map(i => (i.id_artist)).includes(albumDetail?.artist?.id_artist));
 
                 if (response && response.result.data) {
-                    if (response.result.data.map(i => (i.id_artist)).includes(albumDetail.artist.id_artist)) {
+                    if (response.result.data.map(i => (i.id_artist)).includes(albumDetail?.artist?.id_artist)) {
                         setIsFollowed(true);
                     }
 
@@ -95,10 +103,10 @@ export default function AlbumDetail({ params }) {
                 }
             }
             )
-            axios.get("favorite-album/me")
+        axios.get("favorite-album/me")
             .then((response: any) => {
                 if (response && response.result.data) {
-                    if (response.result.data.map(i => (i.id_album)).includes(albumDetail.id_album)) {
+                    if (response.result.data.map(i => (i.id_album)).includes(albumDetail?.id_album)) {
                         setHeart(true);
                     }
 
@@ -149,47 +157,47 @@ export default function AlbumDetail({ params }) {
 
 
     const handleHeartClick = (id_album) => {
-        if(heart==true){
+        if (heart == true) {
             axios.delete(`favorite-album/me?id_album=${id_album}`)
-            .then((response: any) => {
-                console.log('Album unliked successfully', response);
-                setHeart(false);
-            })
-            .catch((error: any) => {
-                console.error('Error unliking album', error);
-            });
+                .then((response: any) => {
+                    console.log('Album unliked successfully', response);
+                    setHeart(false);
+                })
+                .catch((error: any) => {
+                    console.error('Error unliking album', error);
+                });
         }
-        else{
+        else {
             axios.post(`favorite-album/me`, { id_album })
-            .then((response: any) => {
-                console.log('Album liked successfully', response);
-                setHeart(true);
-            })
-            .catch((error: any) => {
-                console.error('Error liking album', error);
-            });
+                .then((response: any) => {
+                    console.log('Album liked successfully', response);
+                    setHeart(true);
+                })
+                .catch((error: any) => {
+                    console.error('Error liking album', error);
+                });
         }
     };
 
 
-    const handlePlayRandomClick = () => {
-        if (isPlaying) {
-            pausePlaying(); // Pause if currently playing
-        } else {
-            continuePlaying(); // Continue playing if paused
-        }
-    };
+    // const handlePlayRandomClick = () => {
+    //     if (isPlaying) {
+    //         pausePlaying(); // Pause if currently playing
+    //     } else {
+    //         continuePlaying(); // Continue playing if paused
+    //     }
+    // };
 
-    const continuePlaying = () => {
-        if (albumDetail && albumDetail.musics.length > 0) {
-            const randomIndex = Math.floor(Math.random() * albumDetail.musics.length);
-            const randomSong = albumDetail.musics[randomIndex];
-            setCurrentSong(randomSong);
-            setIsPlaying(true);
-        } else {
-            console.log('No songs available to play.');
-        }
-    };
+    // const continuePlaying = () => {
+    //     if (albumDetail && albumDetail.musics.length > 0) {
+    //         const randomIndex = Math.floor(Math.random() * albumDetail.musics.length);
+    //         const randomSong = albumDetail.musics[randomIndex];
+    //         setCurrentSong(randomSong);
+    //         setIsPlaying(true);
+    //     } else {
+    //         console.log('No songs available to play.');
+    //     }
+    // };
 
     const pausePlaying = () => {
         audioRef.current?.pause();
@@ -202,7 +210,7 @@ export default function AlbumDetail({ params }) {
                 setIsPlaying(false);
             } else {
                 setCurrentSong(music);
-                audioRef.current.src = music.url_path; 
+                audioRef.current.src = music.url_path;
                 audioRef.current.play();
                 setIsPlaying(true);
             }
@@ -237,25 +245,79 @@ export default function AlbumDetail({ params }) {
                     <img src={albumDetail.url_cover} alt={albumDetail.name} className={style.albumCover} />
                     <p>Ngày phát hành: {albumDetail.release_date ? albumDetail.release_date : 'Chưa có thông tin'}</p>
                     <p>Nghệ sĩ: {albumDetail.artist.name}</p>
-                    <div className={style.buttonGroup}> 
-                          <button className={style.playButton} onClick={handlePlayRandomClick}>
+                    <div className={style.buttonGroup}>
+                        {/* <button className={style.playButton} onClick={handlePlayRandomClick}>
                               {isPlaying ? 'Tạm Dừng' : 'Phát Ngẫu Nhiên'}
-                          </button>
-                            {
-                                isFollowed ? <button
-                                    className={style.followButton}
-                                    onClick={() => unFollowClick(albumDetail.artist.id_artist)}
-                                > Đã Theo Dõi
-                                </button> : <button
-                                    className={style.followButton}
-                                    onClick={() => handleFollowClick(albumDetail.artist.id_artist)}
-                                > Theo Dõi </button>
+                          </button> */}
+                        <button
+                            className={style.playButton}
+                            onClick={() => {
+                                console.log(albumDetail, 'chúchsuchscschswkfwhbflwf');
+                                let musicList = [];
+                                albumDetail.musics.map(music => {
+                                    musicList.push({
+                                        id_music: music?.id_music,
+                                        name: music?.name,
+                                        url_path: music?.url_path,
+                                        url_cover: music?.url_cover,
+                                        composer: music?.id_composer.name,
+                                        artists: music?.artists.map((artist) => {
+                                            return { artist };
+                                        }),
+                                    },)
+                                })
+                                dispatch({
+                                    type: "CURRENT_PLAYLIST",
+                                    payload: [
+                                        ...musicList,
+                                        ...state.currentPlaylist.filter((song) => musicList.map(music=>music.id_music).includes(song.id_music)),
+                                    ],
+                                });
+                                dispatch({ type: "IS_PLAYING", payload: true });
+                                // albumDetail?.musics.map(music => {
+                                //     console.log(music);
+                                //     addMusicToTheFirst(
+                                //         state,
+                                //         dispatch,
+                                //         music?.id_music as any,
+                                //         music?.name,
+                                //         music?.url_path,
+                                //         music?.url_cover,
+                                //         music?.id_composer?.name,
+                                //         music?.artists.map(artist => artist.artist),
+                                //     )
+                                // })
+                                // if (albumDetail.music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                                //     dispatch({
+                                //         type: "IS_PLAYING",
+                                //         payload: false
+                                //     })
+                                //      ;
+                                // }
                             }
-                        <span className={clsx(style.heartIcon,{[style.heartIcon_active]:heart})} 
-                                    onClick={() => handleHeartClick(albumDetail.id_album)}>♥</span>
-                       
+                            }
+                        >
+                            {albumDetail.music?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                                <i className="fas fa-pause"></i>
+                            ) : (
+                                <i className="fas fa-play"></i>
+                            )}
+                        </button>
+                        {
+                            isFollowed ? <button
+                                className={style.followButton}
+                                onClick={() => unFollowClick(albumDetail.artist.id_artist)}
+                            > Đã Theo Dõi
+                            </button> : <button
+                                className={style.followButton}
+                                onClick={() => handleFollowClick(albumDetail.artist.id_artist)}
+                            > Theo Dõi </button>
+                        }
+                        <span className={clsx(style.heartIcon, { [style.heartIcon_active]: heart })}
+                            onClick={() => handleHeartClick(albumDetail.id_album)}>♥</span>
+
                     </div>
-                   
+
                 </div>
                 <div className={style.albumDetailleft}>
                     <h2>Danh sách bài hát</h2>

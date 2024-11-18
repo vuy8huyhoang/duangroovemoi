@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -17,6 +16,7 @@ interface FollowedArtist {
 
 const FollowedPage = () => {
     const [followedArtist, setFollowedArtist] = useState<FollowedArtist[]>([]);
+    const [showAll, setShowAll] = useState(false);
 
     useEffect(() => {
         const fetchFollowArtist = async () => {
@@ -40,7 +40,7 @@ const FollowedPage = () => {
                 {followedArtist.length === 0 ? (
                     <p>Không có album yêu thích.</p>
                 ) : (
-                    followedArtist.map((artist) => {
+                    (showAll ? followedArtist : followedArtist.slice(0, 4)).map((artist) => {   
                         console.log('Rendering artist:', artist); // Kiểm tra từng album trước khi render
                         return (
                             <div key={artist.id_artist} className={style.artistItem}>
@@ -54,6 +54,11 @@ const FollowedPage = () => {
                     })
                 )}
             </div>
+            {followedArtist.length > 5 && (
+                <button className={style.button} onClick={() => setShowAll(!showAll)}>
+                    {showAll ? 'Ẩn bớt' : 'Hiện tất cả'}
+                </button>
+            )}
         </div>
     );
     

@@ -12,7 +12,8 @@ interface User {
     is_banned: 0 | 1;
 }
 
-export default function EditUser({ params }: { params: { id: string } }) {
+export default function EditUser({ params }) {
+    const { id } = params;
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [file, setFile] = useState<File | null>(null);
@@ -20,21 +21,18 @@ export default function EditUser({ params }: { params: { id: string } }) {
     const [message, setMessage] = useState<string>("");
 
     useEffect(() => {
-        setLoading(true);  // Đặt lại loading khi thay đổi ID
-        setUser(null);     // Đặt lại user trước khi lấy dữ liệu mới
-        if (params.id) {console.log(params.id);
+        
+        if (id) {console.log(params.id);
         
             axios
-                .get(`/user/${params.id}`)
-                .then((response: any) => {
+                .get(`/user/${id}`)
+                .then((response:any) => {
                     if (response?.result?.data) {
+                        
                         setUser(response.result.data);
                         setPreviewUrl(response.result.data.url_avatar || null);
-                        console.log(response);
                         
-                    } else {
-                        setUser(null);
-                    }
+                    } 
                 })
                 .catch((error: any) => {
                     console.error("Error fetching user:", error);
@@ -45,7 +43,8 @@ export default function EditUser({ params }: { params: { id: string } }) {
                 });
         }
     }, [params.id]);
-
+    console.log("người dùng:",user);
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         if (user) {
