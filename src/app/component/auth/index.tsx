@@ -1,5 +1,5 @@
 "use client";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "@/lib/axios";
 import styles from "./login.module.scss";
 import { ReactSVG } from "react-svg";
@@ -91,14 +91,14 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
       setErrors((prev) => ({ ...prev, email: "Email là bắt buộc." }));
       isValid = false;
     } else if (!validateEmail(user.email)) {
-      isValid = false; 
+      isValid = false;
     }
 
     if (!user.password) {
       setErrors((prev) => ({ ...prev, password: "Mật khẩu là bắt buộc." }));
       isValid = false;
     } else if (!validatePassword(user.password)) {
-      isValid = false; 
+      isValid = false;
     }
 
     return isValid;
@@ -126,7 +126,7 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
         const { accessToken } = result;
         localStorage.setItem("accessToken", accessToken);
 
-        const profileResponse:any = await axios.get("/profile", {
+        const profileResponse: any = await axios.get("/profile", {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         console.log("Profile Response:", profileResponse);
@@ -156,12 +156,11 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
       console.error("Lỗi khi đăng nhập:", error);
 
       if (error.response) {
-        if(error.response.status===401){
+        if (error.response.status === 401) {
           setErrors((prev) => ({ ...prev, password: "Nhập sai mật khẩu." }));
 
         } if (error.response.status === 404) {
           setErrors((prev) => ({ ...prev, email: "Tên đăng nhập không tồn tại." }));
-          setErrors((prev) => ({ ...prev, password: "Tên đăng nhập không tồn tại." }));
 
         }
       } else {
@@ -171,7 +170,7 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
       setLoading(false);
     }
   };
-  
+
 
 
 
@@ -193,8 +192,7 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
         alert("Đăng ký không thành công.");
       }
     } catch (error: any) {
-      if(error.response.status===409)
-      {
+      if (error.response.status === 409) {
         setErrors((prev) => ({ ...prev, email: "Email đã tồn tại." }));
       }
     } finally {
@@ -301,7 +299,7 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
                       placeholder="Email"
                       value={user.email}
                       onChange={handleChange}
-                      
+
                     />
                     {errors.email && <p className={styles.errorText}>{errors.email}</p>}
                   </div>
@@ -314,7 +312,7 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
                       placeholder="Mật khẩu"
                       value={user.password}
                       onChange={handleChange}
-                      
+
                     />
                     {errors.password && <p className={styles.errorText}>{errors.password}</p>}
                   </div>
@@ -361,8 +359,8 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
                   name="email"
                   placeholder="Email hoặc tên người dùng"
                 />
-                </div>
-                {errors.email && <p className={styles.errorText}>{errors.email}</p>}
+              </div>
+              {errors.email && <p className={styles.errorText}>{errors.email}</p>}
               <button type="submit" className={styles.loginBtn}>
                 Tìm tài khoản
               </button>
