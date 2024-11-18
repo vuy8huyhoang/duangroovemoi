@@ -22,7 +22,7 @@ interface Music {
   }[];
   url_path: string;
   artists: any[]
-  views: number;
+  view: number;
 }
 
 export default function GrooveChartPage() {
@@ -69,7 +69,7 @@ export default function GrooveChartPage() {
       <h1 className={styles.title}>BẢNG XẾP HẠNG</h1>
       <div className={styles.musicList}>
         {musicData
-          .sort((a, b) => b.views - a.views)
+          .sort((a, b) => b.view - a.view)
           .map((music, index) => (
             <div
               key={music.id_music}
@@ -121,6 +121,7 @@ export default function GrooveChartPage() {
               <div className={styles.Titles}>
                 <h5 className={styles.musicName}>{music.name}</h5>
                 <p className={styles.musicArtist}>{music.composer}</p>
+                <p className={styles.musicViews}>{music.view}</p>
               </div>
               <div className={styles.songControls}>
                 <i className="fas fa-heart"></i>

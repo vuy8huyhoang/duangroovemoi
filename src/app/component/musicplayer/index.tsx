@@ -26,8 +26,6 @@ export const addMusicToTheFirst = (
   composer: string,
   artists: { id_artist: string; name: string }[]
 ) => {
-  localStorage.removeItem("currentPlaylist");
-  console.log(state.currentPlaylist);
   dispatch({ type: "IS_PLAYING", payload: true });
   dispatch({
     type: "CURRENT_PLAYLIST",
