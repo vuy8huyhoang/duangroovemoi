@@ -42,7 +42,7 @@ export const addMusicToTheFirst = (
           return { artist };
         }),
       },
-      ...state.currentPlaylist,
+      ...state.currentPlaylist.filter((song) => song.id_music !== id_music),
     ],
   });
 };
@@ -63,7 +63,7 @@ export const addMusicToTheEnd = (
   dispatch({
     type: "CURRENT_PLAYLIST",
     payload: [
-      ...state.currentPlaylist,
+      ...state.currentPlaylist.filter((song) => song.id_music !== id_music),
       {
         id_music,
         name,
