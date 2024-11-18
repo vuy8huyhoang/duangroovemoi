@@ -78,6 +78,21 @@ export const addMusicToTheEnd = (
   });
 };
 
+export const addListMusicToTheFirst = (state, dispatch, list) => {
+  localStorage.removeItem("currentPlaylist");
+  console.log(state.currentPlaylist);
+  dispatch({ type: "IS_PLAYING", payload: true });
+  dispatch({
+    type: "CURRENT_PLAYLIST",
+    payload: [
+      ...list,
+      ...state.currentPlaylist.filter((song) =>
+        list.map((music) => music.id_music).includes(song.id_music)
+      ),
+    ],
+  });
+};
+
 const MusicPlayer: React.FC = () => {
   const { state, dispatch } = useContext(AppContext);
   const [music, setMusic] = useState<Music>(state.currentPlaylist[0]);
