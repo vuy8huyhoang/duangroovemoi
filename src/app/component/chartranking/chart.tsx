@@ -78,7 +78,7 @@ export default function RankingChart() {
         ],
     };
 
-    const options = {
+    const options :any = {
         responsive: true,
         plugins: {
             legend: {
