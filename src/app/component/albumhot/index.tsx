@@ -6,7 +6,7 @@ import { ReactSVG } from 'react-svg';
 import Link from 'next/link';
 
 interface Album {
-    id_album: string;
+    id_album: number;
     name: string;
     url_cover: string;
 }
@@ -14,6 +14,7 @@ interface Album {
 
 export default function AlbumHot() {
     const [albumData, setAlbumData] = useState<Album[]>([]);
+    const [favoriteAlbum, setFavoriteAlbum] = useState<Set<number>>(new Set());
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -34,6 +35,37 @@ export default function AlbumHot() {
             })  ;
     }, []);
 
+    const toggleFavorite = async (id_album: number) => {
+        const isFavorite = favoriteAlbum.has(id_album);
+        setFavoriteAlbum((prev) => {
+            const updated = new Set(prev);
+            if (isFavorite) {
+                updated.delete(id_album);
+            } else {
+                updated.add(id_album);
+            }
+            return updated;
+        });
+        const isLoggedIn = localStorage.getItem('accessToken'); // Thay đổi theo cách bạn lưu token
+        if (!isLoggedIn) {
+            alert('Vui lòng đăng nhập để yêu thích bài hát!');
+            // router.push('/home');  // Chuyển hướng đến trang đăng nhập
+            return;
+        }
+    
+        try {
+            console.log(isFavorite ? "Xóa album khỏi yêu thích" : "Thêm album vào yêu thích");
+            if (isFavorite) {
+                await axios.delete(`/favorite-album/me`, { data: { id_album } });
+            } else {
+                await axios.post(`/favorite-album/me`, { id_album, favorite: true });
+            }
+        } catch (error) {
+            console.error('Lỗi khi cập nhật trạng thái yêu thích:', error);
+            // Thông báo lỗi cho người dùng nếu cần
+        }
+    };
+
     return (
         <>
             <div className={style.headerSection}>
@@ -53,9 +85,9 @@ export default function AlbumHot() {
                             <div className={style.albumWrapper}>
                                 <img src={album.url_cover} alt={album.name} className={style.albumCover} />
                                 <div className={style.overlay}>
-                                    <button className={style.likeButton}>
-                                        <ReactSVG src="/heart.svg" />
-                                    </button>
+                                <button className={style.likeButton} onClick={() => toggleFavorite(album.id_album)}>
+                                    <ReactSVG src="/heart.svg" className={favoriteAlbum.has(album.id_album) ? style.activeHeart : ''} />
+                                </button>
                                     <button className={style.playButton}>
                                         <ReactSVG src="/play.svg" />
                                     </button>
