@@ -1,9 +1,11 @@
+"use client"
 import React, { useState, useEffect, useRef } from 'react';
 import axios from '@/lib/axios';
 import style from './listmusic.module.scss';
 import { ReactSVG } from 'react-svg';
 import Link from 'next/link';
 import PlaylistPage from '../../playlist/page';
+import { useRouter } from 'next/navigation';
 
 interface Mussic {
     id_music: number;
@@ -45,6 +47,7 @@ const ListMusic: React.FC = () => {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    const router = useRouter();
     
       
 
@@ -89,9 +92,20 @@ const ListMusic: React.FC = () => {
         const isFavorite = favoriteMusic.has(id_music);
         setFavoriteMusic((prev) => {
             const updated = new Set(prev);
-            isFavorite ? updated.delete(id_music) : updated.add(id_music);
+            if(isFavorite){
+                updated.delete(id_music); 
+            }else {
+                updated.add(id_music);
+            }
             return updated;
         });
+
+        const isLoggedIn = localStorage.getItem('accessToken'); // Thay đổi theo cách bạn lưu token
+        if (!isLoggedIn) {
+            alert('Vui lòng đăng nhập để yêu thích bài hát!');
+            // router.push('/home');  // Chuyển hướng đến trang đăng nhập
+            return;
+        }
 
         try {
             if (isFavorite) {
