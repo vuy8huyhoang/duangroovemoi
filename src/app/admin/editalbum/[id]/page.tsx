@@ -96,11 +96,21 @@ export default function EditAlbum({ params }: { params: { id: string } }) {
   if (!album) return <p>Không tìm thấy album.</p>;
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-        setFile(e.target.files[0]);
-        const fileUrl = URL.createObjectURL(e.target.files[0]);
-        setPreviewUrl(fileUrl);
+      const selectedFile = e.target.files[0];
+  
+      // Kiểm tra xem tệp có phải là hình ảnh không
+      const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
+      if (!validImageTypes.includes(selectedFile.type)) {
+        alert("Vui lòng tải lên một tệp hình ảnh hợp lệ (JPEG, PNG, GIF).");
+        return;
+      }
+  
+      setFile(selectedFile);
+      const fileUrl = URL.createObjectURL(selectedFile);
+      setPreviewUrl(fileUrl);
     }
-};
+  };
+  
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -145,40 +155,84 @@ export default function EditAlbum({ params }: { params: { id: string } }) {
     }
 };
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    const slug = album?.name.toLowerCase().replace(/\s+/g, "-");
-    const albumData = {
-      name: album?.name,
-      url_cover: album?.url_cover,
-      release_date: album?.release_date ? album.release_date : undefined,
-      last_update: new Date().toISOString(),
-      musics: musics.filter((music) => selectedSongs.includes(music.id_music)),
-      artists: album?.artists || [],
-    };
+const handleSubmit = async () => {
+  if (!album) {
+    alert("Dữ liệu album không hợp lệ.");
+    return;
+  }
+  
+  if (!album.name.trim()) {
+    alert("Tên album không được để trống.");
+    return;
+  }
 
-    console.log("Data being sent:", albumData);
+  if (!album.release_date) {
+    alert("Ngày phát hành không được để trống.");
+    return;
+  }
 
-    try {
-      const response = await axios.patch(`/album/${params.id}`, albumData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+  if (album.artists.length === 0) {
+    alert("Vui lòng chọn ít nhất một nghệ sĩ.");
+    return;
+  }
+
+  if (selectedSongs.length === 0) {
+    alert("Vui lòng chọn ít nhất một bài hát.");
+    return;
+  }
+
+  if (!file && !album.url_cover) {
+    alert("Vui lòng tải lên ảnh bìa.");
+    return;
+  }
+
+  setLoading(true);
+
+  const slug = album.name.toLowerCase().replace(/\s+/g, "-");
+  const albumData: any = {
+    ...album,
+    slug,
+    musics: selectedSongs.map((id) => ({ id_music: id })),
+    last_update: new Date().toISOString(),
+  };
+
+  try {
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const uploadResponse: any = await axios.post("/upload-image", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
-      if (response.status === 200 || response.status === 204) {
-        alert("Album đã được cập nhật thành công!");
-        window.location.href = "/admin/adminalbum";
+      if (uploadResponse?.result?.url) {
+        albumData.url_cover = uploadResponse.result.url;
       } else {
-        alert("Cập nhật album không thành công.");
+        alert("Lỗi tải lên ảnh bìa.");
+        return;
       }
-    } catch (error: any) {
-      console.error("Error updating album data:", error);
-      alert("Đã xảy ra lỗi khi cập nhật dữ liệu.");
-    } finally {
-      setLoading(false);
     }
-  };
+
+    const response = await axios.patch(`/album/${params.id}`, albumData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.status === 200 || response.status === 204) {
+      alert("Album đã được cập nhật thành công!");
+      window.location.href = "/admin/adminalbum";
+    } else {
+      alert("Cập nhật album không thành công.");
+    }
+  } catch (error) {
+    console.error("Error updating album data:", error);
+    alert("Đã xảy ra lỗi khi cập nhật dữ liệu.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleMusicSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedMusics = Array.from(

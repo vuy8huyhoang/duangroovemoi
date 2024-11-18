@@ -112,11 +112,21 @@ export default function AddAlbum() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-      const fileUrl = URL.createObjectURL(e.target.files[0]);
+      const selectedFile = e.target.files[0];
+  
+      // Kiểm tra xem tệp có phải là hình ảnh không
+      const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
+      if (!validImageTypes.includes(selectedFile.type)) {
+        alert("Vui lòng tải lên một tệp hình ảnh hợp lệ (JPEG, PNG, GIF).");
+        return;
+      }
+  
+      setFile(selectedFile);
+      const fileUrl = URL.createObjectURL(selectedFile);
       setPreviewUrl(fileUrl);
     }
   };
+  
 
   const handleVisibilityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
@@ -124,39 +134,60 @@ export default function AddAlbum() {
   };
 
   const handleSubmit = async () => {
-    if (album.musics.length === 0) {
-      alert("Vui lòng thêm ít nhất một bài hát trước khi thêm album.");
+    // Kiểm tra lỗi các trường
+    if (!album.name.trim()) {
+      alert("Tên album không được để trống.");
       return;
     }
-
+    if (!album.release_date) {
+      alert("Ngày phát hành không được để trống.");
+      return;
+    }
+    if (album.artists.length === 0) {
+      alert("Vui lòng chọn ít nhất một nghệ sĩ.");
+      return;
+    }
+    if (album.musics.length === 0) {
+      alert("Vui lòng chọn ít nhất một bài hát.");
+      return;
+    }
+    if (!file) {
+      alert("Vui lòng tải lên ảnh bìa.");
+      return;
+    }
+  
     setLoading(true);
+  
     const slug = album.name.toLowerCase().replace(/\s+/g, "-");
     const albumData: any = { ...album, slug };
-
+  
     try {
-      if (file) {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        console.log("Đang tải lên ảnh bìa...");
-        const uploadResponse: any = await axios.post("/upload-image", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        albumData.url_cover = uploadResponse?.result?.url || "";
-      }
-
-      albumData.musics = albumData.musics.map((music: any) => {
-        return { id_music: music.id_music };
+      // Tải lên ảnh bìa
+      const formData = new FormData();
+      formData.append("file", file);
+  
+      const uploadResponse: any = await axios.post("/upload-image", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
+  
+      if (uploadResponse?.result?.url) {
+        albumData.url_cover = uploadResponse.result.url;
+      } else {
+        alert("Lỗi tải lên ảnh bìa.");
+        return;
+      }
+  
+      albumData.musics = albumData.musics.map((music: any) => ({
+        id_music: music.id_music,
+      }));
       albumData.id_artist = album.artists[0];
       delete albumData.artists;
       delete albumData.id_album;
-
+  
       const response = await axios.post("/album", albumData, {
         headers: { "Content-Type": "application/json" },
       });
-
+  
       if (response.status === 200 || response.status === 201) {
         alert("Album đã được thêm thành công!");
         window.location.href = "/admin/adminalbum";
@@ -170,7 +201,7 @@ export default function AddAlbum() {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className={styles.container}>
       <h2>Thêm mới album</h2>
