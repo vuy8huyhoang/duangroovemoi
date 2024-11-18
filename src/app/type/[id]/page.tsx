@@ -1,8 +1,10 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "@/lib/axios";
 import styles from "./ct.module.scss";
 import TypeCmt from "../../component/typecmt";
+import { addMusicToTheFirst } from "@/app/component/musicplayer";
+import { AppContext } from "@/app/layout";
 
 interface Music {
   id_music: number;
@@ -13,6 +15,7 @@ interface Music {
   genre: string;
   release: string;
   composer: string;
+  artists: any[];
 }
 
 const TypeDetailPage = ({ params }) => {
@@ -22,6 +25,8 @@ const TypeDetailPage = ({ params }) => {
   const [error, setError] = useState<string | null>(null);
   const [currentSong, setCurrentSong] = useState<Music | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const { state, dispatch } = useContext(AppContext);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const fetchMusicList = async () => {
@@ -85,9 +90,28 @@ const TypeDetailPage = ({ params }) => {
                   <div className={styles.overlay}>
                     <button
                       className={styles.playButton}
-                      onClick={() => handlePlayPause(music)}
+                      onClick={() => {
+                        addMusicToTheFirst(
+                          state,
+                          dispatch,
+                          music.id_music as any,
+                          music.name,
+                          music.url_path,
+                          music.url_cover,
+                          music.composer,
+                          music.artists.map(artist => artist.artist)
+                        )
+                        if (music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                          dispatch({
+                            type: "IS_PLAYING",
+                            payload: false
+                          })
+                            ;
+                        }
+                      }
+                      }
                     >
-                      {currentSong?.id_music === music.id_music && isPlaying ? (
+                      {music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
                         <i className="fas fa-pause"></i>
                       ) : (
                         <i className="fas fa-play"></i>

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import styles from "./chart.module.scss";
 import {
     Chart as ChartJS,
@@ -28,11 +29,22 @@ interface ChartData {
     day: string;
     view: number;
 }
+interface RankingData {
+    view: number;
+    favorite: number;
+    id_music: string;
+    name: string;
+    slug: string;
+}
 
 export default function Chart() {
     const [charts, setCharts] = useState<ChartData[]>([]);
     const [loading, setLoading] = useState(true);
+    const [rankingData, setRankingData] = useState<any[]>([]); 
+    const songLabels = rankingData.map(item => item.name); 
+    const viewsData = rankingData.map(item => item.view);
 
+   
     useEffect(() => {
         axios.get("/chart")
             .then((response: any) => {
@@ -46,6 +58,24 @@ export default function Chart() {
             })
             .catch((error: any) => {
                 console.error('Lỗi khi lấy dữ liệu chart', error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []);
+    useEffect(() => {
+        axios.get("/ranking?duration=month&limit=10")
+            .then((response: any) => {
+                console.log("Dữ liệu của ranking", response);
+
+                if (response?.result?.data) {
+                    setRankingData(response.result.data);
+                } else {
+                    console.error('Dữ liệu phản hồi không xác định hoặc null', response);
+                }
+            })
+            .catch((error: any) => {
+                console.error('Lỗi khi lấy dữ liệu ranking', error);
             })
             .finally(() => {
                 setLoading(false);

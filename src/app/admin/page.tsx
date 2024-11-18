@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./admin.module.scss";
 import axios from "@/lib/axios";
 import Chart from "../component/chart/chart";
+import ChartRanking from "../component/chartranking/chart";
 
 export default function AdminDashboard() {
     const [album, setAlbum] = useState<number>(0);
@@ -183,8 +184,11 @@ export default function AdminDashboard() {
                 </div>
             </div>
             <div className={styles.notificationSidebar}>
-                <h3 className={styles.sidebarTitle}>Biểu đồ</h3>
-                <Chart/>
+                <h3 className={styles.sidebarTitle}>Biểu đồ lượt xem trong 30 ngày</h3>
+                <Chart />
+                <h3 className={styles.sidebarTitle}>Biểu đồ top 5 bài hát nhiều lượt xem nhất</h3>
+
+                <ChartRanking/>
             </div>
 
         </div>
