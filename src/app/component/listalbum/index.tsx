@@ -1,7 +1,6 @@
-
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import axios from '@/lib/axios';
-import style from './listalbum.module.scss'; // Import file CSS module
+import style from './listalbum.module.scss';
 import { ReactSVG } from 'react-svg';
 import Link from 'next/link';
 
@@ -9,12 +8,20 @@ interface Album {
     id_album: string;
     name: string;
     url_cover: string;
+    musics: {
+        id_music: string;
+        name: string;
+        url_path: string;
+        composer: string;
+    }[];
 }
-
 
 export default function ListAlbum() {
     const [albumData, setAlbumData] = useState<Album[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+    const [currentSong, setCurrentSong] = useState<any>(null);
 
     useEffect(() => {
         axios.get("/album")
@@ -31,8 +38,40 @@ export default function ListAlbum() {
             })
             .finally(() => {
                 setLoading(false); 
-            })  ;
+            });
     }, []);
+
+    const handlePlayRandomClick = () => {
+        if (isPlaying) {
+            pausePlaying(); // Pause if currently playing
+        } else {
+            continuePlaying(); // Continue playing if paused
+        }
+    };
+
+    const continuePlaying = () => {
+        if (albumData.length > 0) {
+            const randomAlbumIndex = Math.floor(Math.random() * albumData.length);
+            const randomAlbum = albumData[randomAlbumIndex];
+            if (randomAlbum.musics.length > 0) {
+                const randomIndex = Math.floor(Math.random() * randomAlbum.musics.length);
+                const randomSong = randomAlbum.musics[randomIndex];
+                setCurrentSong(randomSong);
+                audioRef.current.src = randomSong.url_path; // Set audio source
+                audioRef.current.play(); // Play the song
+                setIsPlaying(true);
+            } else {
+                console.log('No songs available to play.');
+            }
+        } else {
+            console.log('No albums available to play.');
+        }
+    };
+
+    const pausePlaying = () => {
+        audioRef.current?.pause();
+        setIsPlaying(false);
+    };
 
     return (
         <>
@@ -56,22 +95,21 @@ export default function ListAlbum() {
                                     <button className={style.likeButton}>
                                         <ReactSVG src="/heart.svg" />
                                     </button>
-                                    <button className={style.playButton}>
-                                        <ReactSVG src="/play.svg" />
+                                    <button className={style.playButton} onClick={handlePlayRandomClick}>
+                                        {isPlaying ? <ReactSVG src="/pause.svg" /> : <ReactSVG src="/play.svg" />}
                                     </button>
-
                                     <button className={style.moreButton}>
                                         <ReactSVG src="/more.svg" />
                                     </button>
                                 </div>
                             </div>
-                           
                             <Link href={`/albumdetail/${album.id_album}`} className={style.albumTitle}>
                                 {album.name}
                             </Link>
                         </div>
                     ))
                 )}
+                <audio ref={audioRef} />
             </div>
         </>
     );

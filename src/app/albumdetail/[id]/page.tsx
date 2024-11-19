@@ -7,7 +7,7 @@ import MusicPartner from '@/app/component/musicpartner';
 import clsx from 'clsx';
 import { addListMusicToTheFirst, addMusicToTheEnd, addMusicToTheFirst } from '@/app/component/musicplayer';
 import { AppContext } from '@/app/layout';
-import { log } from 'console';
+
 
 interface Artist {
     id_artist: string;
