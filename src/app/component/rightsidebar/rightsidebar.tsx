@@ -25,7 +25,6 @@ export default function RightSidebar() {
                         <div className={styles.title}>{playlist[0].title}</div>
                         <div className={styles.artist}>{playlist[0].artist}</div>
                     </div>
-                    <div className={styles.starIcon}>★</div>
             </div>
             <div className={styles.list}>
                 <div className={styles.titleSection}>Tiếp theo</div>
@@ -38,7 +37,6 @@ export default function RightSidebar() {
                             <div className={styles.title}>{song.title}</div>
                             <div className={styles.artist}>{song.artist}</div>
                         </div>
-                        <div className={styles.starIcon}>★</div>
                     </div>
                 ))}
             </div>
