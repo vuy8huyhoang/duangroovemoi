@@ -9,7 +9,7 @@ import MusicPlayer from "./component/musicplayer";
 import { createContext, useReducer } from "react";
 import { initialState, reducer } from "./global";
 import ProtectRoute from "./ProtectRoute";
-// import useAuthGuard from './admin/authguard/authguard';
+import RightSidebar from "./component/rightsidebar/rightsidebar";
 
 export const AppContext = createContext<any>(undefined);
 
@@ -45,6 +45,8 @@ export default function Layout({ children }: any) {
               <Sidebar />
               <Header />
               <MusicPlayer />
+              <RightSidebar />
+
               <div className="contain">{children}</div>
             </div>
           ) : (
