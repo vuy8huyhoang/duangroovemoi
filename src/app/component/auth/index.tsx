@@ -121,11 +121,13 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
 
       const data = response?.data || response;
       const result = data.result || {};
-
+      
       if (result.accessToken) {
         const { accessToken } = result;
+        if (typeof window !== "undefined") {
+       
         localStorage.setItem("accessToken", accessToken);
-
+        }
         const profileResponse: any = await axios.get("/profile", {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
@@ -134,7 +136,10 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
         const fetchedProfileData = profileResponse?.result?.data;
         if (fetchedProfileData) {
           setProfileData(fetchedProfileData);
-          localStorage.setItem("profileData", JSON.stringify(fetchedProfileData));
+          if (typeof window !== "undefined") {
+
+            localStorage.setItem("profileData", JSON.stringify(fetchedProfileData));
+          }
           console.log("Profile Data Set:", fetchedProfileData);
           alert("Đăng nhập thành công!");
           closePopup();

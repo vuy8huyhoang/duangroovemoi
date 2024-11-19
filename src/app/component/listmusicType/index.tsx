@@ -109,7 +109,7 @@ const ListMusic: React.FC = () => {
                       album.composer,
                       album.artists.map(artist => artist.artist)
                     )
-                    if (album.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                    if (album.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying) {
                       dispatch({
                         type: "IS_PLAYING",
                         payload: false
@@ -119,7 +119,7 @@ const ListMusic: React.FC = () => {
                   }
                   }
                 >
-                  {album.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                  {album.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
                     <i className="fas fa-pause"></i>
                   ) : (
                     <i className="fas fa-play"></i>

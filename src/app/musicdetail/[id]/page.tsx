@@ -177,7 +177,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
                   musicdetail.composer,
                   musicdetail.artists.map(artist => artist.artist)
                 )
-                if (musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                if (musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying) {
                   dispatch({
                     type: "IS_PLAYING",
                     payload: false
@@ -187,7 +187,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
               }
               }
             >
-              {musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+              {musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
                 "Dừng nhạc"
               ) : (
                 "Phát nhạc"
@@ -235,7 +235,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
                       musicdetail.composer,
                       musicdetail.artists.map(artist => artist.artist)
                     )
-                    if (musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                    if (musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying) {
                       dispatch({
                         type: "IS_PLAYING",
                         payload: false
@@ -245,7 +245,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
                   }
                   }
                 >
-                  {musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                  {musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
                     <i className="fas fa-pause"></i>
                   ) : (
                     <i className="fas fa-play"></i>
