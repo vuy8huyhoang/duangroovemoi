@@ -1,14 +1,27 @@
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from '@/lib/axios';
 import style from './albumhot.module.scss'; // Import file CSS module
 import { ReactSVG } from 'react-svg';
 import Link from 'next/link';
-
+import { addListMusicToTheFirst } from '../musicplayer';
+import { AppContext } from '@/app/layout';
 interface Album {
     id_album: number;
     name: string;
     url_cover: string;
+    musics: {
+        id_music: string;
+        name: string;
+        url_path: string;
+        url_cover: string;
+        composer: string;
+        artists: { 
+            id_artist:string;
+            name: string;
+
+         }[];
+    }[];
 }
 
 
@@ -16,7 +29,7 @@ export default function AlbumHot() {
     const [albumData, setAlbumData] = useState<Album[]>([]);
     const [favoriteAlbum, setFavoriteAlbum] = useState<Set<number>>(new Set());
     const [loading, setLoading] = useState(true);
-
+    const { state, dispatch } = useContext(AppContext);
     useEffect(() => {
         axios.get("/album")
             .then((response: any) => {
@@ -92,9 +105,56 @@ export default function AlbumHot() {
                                 <button className={style.likeButton} onClick={() => toggleFavorite(album.id_album)}>
                                     <ReactSVG src="/heart.svg" className={favoriteAlbum.has(album.id_album) ? style.activeHeart : ''} />
                                 </button>
-                                    <button className={style.playButton}>
-                                        <ReactSVG src="/play.svg" />
-                                    </button>
+                                <button
+                            className={style.playButton}
+                            onClick={() => {
+                                console.log(album, 'chúchsuchscschswkfwhbflwf');
+                                let musicList = [];
+                                album.musics.map(music => {
+                                    musicList.push({
+                                        id_music: music?.id_music,
+                                        name: music?.name,
+                                        url_path: music?.url_path,
+                                        url_cover: music?.url_cover,
+                                        composer: music?.composer,
+                                        artists: Array.isArray(music?.artists) ? music.artists.map((artist) => ({
+                                            id_artist: artist.id_artist,
+                                            name: artist.name
+                                        })) : [],
+                                    },)
+                                })
+                                
+                               addListMusicToTheFirst(state, dispatch, musicList)
+                               
+// albumDetail?.musics.map(music => {
+//     console.log(music);
+//     addMusicToTheFirst(
+//         state,
+//         dispatch,
+//         music?.id_music as any,
+//         music?.name,
+//         music?.url_path,
+//         music?.url_cover,
+//         music?.id_composer?.name,
+//         music?.artists.map(artist => artist.artist),
+//     )
+// })
+                                if (album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                                    dispatch({
+                                        type: "IS_PLAYING",
+                                        payload: false
+                                    })
+                                     ;
+                                }
+                            }
+                            }
+                        >
+                            {album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                                <i className="fas fa-pause"></i>
+                            ) : (
+                                <i className="fas fa-play"></i>
+                            )}
+                        </button>
 
                                     <button className={style.moreButton}>
                                         <ReactSVG src="/more.svg" />

@@ -1,8 +1,10 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import axios from '@/lib/axios';
 import style from './listalbum.module.scss';
 import { ReactSVG } from 'react-svg';
 import Link from 'next/link';
+import { addListMusicToTheFirst } from '../musicplayer';
+import { AppContext } from '@/app/layout';
 
 interface Album {
     id_album: string;
@@ -12,7 +14,13 @@ interface Album {
         id_music: string;
         name: string;
         url_path: string;
+        url_cover: string;
         composer: string;
+        artists: { 
+            id_artist:string;
+            name: string;
+
+         }[];
     }[];
 }
 
@@ -22,6 +30,7 @@ export default function ListAlbum() {
     const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [currentSong, setCurrentSong] = useState<any>(null);
+    const { state, dispatch } = useContext(AppContext);
 
     useEffect(() => {
         axios.get("/album")
@@ -95,9 +104,56 @@ export default function ListAlbum() {
                                     <button className={style.likeButton}>
                                         <ReactSVG src="/heart.svg" />
                                     </button>
-                                    <button className={style.playButton} onClick={handlePlayRandomClick}>
-                                        {isPlaying ? <ReactSVG src="/pause.svg" /> : <ReactSVG src="/play.svg" />}
-                                    </button>
+                                    <button
+                            className={style.playButton}
+                            onClick={() => {
+                                console.log(album, 'chúchsuchscschswkfwhbflwf');
+                                let musicList = [];
+                                album.musics.map(music => {
+                                    musicList.push({
+                                        id_music: music?.id_music,
+                                        name: music?.name,
+                                        url_path: music?.url_path,
+                                        url_cover: music?.url_cover,
+                                        composer: music?.composer,
+                                        artists: Array.isArray(music?.artists) ? music.artists.map((artist) => ({
+                                            id_artist: artist.id_artist,
+                                            name: artist.name
+                                        })) : [],
+                                    },)
+                                })
+                                
+                               addListMusicToTheFirst(state, dispatch, musicList)
+                               
+// albumDetail?.musics.map(music => {
+//     console.log(music);
+//     addMusicToTheFirst(
+//         state,
+//         dispatch,
+//         music?.id_music as any,
+//         music?.name,
+//         music?.url_path,
+//         music?.url_cover,
+//         music?.id_composer?.name,
+//         music?.artists.map(artist => artist.artist),
+//     )
+// })
+                                if (album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                                    dispatch({
+                                        type: "IS_PLAYING",
+                                        payload: false
+                                    })
+                                     ;
+                                }
+                            }
+                            }
+                        >
+                            {album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                                <i className="fas fa-pause"></i>
+                            ) : (
+                                <i className="fas fa-play"></i>
+                            )}
+                        </button>
                                     <button className={style.moreButton}>
                                         <ReactSVG src="/more.svg" />
                                     </button>
