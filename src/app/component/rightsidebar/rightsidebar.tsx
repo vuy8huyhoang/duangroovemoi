@@ -17,7 +17,7 @@ export default function RightSidebar() {
                 <button>Nghe gần đây</button>
                 <button className={styles.moreBtn}>...</button>
             </div>
-            <div className={styles.playing}>
+            <div className={styles.new}>
                     <div className={styles.thumbnail}>
                         <img className={styles.hinh} src={playlist[0].image} alt={playlist[0].title} />
                     </div>
