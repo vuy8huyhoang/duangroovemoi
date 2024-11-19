@@ -11,6 +11,7 @@ import ListMusicTop from "../component/listmusictop";
 import AlbumHot from "../component/albumhot";
 import { addMusicToTheFirst } from "../component/musicplayer";
 import { AppContext } from "../layout";
+import Link from "next/link";
 
 interface Music {
   id_music: string;
@@ -21,8 +22,17 @@ interface Music {
     name: string;
   }[];
   url_path: string;
-  artists: any[]
-  view: number;
+  artists: any[];
+  vỉew: number;
+  artits:{
+    id_artist: string;
+    name: string;
+    url_cover: string;
+    created_at: string;
+    last_update: string;
+    is_show: string;
+    followers: string;
+  }
 }
 
 export default function GrooveChartPage() {
@@ -69,7 +79,7 @@ export default function GrooveChartPage() {
       <h1 className={styles.title}>BẢNG XẾP HẠNG</h1>
       <div className={styles.musicList}>
         {musicData
-          .sort((a, b) => b.view - a.view)
+          .sort((a, b) => b.vỉew - a.vỉew)
           .map((music, index) => (
             <div
               key={music.id_music}
@@ -118,11 +128,17 @@ export default function GrooveChartPage() {
                   </button>
                 </div>
               </div>
+             
               <div className={styles.Titles}>
+                <Link href={`/musicdetail/${music.id_music}`}>
                 <h5 className={styles.musicName}>{music.name}</h5>
+                </Link>
+                
+                
+                <p className={styles.musicViews}>Lượt xem: {music.vỉew}</p> 
                 <p className={styles.musicArtist}>{music.composer}</p>
-                <p className={styles.musicViews}>{music.view}</p>
               </div>
+            
               <div className={styles.songControls}>
                 <i className="fas fa-heart"></i>
               </div>
