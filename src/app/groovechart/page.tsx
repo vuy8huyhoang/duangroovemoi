@@ -100,7 +100,7 @@ export default function GrooveChartPage() {
                         music.composer,
                         music.artists.map(artist => artist.artist)
                       )
-                      if (music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                      if (music.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying) {
                         dispatch({
                           type: "IS_PLAYING",
                           payload: false
@@ -110,7 +110,7 @@ export default function GrooveChartPage() {
                     }
                     }
                   >
-                    {music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                    {music.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
                       <i className="fas fa-pause"></i>
                     ) : (
                       <i className="fas fa-play"></i>

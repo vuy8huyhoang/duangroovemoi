@@ -46,11 +46,15 @@ export default function AlbumHot() {
             }
             return updated;
         });
-        const isLoggedIn = localStorage.getItem('accessToken'); // Thay đổi theo cách bạn lưu token
-        if (!isLoggedIn) {
-            alert('Vui lòng đăng nhập để yêu thích bài hát!');
-            // router.push('/home');  // Chuyển hướng đến trang đăng nhập
-            return;
+
+        if (typeof window !== "undefined") {
+
+            const isLoggedIn = localStorage.getItem('accessToken'); // Thay đổi theo cách bạn lưu token
+            if (!isLoggedIn) {
+                alert('Vui lòng đăng nhập để yêu thích bài hát!');
+                // router.push('/home');  // Chuyển hướng đến trang đăng nhập
+                return;
+            }
         }
     
         try {

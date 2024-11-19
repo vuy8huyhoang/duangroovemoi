@@ -21,23 +21,23 @@ interface Profile {
 }
 const Header: React.FC = () => {
   const { state, dispatch } = useContext(AppContext);
-  const [showLogin, setShowLogin] = useState(state.showLogin);
+  const [showLogin, setShowLogin] = useState(state?.showLogin);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [profileData, setProfileData] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (state.showLogin !== showLogin) {
+    if (state?.showLogin !== showLogin) {
       dispatch({ type: "SHOW_LOGIN", payload: showLogin });
     }
   }, [showLogin]);
 
   useEffect(() => {
-    if (state.showLogin !== showLogin) {
-      setShowLogin(state.showLogin);
+    if (state?.showLogin !== showLogin) {
+      setShowLogin(state?.showLogin);
     }
-  }, [state.showLogin]);
+  }, [state?.showLogin]);
 
   const toggleLoginPopup = () => {
     if (!isLoggedIn) {
@@ -54,19 +54,26 @@ const Header: React.FC = () => {
     setShowDropdown(false);
   };
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("profileData");
+    if (typeof window !== "undefined") {
+
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("profileData");
+    }
     setIsLoggedIn(false);
     setShowDropdown(false);
   };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      setIsLoggedIn(true);
-      setShowLogin(false);
-    } else {
-      setIsLoggedIn(false);
+    if (typeof window !== "undefined") {
+
+      const accessToken = localStorage.getItem("accessToken");
+    
+      if (accessToken) {
+        setIsLoggedIn(true);
+        setShowLogin(false);
+      } else {
+        setIsLoggedIn(false);
+      }
     }
   }, [showLogin]);
   useEffect(() => {

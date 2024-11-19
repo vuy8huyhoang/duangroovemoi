@@ -358,7 +358,7 @@ export default function AlbumDetail({ params }) {
                                                     track.composer,
                                                     track.artists.map(artist => artist.artist)
                                                 )
-                                                if (track.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                                                if (track.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying) {
                                                     dispatch({
                                                         type: "IS_PLAYING",
                                                         payload: false
@@ -368,7 +368,7 @@ export default function AlbumDetail({ params }) {
                                                }
                                             }
                                         >
-                                            {track.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                                            {track.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
                                                 <i className="fas fa-pause"></i>
                                             ) : (
                                                 <i className="fas fa-play"></i>

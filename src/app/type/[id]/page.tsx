@@ -101,7 +101,7 @@ const TypeDetailPage = ({ params }) => {
                           music.composer,
                           music.artists.map(artist => artist.artist)
                         )
-                        if (music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                        if (music.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying) {
                           dispatch({
                             type: "IS_PLAYING",
                             payload: false
@@ -111,7 +111,7 @@ const TypeDetailPage = ({ params }) => {
                       }
                       }
                     >
-                      {music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                      {music.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
                         <i className="fas fa-pause"></i>
                       ) : (
                         <i className="fas fa-play"></i>
