@@ -7,7 +7,7 @@ import MusicPartner from '@/app/component/musicpartner';
 import clsx from 'clsx';
 import { addListMusicToTheFirst, addMusicToTheEnd, addMusicToTheFirst } from '@/app/component/musicplayer';
 import { AppContext } from '@/app/layout';
-import { log } from 'console';
+
 
 interface Artist {
     id_artist: string;
@@ -181,42 +181,42 @@ export default function AlbumDetail({ params }) {
     };
 
 
-    const handlePlayRandomClick = () => {
-        if (isPlaying) {
-            pausePlaying(); // Pause if currently playing
-        } else {
-            continuePlaying(); // Continue playing if paused
-        }
-    };
+    // const handlePlayRandomClick = () => {
+    //     if (isPlaying) {
+    //         pausePlaying(); // Pause if currently playing
+    //     } else {
+    //         continuePlaying(); // Continue playing if paused
+    //     }
+    // };
 
-    const continuePlaying = () => {
-        if (albumDetail && albumDetail.musics.length > 0) {
-            const randomIndex = Math.floor(Math.random() * albumDetail.musics.length);
-            const randomSong = albumDetail.musics[randomIndex];
-            setCurrentSong(randomSong);
-            setIsPlaying(true);
-        } else {
-            console.log('No songs available to play.');
-        }
-    };
+    // const continuePlaying = () => {
+    //     if (albumDetail && albumDetail.musics.length > 0) {
+    //         const randomIndex = Math.floor(Math.random() * albumDetail.musics.length);
+    //         const randomSong = albumDetail.musics[randomIndex];
+    //         setCurrentSong(randomSong);
+    //         setIsPlaying(true);
+    //     } else {
+    //         console.log('No songs available to play.');
+    //     }
+    // };
 
-    const pausePlaying = () => {
-        audioRef.current?.pause();
-        setIsPlaying(false);
-    };
-    const playSong = (music: Music) => {
-        if (audioRef.current) {
-            if (currentSong?.id_music === music.id_music && isPlaying) {
-                audioRef.current.pause();
-                setIsPlaying(false);
-            } else {
-                setCurrentSong(music);
-                audioRef.current.src = music.url_path;
-                audioRef.current.play();
-                setIsPlaying(true);
-            }
-        }
-    };
+    // const pausePlaying = () => {
+    //     audioRef.current?.pause();
+    //     setIsPlaying(false);
+    // };
+    // const playSong = (music: Music) => {
+    //     if (audioRef.current) {
+    //         if (currentSong?.id_music === music.id_music && isPlaying) {
+    //             audioRef.current.pause();
+    //             setIsPlaying(false);
+    //         } else {
+    //             setCurrentSong(music);
+    //             audioRef.current.src = music.url_path;
+    //             audioRef.current.play();
+    //             setIsPlaying(true);
+    //         }
+    //     }
+    // };
     // const handlePlayPause = useCallback((album: Music) => {
     //     if (currentSong?.id_music === album.id_music && isPlaying) {
     //         audioRef.current?.pause();
@@ -247,12 +247,16 @@ export default function AlbumDetail({ params }) {
                     <p>Ngày phát hành: {albumDetail.release_date ? albumDetail.release_date : 'Chưa có thông tin'}</p>
                     <p>Nghệ sĩ: {albumDetail.artist.name}</p>
                     <div className={style.buttonGroup}>
-                        <button className={style.playButton} onClick={handlePlayRandomClick}>
+                        {/* <button className={style.playButton} onClick={handlePlayRandomClick}>
                               {isPlaying ? 'Tạm Dừng' : 'Phát Ngẫu Nhiên'}
-                          </button>
-                        {/* <button
+                          </button> */}
+                          {/* <button onClick={()=>{dispatch({type:'CURRENT_PLAYLIST',payload:[]})}}>Xóa</button>
+                          <button onClick={()=>{console.log(state.currentPlaylist);
+                          }}>log</button> */}
+                        <button
                             className={style.playButton}
                             onClick={() => {
+                                
                                 console.log(albumDetail, 'chúchsuchscschswkfwhbflwf');
                                 let musicList = [];
                                 albumDetail.musics.map(music => {
@@ -270,35 +274,36 @@ export default function AlbumDetail({ params }) {
                                 
                                addListMusicToTheFirst(state,dispatch,musicList)
                                
-                                // albumDetail?.musics.map(music => {
-                                //     console.log(music);
-                                //     addMusicToTheFirst(
-                                //         state,
-                                //         dispatch,
-                                //         music?.id_music as any,
-                                //         music?.name,
-                                //         music?.url_path,
-                                //         music?.url_cover,
-                                //         music?.id_composer?.name,
-                                //         music?.artists.map(artist => artist.artist),
-                                //     )
-                                // })
-                                // if (albumDetail.music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
-                                //     dispatch({
-                                //         type: "IS_PLAYING",
-                                //         payload: false
-                                //     })
-                                //      ;
-                                // }
+// albumDetail?.musics.map(music => {
+//     console.log(music);
+//     addMusicToTheFirst(
+//         state,
+//         dispatch,
+//         music?.id_music as any,
+//         music?.name,
+//         music?.url_path,
+//         music?.url_cover,
+//         music?.id_composer?.name,
+//         music?.artists.map(artist => artist.artist),
+//     )
+// })
+                                if (albumDetail.music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                                    dispatch({
+                                        type: "IS_PLAYING",
+                                        payload: false
+                                    })
+                                     ;
+                                }
                             }
                             }
                         >
-                            {albumDetail.music?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                            {/* {albumDetail.music?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
                                 <i className="fas fa-pause"></i>
                             ) : (
                                 <i className="fas fa-play"></i>
-                            )}
-                        </button> */}
+                            )} */}
+                             {isPlaying ? 'Dừng' : 'Phát Nhạc'}
+                        </button>
                         {
                             isFollowed ? <button
                                 className={style.followButton}
@@ -345,7 +350,7 @@ export default function AlbumDetail({ params }) {
                                                     <i className={`fas ${currentSong?.id_music === albumDetail.id_album && isPlaying ? 'fa-pause' : 'fa-play'}`}></i>
                                                 </button> */}
                                                 <button
-                                            className={style.playButton}
+                                            className={style.playButton1}
                                             onClick={() =>
                                             {
                                                 addMusicToTheFirst(

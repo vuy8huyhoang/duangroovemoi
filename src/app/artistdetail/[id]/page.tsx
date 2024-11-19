@@ -99,10 +99,10 @@ const handleFollowClick = (id_artist) => {
         axios.get("follow/me")
             .then((response: any) => {
                 console.log(response.result.data, artist)
-                console.log(response.result.data.map(i => (i.id_artist)).includes(artist.id_artist));
+                console.log(response.result.data.map(i => (i.id_artist)).includes(artist?.id_artist));
 
                 if (response && response.result.data) {
-                    if (response.result.data.map(i => (i.id_artist)).includes(artist.id_artist)) {
+                    if (response.result.data.map(i => (i.id_artist)).includes(artist?.id_artist)) {
                         setIsFollowed(true);
                     }
 

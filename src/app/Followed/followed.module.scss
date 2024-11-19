@@ -21,6 +21,7 @@
     margin: 30px;
     transition: transform 0.2s; 
     width: 150px; 
+    
 }
 .artistItem:hover {
     transform: scale(1.05);
@@ -29,7 +30,10 @@
 .artistFollow img {
     width: 100%;
     border-radius: 50%;
-    height: 80%;
+    height: 65%;
+        position: relative;
+    width: 150px; /* Adjust size as needed */
+    height: 150px;
 }
 
     .artistItem p {
