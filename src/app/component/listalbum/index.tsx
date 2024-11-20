@@ -16,6 +16,7 @@ interface Album {
         url_path: string;
         url_cover: string;
         composer: string;
+        id_composer: any;
         artists: { 
             id_artist:string;
             name: string;
@@ -115,7 +116,7 @@ export default function ListAlbum() {
                                         name: music?.name,
                                         url_path: music?.url_path,
                                         url_cover: music?.url_cover,
-                                        composer: music?.composer,
+                                        composer: music?.id_composer.name,
                                         artists: Array.isArray(music?.artists) ? music.artists.map((artist) => ({
                                             id_artist: artist.id_artist,
                                             name: artist.name
