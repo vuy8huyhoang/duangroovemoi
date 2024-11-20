@@ -134,7 +134,7 @@ export default function AlbumHot() {
                                                     name: music?.name,
                                                     url_path: music?.url_path,
                                                     url_cover: music?.url_cover,
-                                                    composer: music?.id_composer.name,
+                                                    composer: music?.id_composer?.name,
                                                     artists: Array.isArray(music?.artists) ? music.artists.map((artist) => {
                                                         return {
                                                             artist: {
