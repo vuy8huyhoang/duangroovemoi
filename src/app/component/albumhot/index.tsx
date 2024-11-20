@@ -18,11 +18,13 @@ interface Album {
         url_path: string;
         url_cover: string;
         composer: string;
-        artists: { 
-            id_artist:string;
-            name: string;
-
-         }[];
+        id_composer: any;
+        artists: {
+            artist: {
+                id_artist: string;
+                name: string;
+            }
+        }[];
     }[];
 }
 interface MusicHistory {
@@ -133,44 +135,58 @@ export default function AlbumHot() {
                                 <button className={style.likeButton} onClick={() => toggleFavorite(album.id_album)}>
                                     <ReactSVG src="/heart.svg" className={favoriteAlbum.has(album.id_album) ? style.activeHeart : ''} />
                                 </button>
-                                <button
-    className={style.playButton}
-    onClick={async () => {
-        // Tạo danh sách bài hát từ album
-        let musicList = album.musics.map(music => ({
-            id_music: music?.id_music,
-            name: music?.name,
-            url_path: music?.url_path,
-            url_cover: music?.url_cover,
-            composer: music?.composer,
-            artists: Array.isArray(music?.artists) ? music.artists.map((artist) => ({
-                id_artist: artist.id_artist,
-                name: artist.name
-            })) : [],
-        }));
+                                    <button
+                                        className={style.playButton}
+                                        onClick={() => {
+                                            console.log(album, 'chúchsuchscschswkfwhbflwf');
+                                            let musicList = [];
+                                            album.musics.map(music => {
+                                                musicList.push({
+                                                    id_music: music?.id_music,
+                                                    name: music?.name,
+                                                    url_path: music?.url_path,
+                                                    url_cover: music?.url_cover,
+                                                    composer: music?.id_composer.name,
+                                                    artists: Array.isArray(music?.artists) ? music.artists.map((artist) => {
+                                                        return {
+                                                            artist: {
+                                                                id_artist: artist.artist.id_artist,
+                                                                name: artist.artist.name
+                                                            }
+                                                        }
+                                                    }) : [],
+                                                },)
+                                            })
 
-        // Thêm bài hát vào playlist và phát nhạc
-        addListMusicToTheFirst(state, dispatch, musicList);
+                                            addListMusicToTheFirst(state, dispatch, musicList)
 
-        // Lưu bài hát vào lịch sử nghe nhạc
-        // Giả sử play_duration = 100 giây (có thể thay đổi theo yêu cầu)
-        await addMusicToHistory(album.musics[0]?.id_music.toString(), 100);
+                                            // albumDetail?.musics.map(music => {
+                                            //     console.log(music);
+                                            //     addMusicToTheFirst(
+                                            //         state,
+                                            //         dispatch,
+                                            //         music?.id_music as any,
+                                            //         music?.name,
+                                            //         music?.url_path,
+                                            //         music?.url_cover,
+                                            //         music?.id_composer?.name,
+                                            //         music?.artists.map(artist => artist.artist),
+                                            //     )
+                                            // })
+                                            if (album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                                                dispatch({
+                                                    type: "IS_PLAYING",
+                                                    payload: false
+                                                })
+                                                    ;
+                                            }
+                                        }
+                                        }
+                                    >
 
-        // Dừng nhạc nếu đang phát và chọn lại nhạc
-        if (
-            album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music &&
-            state.isPlaying
-        ) {
-            dispatch({ type: "IS_PLAYING", payload: false });
-        }
-    }}
->
-    {album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
-        <i className="fas fa-pause"></i>
-    ) : (
-        <i className="fas fa-play"></i>
-    )}
-</button>
+                                        <i className="fas fa-play"></i>
+
+                                    </button>
 
                                     <button className={style.moreButton}>
                                         <ReactSVG src="/more.svg" />

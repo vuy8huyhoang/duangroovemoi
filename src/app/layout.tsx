@@ -19,7 +19,6 @@ export default function Layout({ children }: any) {
   const [state, dispatch] = useReducer(reducer, initialState);
   if (typeof window !== "undefined") {
 
-    console.log("cc", localStorage);
     if (!localStorage.getItem('currentPlaylist')) {
       localStorage.setItem('currentPlaylist', JSON.stringify([]));
     }

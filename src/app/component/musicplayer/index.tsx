@@ -56,7 +56,6 @@ export const addMusicToTheEnd = (
   artists: { id_artist: string; name: string }[]
 ) => {
   if (typeof window !== "undefined") {
-
     localStorage.removeItem("currentPlaylist");
     console.log(state?.currentPlaylist);
   }
@@ -81,19 +80,23 @@ export const addMusicToTheEnd = (
 
 export const addListMusicToTheFirst = (state, dispatch, list) => {
   if (typeof window !== "undefined") {
-
     localStorage.removeItem("currentPlaylist");
   }
   console.log(state?.currentPlaylist);
   dispatch({ type: "IS_PLAYING", payload: true });
+
+  // Tạo playlist mới không trùng lặp
+  const updatedPlaylist = [
+    ...list,
+    ...state.currentPlaylist.filter(
+      (song) => !list.some((music) => music.id_music === song.id_music)
+    ),
+  ];
+
+  // Cập nhật playlist trong state
   dispatch({
     type: "CURRENT_PLAYLIST",
-    payload: [
-      ...list,
-      ...state?.currentPlaylist.filter((song) =>
-        list.map((music) => music.id_music).includes(song.id_music)
-      ),
-    ],
+    payload: updatedPlaylist,
   });
 };
 
@@ -104,8 +107,8 @@ const MusicPlayer: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(100);
   const [showingCurrentTime, setShowingCurrentTime] = useState(0);
-  const  currentPlaylist  = state?.currentPlaylist;
-  const  volume  = state?.volume;
+  const currentPlaylist = state?.currentPlaylist;
+  const volume = state?.volume;
   const isPlaying = state?.isPlaying;
 
   const router = useRouter();
@@ -222,7 +225,6 @@ const MusicPlayer: React.FC = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-
       localStorage.setItem(
         "currentPlaylist",
         JSON.stringify(state?.currentPlaylist)
