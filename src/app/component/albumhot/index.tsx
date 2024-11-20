@@ -23,6 +23,10 @@ interface Album {
          }[];
     }[];
 }
+interface MusicHistory {
+    id_music: string;
+    created_at: string;
+}
 
 
 export default function AlbumHot() {
@@ -30,6 +34,7 @@ export default function AlbumHot() {
     const [favoriteAlbum, setFavoriteAlbum] = useState<Set<number>>(new Set());
     const [loading, setLoading] = useState(true);
     const { state, dispatch } = useContext(AppContext);
+    const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
     useEffect(() => {
         axios.get("/album")
             .then((response: any) => {
@@ -83,6 +88,17 @@ export default function AlbumHot() {
         }
     };
 
+    const addMusicToHistory = async (id_music: string, play_duration: number) => {
+        try {
+            const response: any = await axios.post("/music-history/me", { id_music, play_duration });
+            const newHistory: MusicHistory = response.result;
+            setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+            console.log("Added to history:", newHistory);
+        } catch (error) {
+            console.error("Error adding to music history:", error);
+        }
+    };
+
     return (
         <>
             <div className={style.headerSection}>
@@ -106,55 +122,43 @@ export default function AlbumHot() {
                                     <ReactSVG src="/heart.svg" className={favoriteAlbum.has(album.id_album) ? style.activeHeart : ''} />
                                 </button>
                                 <button
-                            className={style.playButton}
-                            onClick={() => {
-                                console.log(album, 'chúchsuchscschswkfwhbflwf');
-                                let musicList = [];
-                                album.musics.map(music => {
-                                    musicList.push({
-                                        id_music: music?.id_music,
-                                        name: music?.name,
-                                        url_path: music?.url_path,
-                                        url_cover: music?.url_cover,
-                                        composer: music?.composer,
-                                        artists: Array.isArray(music?.artists) ? music.artists.map((artist) => ({
-                                            id_artist: artist.id_artist,
-                                            name: artist.name
-                                        })) : [],
-                                    },)
-                                })
-                                
-                               addListMusicToTheFirst(state, dispatch, musicList)
-                               
-// albumDetail?.musics.map(music => {
-//     console.log(music);
-//     addMusicToTheFirst(
-//         state,
-//         dispatch,
-//         music?.id_music as any,
-//         music?.name,
-//         music?.url_path,
-//         music?.url_cover,
-//         music?.id_composer?.name,
-//         music?.artists.map(artist => artist.artist),
-//     )
-// })
-                                if (album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
-                                    dispatch({
-                                        type: "IS_PLAYING",
-                                        payload: false
-                                    })
-                                     ;
-                                }
-                            }
-                            }
-                        >
-                            {album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
-                                <i className="fas fa-pause"></i>
-                            ) : (
-                                <i className="fas fa-play"></i>
-                            )}
-                        </button>
+    className={style.playButton}
+    onClick={async () => {
+        // Tạo danh sách bài hát từ album
+        let musicList = album.musics.map(music => ({
+            id_music: music?.id_music,
+            name: music?.name,
+            url_path: music?.url_path,
+            url_cover: music?.url_cover,
+            composer: music?.composer,
+            artists: Array.isArray(music?.artists) ? music.artists.map((artist) => ({
+                id_artist: artist.id_artist,
+                name: artist.name
+            })) : [],
+        }));
+
+        // Thêm bài hát vào playlist và phát nhạc
+        addListMusicToTheFirst(state, dispatch, musicList);
+
+        // Lưu bài hát vào lịch sử nghe nhạc
+        // Giả sử play_duration = 100 giây (có thể thay đổi theo yêu cầu)
+        await addMusicToHistory(album.musics[0]?.id_music.toString(), 100);
+
+        // Dừng nhạc nếu đang phát và chọn lại nhạc
+        if (
+            album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music &&
+            state.isPlaying
+        ) {
+            dispatch({ type: "IS_PLAYING", payload: false });
+        }
+    }}
+>
+    {album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+        <i className="fas fa-pause"></i>
+    ) : (
+        <i className="fas fa-play"></i>
+    )}
+</button>
 
                                     <button className={style.moreButton}>
                                         <ReactSVG src="/more.svg" />
