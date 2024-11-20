@@ -17,7 +17,6 @@ export default function Layout({ children }: any) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
   const [state, dispatch] = useReducer(reducer, initialState);
-  // const authguard = useAuthGuard();
   if (typeof window !== "undefined") {
 
     console.log("cc", localStorage);
@@ -45,9 +44,11 @@ export default function Layout({ children }: any) {
               <Sidebar />
               <Header />
               <MusicPlayer />
-              <RightSidebar />
+              
 
               <div className="contain">{children}</div>
+              <RightSidebar />
+
             </div>
           ) : (
             // authguard && (

@@ -1,6 +1,7 @@
 .rightSidebar {
-    position: fixed;
-    width: 300px;
+    position: sticky;
+    width: 420px;
+    top:0;
     right: 0;
     z-index: 998;
     background-color: #1e1e2e;
@@ -10,9 +11,13 @@
     height: 100vh;
     padding: 16px;
     padding-top: 80px;
-    overflow-y: auto;
     box-shadow: -4px 0 10px rgba(0, 0, 0, 0.4);
-
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+        width: 8px;
+        /* Độ rộng thanh cuộn */
+    }
+    
     .header {
         display: flex;
         justify-content: space-between;
@@ -29,7 +34,6 @@
             padding: 5px 10px;
             border-radius: 6px;
             transition: all 0.3s ease;
-
             &:hover {
                 color: #a5a5d8;
                 background-color: #2a283d;
@@ -63,12 +67,35 @@
             border-radius: 6px;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-
+            position: relative;
             .hinh {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
             }
+                        .playButton {
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            background: rgba(0, 0, 0, 0.5);
+                            border: none;
+                            color: white;
+                            font-size: 16px;
+                            width: 20px;
+                            height: 20px;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+            
+                            &:hover {
+                                background: rgba(0, 0, 0, 0.8);
+                                transform: translate(-50%, -50%) scale(1.2);
+                            }
+                        }
         }
 
         .currentSong {
@@ -197,12 +224,37 @@
                 overflow: hidden;
                 flex-shrink: 0;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    
+                position: relative;
                 .hinh {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
                 }
+                                .playBtn {
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    background: rgba(0, 0, 0, 0.5);
+                                    border: none;
+                                    color: white;
+                                    font-size: 16px;
+                                    width: 20px;
+                                    height: 20px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    cursor: pointer;
+                                    transition: all 0.3s ease;
+                
+                                    &:hover {
+                                        background: rgba(0, 0, 0, 0.8);
+                                        /* Màu đậm hơn khi hover */
+                                        transform: translate(-50%, -50%) scale(1.2);
+                                        /* Phóng to nhẹ */
+                                    }
+                                }
             }
     
             .info {
@@ -242,4 +294,7 @@
                 }
             }
         }
+}
+.audio{
+    display: none;
 }

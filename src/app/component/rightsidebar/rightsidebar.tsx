@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./rightsidebar.module.scss";
+import { AppContext } from "@/app/layout";
 
 export default function RightSidebar() {
-    const playlist = [
-        { title: "Người Ấy", artist: "Trịnh Thăng Bình", isPlaying: true, image: "https://danviet.mediacdn.vn/296231569849192448/2023/10/14/son-tung-mtp-1697273184168953378334.jpg" },
-        { title: "Nếu Em Cần", artist: "Trịnh Thăng Bình", image: "https://danviet.mediacdn.vn/296231569849192448/2023/10/14/son-tung-mtp-1697273184168953378334.jpg" },
-        { title: "Khác Biệt To Lớn", artist: "Trịnh Thăng Bình, Liz Kim Cương", image: "https://danviet.mediacdn.vn/296231569849192448/2023/10/14/son-tung-mtp-1697273184168953378334.jpg" },
-        { title: "Khác Biệt To Lớn Hơn", artist: "Trịnh Thăng Bình, Liz Kim Cương", image: "https://danviet.mediacdn.vn/296231569849192448/2023/10/14/son-tung-mtp-1697273184168953378334.jpg" },
-        { title: "Tâm Sự Tuổi 30", artist: "Trịnh Thăng Bình", image: "https://danviet.mediacdn.vn/296231569849192448/2023/10/14/son-tung-mtp-1697273184168953378334.jpg" },
-    ];
+    const { state, dispatch } = useContext(AppContext);
+    const [playlist, setPlaylist] = useState<any[]>([]);
+    useEffect(() => {
+        setPlaylist(state?.currentPlaylist);
+    }, [state?.currentPlaylist]);
+    
 
     return (
         <div className={styles.rightSidebar}>
@@ -17,29 +17,65 @@ export default function RightSidebar() {
                 <button>Nghe gần đây</button>
                 <button className={styles.moreBtn}>...</button>
             </div>
-            <div className={styles.new}>
-                    <div className={styles.thumbnail}>
-                        <img className={styles.hinh} src={playlist[0].image} alt={playlist[0].title} />
-                    </div>
-                    <div className={styles.info}>
-                        <div className={styles.title}>{playlist[0].title}</div>
-                        <div className={styles.artist}>{playlist[0].artist}</div>
-                    </div>
-            </div>
-            <div className={styles.list}>
-                <div className={styles.titleSection}>Tiếp theo</div>
-                {playlist.slice(1).map((song, index) => (
-                    <div key={index} className={styles.song}>
+
+            {playlist?.length > 0 && (
+                <>
+                    <div className={styles.new}>
                         <div className={styles.thumbnail}>
-                            <img className={styles.hinh} src={song.image} alt={song.title} />
+                            <img
+                                className={styles.hinh}
+                                src={playlist?.[0].url_cover}
+                                alt={playlist?.[0].name}
+                            />
+                            <button
+                                className={styles.playButton}
+                            >
+                                ▶
+                            </button>
                         </div>
                         <div className={styles.info}>
-                            <div className={styles.title}>{song.title}</div>
-                            <div className={styles.artist}>{song.artist}</div>
+                            <div className={styles.title}>{playlist?.[0].name}</div>
+                            <div className={styles.artist}>Nhạc sĩ: {playlist?.[0].composer}</div>
+                            <audio controls src={playlist?.[0].url_path} className={styles.audio}>
+                            </audio>
                         </div>
                     </div>
-                ))}
-            </div>
+
+                    <div className={styles.list}>
+                        <div className={styles.titleSection}>Tiếp theo</div>
+                        {playlist.slice(1).map((song, index) => (
+                            <div key={song.id_music} className={styles.song}>
+                                <div className={styles.thumbnail}>
+                                    <img
+                                        className={styles.hinh}
+                                        src={song.url_cover}
+                                        alt={song.name}
+                                    />
+                                    <button
+                                        className={styles.playBtn}
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
+                                <div className={styles.info}>
+                                    <div className={styles.title}>{song.name}</div>
+                                    <div className={styles.artist}>
+                                        Nhạc sĩ: {song.composer}
+                                    </div>
+                                    <audio controls src={song.url_path} className={styles.audio}>
+                                    </audio>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
+
+            {playlist.length === 0 && (
+                <div className={styles.empty}>
+                    <p>Chưa có danh sách phát nào.</p>
+                </div>
+            )}
         </div>
     );
 }

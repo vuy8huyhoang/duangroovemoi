@@ -1,5 +1,5 @@
 export type Action = {
-  type: "CURRENT_PLAYLIST" | "VOLUME" | "IS_PLAYING" | "SHOW_LOGIN";
+  type: "CURRENT_PLAYLIST" | "VOLUME" | "IS_PLAYING" | "SHOW_LOGIN" |"SHOW_RIGHT_SIDEBAR";
   payload: any;
 };
 let initialState
@@ -10,6 +10,7 @@ if (typeof window !== "undefined") {
     volume: 0.5,
     isPlaying: false,
     showLogin: false,
+    showRightSidebar: false
   };
 }
 
@@ -36,6 +37,11 @@ export const reducer = (state: typeof initialState, action: Action) => {
       return {
         ...state,
         showLogin: action.payload,
+      };
+    case "SHOW_RIGHT_SIDEBAR":
+      return {
+        ...state,
+        showRightSidebar: action.payload,
       };
     default:
       return state;
