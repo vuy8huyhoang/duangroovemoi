@@ -47,7 +47,8 @@ export default function Layout({ children }: any) {
               
 
               <div className="contain">{children}</div>
-              <RightSidebar />
+              {state?.currentPlaylist && state?.currentPlaylist?.length > 0 &&
+                <RightSidebar />}
 
             </div>
           ) : (

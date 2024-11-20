@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./rightsidebar.module.scss";
 import { AppContext } from "@/app/layout";
+import {  addMusicToTheFirst } from "../musicplayer";
 
 export default function RightSidebar() {
     const { state, dispatch } = useContext(AppContext);
@@ -8,16 +9,38 @@ export default function RightSidebar() {
     useEffect(() => {
         setPlaylist(state?.currentPlaylist);
     }, [state?.currentPlaylist]);
-    
+    const handleChangeMusic = (index:number):any => {
+        addMusicToTheFirst(
+            state,
+            dispatch,
+            state?.currentPlaylist?.[index+1]?.id_music as any,
+            state?.currentPlaylist?.[index+1]?.name,
+            state?.currentPlaylist?.[index+1]?.url_path,
+            state?.currentPlaylist?.[index+1]?.url_cover,
+            state?.currentPlaylist?.[index+1]?.composer,
+            state?.currentPlaylist?.[index+1]?.artists.map(artist => artist.artist)
+        );
+        
+            dispatch({
+                type: "IS_PLAYING",
+                payload: true
+            })
+                
+        }
 
     return (
+       
         <div className={styles.rightSidebar}>
+            <div className={styles.all_header}>
             <div className={styles.header}>
-                <button>Danh sách phát</button>
+                <button className={styles.active}>Danh sách phát</button>
                 <button>Nghe gần đây</button>
-                <button className={styles.moreBtn}>...</button>
             </div>
-
+            <div className={styles.header}>
+               
+                <button className={styles.moreBtn}>...</button>
+                </div>
+            </div>
             {playlist?.length > 0 && (
                 <>
                     <div className={styles.new}>
@@ -29,13 +52,24 @@ export default function RightSidebar() {
                             />
                             <button
                                 className={styles.playButton}
+                                onClick={() => {
+                                        dispatch({
+                                            type: "IS_PLAYING",
+                                            payload: !state?.isPlaying
+                                        });
+                                }
+                                }
                             >
-                                ▶
+                                {state.isPlaying ? (
+                                    <i className="fas fa-pause"></i>
+                                ) : (
+                                    <i className="fas fa-play"></i>
+                                )}
                             </button>
                         </div>
                         <div className={styles.info}>
                             <div className={styles.title}>{playlist?.[0].name}</div>
-                            <div className={styles.artist}>Nhạc sĩ: {playlist?.[0].composer}</div>
+                            <div className={styles.artist}>{playlist?.[0].composer}</div>
                             <audio controls src={playlist?.[0].url_path} className={styles.audio}>
                             </audio>
                         </div>
@@ -52,15 +86,20 @@ export default function RightSidebar() {
                                         alt={song.name}
                                     />
                                     <button
-                                        className={styles.playBtn}
+                                        className={styles.playButton}
+                                        onClick={() => {
+                                            handleChangeMusic(index)
+                                        }
+                                        }
                                     >
-                                        ▶
+            
+                                        <i className="fas fa-play"></i>       
                                     </button>
                                 </div>
                                 <div className={styles.info}>
                                     <div className={styles.title}>{song.name}</div>
                                     <div className={styles.artist}>
-                                        Nhạc sĩ: {song.composer}
+                                        {song.composer}
                                     </div>
                                     <audio controls src={song.url_path} className={styles.audio}>
                                     </audio>
