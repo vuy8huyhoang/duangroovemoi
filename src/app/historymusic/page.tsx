@@ -75,18 +75,21 @@ const HistoryMusicPage = () => {
 
   return (
     <div className={style.historyPage}>
-      <h1 className={style.title}>Lịch sử nghe nhạc</h1>
-      <div className={style.musicGrid}>
-        {aggregatedHistory.map((history) => (
-          <div key={history.id_music} className={style.musicItem}>
-            <img src={history.url_cover} alt={history.name} />
-            <Link href={`/musicdetail/${history.id_music}`}>{history.name}</Link>
-            <p>Lần cuối nghe: {new Date(new Date(history.last_played).getTime() + -7 * 60 * 60 * 1000).toLocaleString('vi-VN')}</p>
-            <p>Lượt xem: {history.view_count}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+  <h1 className={style.title}>Lịch sử nghe nhạc</h1>
+  <div className={style.musicGrid}>
+    {aggregatedHistory.map((history) => (
+      <Link key={history.id_music} href={`/musicdetail/${history.id_music}`} passHref>
+        <div className={style.musicItem}>
+          <img src={history.url_cover} alt={history.name} />
+          <p>{history.name}</p>
+          <p>Lần cuối nghe: {new Date(new Date(history.last_played).getTime() + -7 * 60 * 60 * 1000).toLocaleString('vi-VN')}</p>
+          <p>Lượt xem: {history.view_count}</p>
+        </div>
+      </Link>
+    ))}
+  </div>
+</div>
+
   );
 };
 
