@@ -11,7 +11,7 @@ interface User {
     email: string;
     role: 'user' | 'admin';
     url_avatar?: string;
-    is_banned: boolean;
+    is_banned: number;
 }
 
 export default function AdminUser() {
@@ -22,13 +22,7 @@ export default function AdminUser() {
     const usersPerPage = 10;
 
     useEffect(() => {
-        axios.get("/user")
-            .then((response: any) => {
-                setCurrentUserRole(response.result.data);
-            })
-            .catch((error: any) => {
-                console.error("Lỗi lấy thông tin người dùng:", error);
-            });
+        
 
         axios
             .get("/user")
@@ -51,38 +45,11 @@ export default function AdminUser() {
             });
     }, []);
 
-    const handleBanUser = async (id_user: string, isBanned: boolean) => {
-        try {
-            await axios.patch(`/user/${id_user}`, { is_banned: !isBanned });
-            setUsers(users.map((user) =>
-                user.id_user === id_user ? { ...user, is_banned: !isBanned } : user
-            ));
-        } catch (error) {
-            console.error("Lỗi khóa/mở khóa user:", error);
-        }
-    };
-
-    const handleStatusChange = (e, id_user) => {
-        const newStatus = e.target.value === 'active' ? 0 : 1; // 0 cho "Hoạt động", 1 cho "Bị khóa"
-
-        // Gọi API để cập nhật trạng thái người dùng
-        updateUserStatus(id_user, newStatus);
-    };
+   
+   
 
     // Ví dụ về hàm cập nhật trạng thái người dùng qua API
-    const updateUserStatus = async (id_user, status) => {
-        try {
-
-            const response:any = await axios.patch(`/user/${id_user}`, { status });
-            
-
-            // Thực hiện các thao tác khi cập nhật thành công
-            console.log(response);
-        } catch (error) {
-            console.error('Lỗi khi cập nhật trạng thái:', error);
-        }
-    };
-
+    
 
 
     const indexOfLastUser = currentPage * usersPerPage;
@@ -140,13 +107,14 @@ export default function AdminUser() {
                                     <td>{user.role}</td>
                                     <td>
                                         {/* Select dropdown để thay đổi trạng thái */}
-                                        <select
+                                        {/* <select
                                             value={user.is_banned ? '1' : '0'}
                                             onChange={(e) => handleStatusChange(e, user.id_user)}
                                         >
                                             <option value="0">Hoạt động</option>
                                             <option value="1">Bị khóa</option>
-                                        </select>
+                                        </select> */}
+                                        {user.is_banned==1?"Bị khoá":"Hoạt động"}
                                     </td>
                                     
                                         <td className={styles.actions}>

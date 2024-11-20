@@ -114,6 +114,16 @@
     position: relative;
     flex-grow: 1;
 }
+.playButton {
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px; /* Cạnh tròn lớn hơn */
+    font-size: 23px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+  } 
 
 .likeButton svg,
 .playButton svg,

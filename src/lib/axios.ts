@@ -12,11 +12,15 @@ const axios = axiosLib.create({
 // Thêm một request interceptor để gắn accessToken vào header của mỗi yêu cầu
 axios.interceptors.request.use(
   (config: any) => {
-    const accessToken = localStorage.getItem("accessToken");
-    // const accessToken =
-    //   "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6InUyIiwiZXhwIjoxNzYwNTQzMDEzfQ.-rk8KHiVACAVJXe6OOG_winL7vr1nQTmk2VdLbUMlwo";
-    if (accessToken) {
-      config.headers["token"] = accessToken; // Gắn accessToken vào header với tên 'token'
+    let accessToken;
+    if (typeof window !== "undefined") {
+
+       accessToken = localStorage.getItem("accessToken");
+      // const accessToken =
+      //   "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6InUyIiwiZXhwIjoxNzYwNTQzMDEzfQ.-rk8KHiVACAVJXe6OOG_winL7vr1nQTmk2VdLbUMlwo";
+      if (accessToken) {
+        config.headers["token"] = accessToken; // Gắn accessToken vào header với tên 'token'
+      }
     }
     return config;
   },

@@ -9,7 +9,7 @@ import MusicPlayer from "./component/musicplayer";
 import { createContext, useReducer } from "react";
 import { initialState, reducer } from "./global";
 import ProtectRoute from "./ProtectRoute";
-// import useAuthGuard from './admin/authguard/authguard';
+import RightSidebar from "./component/rightsidebar/rightsidebar";
 
 export const AppContext = createContext<any>(undefined);
 
@@ -17,10 +17,12 @@ export default function Layout({ children }: any) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
   const [state, dispatch] = useReducer(reducer, initialState);
-  // const authguard = useAuthGuard();
-  console.log("cc", localStorage.getItem('currentPlaylist'));
-  if (!localStorage.getItem('currentPlaylist')) {
-    localStorage.setItem('currentPlaylist', JSON.stringify([]));
+  if (typeof window !== "undefined") {
+
+    console.log("cc", localStorage);
+    if (!localStorage.getItem('currentPlaylist')) {
+      localStorage.setItem('currentPlaylist', JSON.stringify([]));
+    }
   }
   return (
     <html lang="en">
@@ -42,7 +44,12 @@ export default function Layout({ children }: any) {
               <Sidebar />
               <Header />
               <MusicPlayer />
+              
+
               <div className="contain">{children}</div>
+              {state?.currentPlaylist && state?.currentPlaylist?.length > 0 &&
+                <RightSidebar />}
+
             </div>
           ) : (
             // authguard && (

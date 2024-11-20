@@ -1,0 +1,23 @@
+.playlistDetailPage {
+    padding: 20px;
+  
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+  
+    ul {
+      list-style: none;
+      padding: 0;
+  
+      li {
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+  
+        p {
+          margin: 5px 0;
+        }
+      }
+    }
+  }
+  

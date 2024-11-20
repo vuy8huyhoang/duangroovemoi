@@ -20,6 +20,10 @@ interface Mussic {
   };
   artists: any[];
 }
+interface MusicHistory {
+  id_music: string;
+  created_at: string;
+}
 
 const ListMusic: React.FC = () => {
   const [albums, setAlbums] = useState<Mussic[]>([]);
@@ -27,6 +31,7 @@ const ListMusic: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [hoveredSong, setHoveredSong] = useState<number | null>(null);
   const [activeFilter, setActiveFilter] = useState<string>("Tất cả");
+  const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -43,9 +48,16 @@ const ListMusic: React.FC = () => {
       .catch((error: any) => console.error("Error fetching albums:", error));
   }, []);
 
-  
-
-  
+  const addMusicToHistory = async (id_music: string, play_duration: number) => {
+    try {
+        const response: any = await axios.post("/music-history/me", { id_music, play_duration });
+        const newHistory: MusicHistory = response.result;
+        setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+        console.log("Added to history:", newHistory);
+    } catch (error) {
+        console.error("Error adding to music history:", error);
+    }
+};
 
   const handleFilterClick = (filter: string) => setActiveFilter(filter);
 
@@ -71,9 +83,8 @@ const ListMusic: React.FC = () => {
         {["Tất cả"].map((filter) => (
           <button
             key={filter}
-            className={`${style.filter} ${
-              activeFilter === filter ? style.active : ""
-            }`}
+            className={`${style.filter} ${activeFilter === filter ? style.active : ""
+              }`}
             onClick={() => handleFilterClick(filter)}
           >
             {filter}
@@ -98,26 +109,30 @@ const ListMusic: React.FC = () => {
               <div className={style.overlay}>
                 <button
                   className={style.playButton}
-                  onClick={() => {
+                  onClick={async () => {
+                    // Thêm nhạc vào playlist và phát nhạc
                     addMusicToTheFirst(
                       state,
                       dispatch,
-                      album.id_music as any,
+                      album.id_music.toString(),
                       album.name,
                       album.url_path,
                       album.url_cover,
                       album.composer,
-                      album.artists.map(artist => artist.artist)
-                    )
-                    if (album.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
-                      dispatch({
-                        type: "IS_PLAYING",
-                        payload: false
-                      })
-                        ;
+                      album.artists.map((artist) => artist.artist)
+                    );
+
+                    // Thêm vào lịch sử nghe nhạc
+                    await addMusicToHistory(album.id_music.toString(), 100);
+
+                    // Dừng nhạc nếu đang phát và chọn lại nhạc
+                    if (
+                      album.id_music === state.currentPlaylist[0]?.id_music &&
+                      state.isPlaying
+                    ) {
+                      dispatch({ type: "IS_PLAYING", payload: false });
                     }
-                  }
-                  }
+                  }}
                 >
                   {album.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
                     <i className="fas fa-pause"></i>
@@ -125,6 +140,7 @@ const ListMusic: React.FC = () => {
                     <i className="fas fa-play"></i>
                   )}
                 </button>
+
               </div>
             </div>
             <div className={style.songInfo}>

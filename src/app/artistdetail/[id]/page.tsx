@@ -99,10 +99,10 @@ const handleFollowClick = (id_artist) => {
         axios.get("follow/me")
             .then((response: any) => {
                 console.log(response.result.data, artist)
-                console.log(response.result.data.map(i => (i.id_artist)).includes(artist.id_artist));
+                console.log(response.result.data.map(i => (i.id_artist)).includes(artist?.id_artist));
 
                 if (response && response.result.data) {
-                    if (response.result.data.map(i => (i.id_artist)).includes(artist.id_artist)) {
+                    if (response.result.data.map(i => (i.id_artist)).includes(artist?.id_artist)) {
                         setIsFollowed(true);
                     }
 
@@ -206,7 +206,7 @@ const handleFollowClick = (id_artist) => {
                                                         music.composer,
                                                         music.artists.map(artist => artist.artist)
                                                     )
-                                                    if (music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                                                    if (music.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying) {
                                                         dispatch({
                                                             type: "IS_PLAYING",
                                                             payload: false
@@ -216,7 +216,7 @@ const handleFollowClick = (id_artist) => {
                                                 }
                                                 }
                                             >
-                                                {music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                                                {music.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
                                                     <i className="fas fa-pause"></i>
                                                 ) : (
                                                     <i className="fas fa-play"></i>
