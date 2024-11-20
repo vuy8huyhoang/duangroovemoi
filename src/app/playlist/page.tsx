@@ -53,6 +53,7 @@ const PlaylistPage = () => {
 
   const createPlaylist = async () => {
     if (!newPlaylistName.trim()) {
+      alert("Vui lòng nhập tên playlist")
       setError("Tên playlist không được để trống");
       return;
     }

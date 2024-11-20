@@ -21,6 +21,7 @@ export default function AddType() {
     });
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -28,6 +29,13 @@ export default function AddType() {
     };
 
     const handleSubmit = async () => {
+        
+        // Kiểm tra nếu tên thể loại trống
+    if (!type.name.trim()) {
+        setError("Tên thể loại không được để trống.");
+        return; // Không gửi form nếu tên trống
+      }
+
         setLoading(true);
         const slug = type.name.toLowerCase().replace(/\s+/g, '-');
         const typeData = { ...type, slug };

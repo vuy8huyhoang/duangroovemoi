@@ -1,21 +1,51 @@
-.playlistDetailPage {
-    padding: 20px;
-  
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
+.playlistDetail {
+    .playlistHeader {
+      display: flex;
+      gap: 1rem;
+      img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin: 0;
+      }
+      p {
+        margin: 0.25rem 0;
+        color: #aaa;
+      }
     }
   
-    ul {
-      list-style: none;
-      padding: 0;
+    .songList {
+      margin-top: 1rem;
   
-      li {
-        border-bottom: 1px solid #ddd;
-        padding: 10px 0;
+      .songItem {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #333;
   
-        p {
-          margin: 5px 0;
+        .songCover {
+          width: 50px;
+          height: 50px;
+          object-fit: cover;
+          margin-right: 1rem;
+        }
+  
+        .songInfo {
+          flex: 1;
+          .songName {
+            font-weight: bold;
+          }
+          .albumName {
+            color: #aaa;
+            font-size: 0.9rem;
+          }
+        }
+  
+        .songDuration {
+          color: #aaa;
         }
       }
     }

@@ -1,9 +1,10 @@
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from '@/lib/axios';
 import style from './albumhot.module.scss'; // Import file CSS module
 import { ReactSVG } from 'react-svg';
 import Link from 'next/link';
+import { AppContext } from '@/app/layout';
 
 interface Album {
     id_album: number;
@@ -16,6 +17,7 @@ export default function AlbumHot() {
     const [albumData, setAlbumData] = useState<Album[]>([]);
     const [favoriteAlbum, setFavoriteAlbum] = useState<Set<number>>(new Set());
     const [loading, setLoading] = useState(true);
+    const { state, dispatch } = useContext(AppContext);
 
     useEffect(() => {
         axios.get("/album")
@@ -49,7 +51,8 @@ export default function AlbumHot() {
         const isLoggedIn = localStorage.getItem('accessToken'); // Thay đổi theo cách bạn lưu token
         if (!isLoggedIn) {
             alert('Vui lòng đăng nhập để yêu thích bài hát!');
-            // router.push('/home');  // Chuyển hướng đến trang đăng nhập
+            dispatch({ type: "SHOW_LOGIN", payload: true });
+
             return;
         }
     

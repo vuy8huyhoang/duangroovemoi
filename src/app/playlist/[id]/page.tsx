@@ -25,13 +25,15 @@ export default function PlaylistDetail({ params }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  
+
   useEffect(() => {
     // Gọi API để lấy chi tiết playlist và các bài hát
-    axios.get(`/playlist/me/${id}`)
+    axios.get(`/playlist/me?id_playlist=${id}`)
       .then((response:any) => {
         if (response && response.result) {
           setPlaylistDetail(response.result);
-          console.log("test", response);
+          console.log("playlist detail", response.result);
           
         } else {
           console.error('Dữ liệu không hợp lệ', response);
@@ -64,33 +66,61 @@ export default function PlaylistDetail({ params }) {
     }
   };
 
+  const playlist = playlistDetail;
+  const musics = playlist?.musics || [];
+
   if (!playlistDetail) {
     return <p>Đang tải danh sách bài hát...</p>;
   }
 
   return (
-    <div className={style.contentWrapper}>
-      <h1>{playlistDetail.name}</h1>
+    <div className={style.playlistDetail}>
+      {/* Hiển thị thông tin playlist */}
+      {playlist ? (
+        <div className={style.playlistHeader}>
+          <img
+            src={musics[0]?.url_cover || ""}
+            alt={playlist.name}
+            className={style.playlistCover}
+          />
+          <div>
+            <h1>{playlist.name}</h1>
+            <p>{musics.length} bài hát</p>
+          </div>
+        </div>
+      ) : (
+        <p>Đang tải danh sách bài hát...</p>
+      )}
+
+      {/* Hiển thị danh sách bài hát */}
       <div className={style.songList}>
-        {playlistDetail.musics.length > 0 ? (
-          playlistDetail.musics.map((track, index) => (
-            <div key={track.id_music} className={style.songItem}>
-              <img src={track.url_cover} alt={track.name} className={style.songCover} />
+        {musics.length > 0 ? (
+          musics.map((music) => (
+            <div
+              key={music.id_music}
+              className={style.songItem}
+              onClick={() => playSong(music)}
+            >
+              <img
+                src={music.url_cover}
+                alt={music.name}
+                className={style.songCover}
+              />
               <div className={style.songInfo}>
-                <span>{track.name}</span>
-                <span>{track.producer}</span>
-                <span>{track.total_duration}</span>
+                <span className={style.songName}>{music.name}</span>
+                <span className={style.albumName}>{music.producer}</span>
               </div>
-              <button onClick={() => playSong(track)}>
-                {currentSong?.id_music === track.id_music && isPlaying ? 'Pause' : 'Play'}
-              </button>
+              <div className={style.songDuration}>{music.total_duration}</div>
             </div>
           ))
         ) : (
           <p>Không có bài hát trong playlist này.</p>
         )}
       </div>
+
+      {/* Audio player ẩn */}
       <audio ref={audioRef} />
     </div>
+
   );
 }
