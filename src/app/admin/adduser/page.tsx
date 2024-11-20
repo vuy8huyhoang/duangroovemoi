@@ -1,11 +1,9 @@
 "use client";
 import { useState } from "react";
 import axios from "@/lib/axios";
-import { v4 as uuidv4 } from "uuid";
 import styles from "./AddUser.module.scss";
 
 interface User {
-    id_user: string;
     fullname: string;
     email: string;
     password: string;
@@ -16,7 +14,6 @@ interface User {
 
 export default function AddUser() {
     const [user, setUser] = useState<User>({
-        id_user: uuidv4(),
         fullname: "",
         email: "",
         password: "",  // Thêm trường mật khẩu
@@ -72,8 +69,12 @@ export default function AddUser() {
 
             // Gửi yêu cầu thêm người dùng
             const response: any = await axios.post("/user", {
-                ...user,
+                fullname: user.fullname,
+                email: user.email,
+                password: user.password,
+                role: user.role,
                 url_avatar: avatarUrl,
+                is_banned: user.is_banned,
             });
 
             if (response.status === 200 || response.status === 201) {

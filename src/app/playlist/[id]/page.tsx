@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from 'react';
 import axios from '@/lib/axios';
-import style from './playlistDetail.module.scss';
+import style from './playlistdetail.module.scss';
 
 interface Music {
   id_music: string;
@@ -26,7 +26,8 @@ export default function PlaylistDetail({ params }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   
-
+  console.log("test:", id);
+  
   useEffect(() => {
     // Gọi API để lấy chi tiết playlist và các bài hát
     axios.get(`/playlist/me?id_playlist=${id}`)
@@ -76,7 +77,7 @@ export default function PlaylistDetail({ params }) {
   return (
     <div className={style.playlistDetail}>
       {/* Hiển thị thông tin playlist */}
-      {playlist ? (
+      {playlist? (
         <div className={style.playlistHeader}>
           <img
             src={musics[0]?.url_cover || ""}

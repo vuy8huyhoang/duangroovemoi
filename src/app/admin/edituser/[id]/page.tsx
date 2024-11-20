@@ -12,7 +12,7 @@ interface User {
     is_banned: 0 | 1;
 }
 
-export default function EditUser({ params }) {
+export default function EditUser({ params }: { params: { id: string } }) {
     const { id } = params;
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -22,12 +22,14 @@ export default function EditUser({ params }) {
 
     useEffect(() => {
         
-        if (id) {console.log(params.id);
-        
+        setUser(null); // Đảm bảo không hiển thị dữ liệu cũ
+        if (id) {console.log("Fetching user with ID:",id);
+            
             axios
                 .get(`/user/${id}`)
                 .then((response:any) => {
                     if (response?.result?.data) {
+                        console.log("user data:", response.result);
                         
                         setUser(response.result.data);
                         setPreviewUrl(response.result.data.url_avatar || null);
@@ -42,7 +44,7 @@ export default function EditUser({ params }) {
                     setLoading(false);
                 });
         }
-    }, [params.id]);
+    }, [id]);
     console.log("người dùng:",user);
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -76,7 +78,7 @@ export default function EditUser({ params }) {
                 });
 
                 if (uploadResponse?.result?.url) {
-                    imageUrl = uploadResponse.result.url;
+                    imageUrl = uploadResponse.result.url; 
                 } else {
                     setMessage("Invalid response format from image upload.");
                     return;
@@ -85,7 +87,7 @@ export default function EditUser({ params }) {
 
             const userData = { ...user, url_avatar: imageUrl };
 
-            const response:any = await axios.patch(`/user/${user}`, userData, {
+            const response:any = await axios.patch(`/user/${user.id_user}`, userData, {
                 headers: { "Content-Type": "application/json" },
             });
 
