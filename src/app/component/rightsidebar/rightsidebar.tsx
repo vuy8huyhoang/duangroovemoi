@@ -1,7 +1,9 @@
+'use client'
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./rightsidebar.module.scss";
 import { AppContext } from "@/app/layout";
 import {  addMusicToTheFirst } from "../musicplayer";
+import Link from "next/link";
 
 export default function RightSidebar() {
     const { state, dispatch } = useContext(AppContext);
@@ -25,7 +27,7 @@ export default function RightSidebar() {
                 type: "IS_PLAYING",
                 payload: true
             })
-                
+        console.log("stt",index);
         }
 
     return (
@@ -45,11 +47,12 @@ export default function RightSidebar() {
                 <>
                     <div className={styles.new}>
                         <div className={styles.thumbnail}>
+
                             <img
                                 className={styles.hinh}
                                 src={playlist?.[0].url_cover}
                                 alt={playlist?.[0].name}
-                            />
+                                />
                             <button
                                 className={styles.playButton}
                                 onClick={() => {
@@ -67,9 +70,13 @@ export default function RightSidebar() {
                                 )}
                             </button>
                         </div>
-                        <div className={styles.info}>
+                    <div className={styles.info}>
+                        <Link href={`/musicdetail/${playlist?.[0].id_music}`}>
+
                             <div className={styles.title}>{playlist?.[0].name}</div>
-                            <div className={styles.artist}>{playlist?.[0].composer}</div>
+                                <div className={styles.artist}>{playlist?.[0].composer}</div>
+                            </Link>
+
                             <audio controls src={playlist?.[0].url_path} className={styles.audio}>
                             </audio>
                         </div>
@@ -78,7 +85,7 @@ export default function RightSidebar() {
                     <div className={styles.list}>
                         <div className={styles.titleSection}>Tiếp theo</div>
                         {playlist.slice(1).map((song, index) => (
-                            <div key={song.id_music} className={styles.song}>
+                            <div key={index} className={styles.song}>
                                 <div className={styles.thumbnail}>
                                     <img
                                         className={styles.hinh}
@@ -97,10 +104,14 @@ export default function RightSidebar() {
                                     </button>
                                 </div>
                                 <div className={styles.info}>
+                                    <Link href={`/musicdetail/${song.id_music}`}>
+
                                     <div className={styles.title}>{song.name}</div>
                                     <div className={styles.artist}>
                                         {song.composer}
-                                    </div>
+                                        </div>
+                                    </Link>
+
                                     <audio controls src={song.url_path} className={styles.audio}>
                                     </audio>
                                 </div>
