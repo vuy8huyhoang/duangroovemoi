@@ -69,7 +69,7 @@ export default function RightSidebar() {
                         </div>
                         <div className={styles.info}>
                             <div className={styles.title}>{playlist?.[0].name}</div>
-                            <div className={styles.artist}>Nhạc sĩ: {playlist?.[0].composer}</div>
+                            <div className={styles.artist}>{playlist?.[0].composer}</div>
                             <audio controls src={playlist?.[0].url_path} className={styles.audio}>
                             </audio>
                         </div>
@@ -99,7 +99,7 @@ export default function RightSidebar() {
                                 <div className={styles.info}>
                                     <div className={styles.title}>{song.name}</div>
                                     <div className={styles.artist}>
-                                        Nhạc sĩ: {song.composer}
+                                        {song.composer}
                                     </div>
                                     <audio controls src={song.url_path} className={styles.audio}>
                                     </audio>
