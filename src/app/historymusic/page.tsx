@@ -21,9 +21,9 @@ interface AggregatedHistory {
   id_music: string;
   name: string;
   url_cover: string;
-  total_play_duration: number; // Tổng thời gian phát
-  view_count: number; // Tổng lượt xem
-  last_played: string; // Lần nghe gần nhất
+  total_play_duration: number;
+  view_count: number; 
+  last_played: string; 
 }
 
 const HistoryMusicPage = () => {
@@ -81,8 +81,7 @@ const HistoryMusicPage = () => {
           <div key={history.id_music} className={style.musicItem}>
             <img src={history.url_cover} alt={history.name} />
             <Link href={`/musicdetail/${history.id_music}`}>{history.name}</Link>
-            <p>Tổng thời gian phát: {history.total_play_duration} giây</p>
-            <p>Lần cuối nghe: {new Date(history.last_played).toLocaleString()}</p>
+            <p>Lần cuối nghe: {new Date(new Date(history.last_played).getTime() + -7 * 60 * 60 * 1000).toLocaleString('vi-VN')}</p>
             <p>Lượt xem: {history.view_count}</p>
           </div>
         ))}

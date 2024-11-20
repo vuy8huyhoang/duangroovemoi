@@ -25,6 +25,10 @@ interface Album {
         }[];
     }[];
 }
+interface MusicHistory {
+    id_music: string;
+    created_at: string;
+}
 
 
 export default function AlbumHot() {
@@ -32,6 +36,7 @@ export default function AlbumHot() {
     const [favoriteAlbum, setFavoriteAlbum] = useState<Set<number>>(new Set());
     const [loading, setLoading] = useState(true);
     const { state, dispatch } = useContext(AppContext);
+    const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
     useEffect(() => {
         axios.get("/album")
             .then((response: any) => {
@@ -82,6 +87,17 @@ export default function AlbumHot() {
         } catch (error) {
             console.error('Lỗi khi cập nhật trạng thái yêu thích:', error);
             // Thông báo lỗi cho người dùng nếu cần
+        }
+    };
+
+    const addMusicToHistory = async (id_music: string, play_duration: number) => {
+        try {
+            const response: any = await axios.post("/music-history/me", { id_music, play_duration });
+            const newHistory: MusicHistory = response.result;
+            setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+            console.log("Added to history:", newHistory);
+        } catch (error) {
+            console.error("Error adding to music history:", error);
         }
     };
 
