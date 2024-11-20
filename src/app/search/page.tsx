@@ -81,7 +81,6 @@ const SearchResultsPage: React.FC = () => {
                 />
                 <div className={styles.musicInfo}>
                   <p className={styles.musicName}>{music.name}</p>
-                  <p className={styles.composerName}>{music.composer}</p>
                 </div>
               </Link>
             ))}
