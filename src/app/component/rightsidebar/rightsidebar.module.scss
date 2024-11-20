@@ -334,4 +334,25 @@
     display: flex;
     flex-direction: row;
     gap:5px;
+    position: relative;
+}
+.dropdown {
+    position: absolute;
+    top: 65%;
+    right:13%;
+    background-color: #29274c;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1005;
+}
+
+.dropdownItem {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.dropdownItem:hover {
+    background-color: #3e3d63;
 }

@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./rightsidebar.module.scss";
 import { AppContext } from "@/app/layout";
@@ -27,7 +27,7 @@ export default function RightSidebar() {
                 type: "IS_PLAYING",
                 payload: true
             })
-        console.log("stt",index);
+                
         }
 
     return (
@@ -85,7 +85,7 @@ export default function RightSidebar() {
                     <div className={styles.list}>
                         <div className={styles.titleSection}>Tiếp theo</div>
                         {playlist.slice(1).map((song, index) => (
-                            <div key={index} className={styles.song}>
+                            <div key={song.id_music} className={styles.song}>
                                 <div className={styles.thumbnail}>
                                     <img
                                         className={styles.hinh}
