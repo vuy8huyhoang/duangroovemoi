@@ -5,6 +5,7 @@ import { ReactSVG } from 'react-svg';
 import Link from 'next/link';
 import { addListMusicToTheFirst } from '../musicplayer';
 import { AppContext } from '@/app/layout';
+import { log } from 'console';
 
 interface Album {
     id_album: string;
@@ -18,9 +19,10 @@ interface Album {
         composer: string;
         id_composer: any;
         artists: { 
+            artist: {
             id_artist:string;
             name: string;
-
+            }
          }[];
     }[];
 }
@@ -117,10 +119,13 @@ export default function ListAlbum() {
                                         url_path: music?.url_path,
                                         url_cover: music?.url_cover,
                                         composer: music?.id_composer.name,
-                                        artists: Array.isArray(music?.artists) ? music.artists.map((artist) => ({
-                                            id_artist: artist.id_artist,
-                                            name: artist.name
-                                        })) : [],
+                                        artists: Array.isArray(music?.artists) ? music.artists.map((artist) => {                                            
+                                            return {
+                                                artist: {
+                                                    id_artist: artist.artist.id_artist,
+                                                    name: artist.artist.name
+                                                }
+                                        }}) : [],
                                     },)
                                 })
                                 
@@ -149,11 +154,9 @@ export default function ListAlbum() {
                             }
                             }
                         >
-                            {album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
-                                <i className="fas fa-pause"></i>
-                            ) : (
+                           
                                 <i className="fas fa-play"></i>
-                            )}
+                           
                         </button>
                                     <button className={style.moreButton}>
                                         <ReactSVG src="/more.svg" />

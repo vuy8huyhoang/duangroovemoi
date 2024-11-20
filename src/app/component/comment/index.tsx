@@ -42,7 +42,6 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
     const handleAddComment = async () => {
      
         if (newComment.trim() === '') {
-           alert("Nội dung bình luận không được để trống.");
             return;
         }
 
