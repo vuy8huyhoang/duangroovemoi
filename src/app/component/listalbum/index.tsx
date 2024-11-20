@@ -1,20 +1,37 @@
-
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import axios from '@/lib/axios';
-import style from './listalbum.module.scss'; // Import file CSS module
+import style from './listalbum.module.scss';
 import { ReactSVG } from 'react-svg';
 import Link from 'next/link';
+import { addListMusicToTheFirst } from '../musicplayer';
+import { AppContext } from '@/app/layout';
 
 interface Album {
     id_album: string;
     name: string;
     url_cover: string;
-}
+    musics: {
+        id_music: string;
+        name: string;
+        url_path: string;
+        url_cover: string;
+        composer: string;
+        id_composer: any;
+        artists: { 
+            id_artist:string;
+            name: string;
 
+         }[];
+    }[];
+}
 
 export default function ListAlbum() {
     const [albumData, setAlbumData] = useState<Album[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+    const [currentSong, setCurrentSong] = useState<any>(null);
+    const { state, dispatch } = useContext(AppContext);
 
     useEffect(() => {
         axios.get("/album")
@@ -31,8 +48,40 @@ export default function ListAlbum() {
             })
             .finally(() => {
                 setLoading(false); 
-            })  ;
+            });
     }, []);
+
+    const handlePlayRandomClick = () => {
+        if (isPlaying) {
+            pausePlaying(); // Pause if currently playing
+        } else {
+            continuePlaying(); // Continue playing if paused
+        }
+    };
+
+    const continuePlaying = () => {
+        if (albumData.length > 0) {
+            const randomAlbumIndex = Math.floor(Math.random() * albumData.length);
+            const randomAlbum = albumData[randomAlbumIndex];
+            if (randomAlbum.musics.length > 0) {
+                const randomIndex = Math.floor(Math.random() * randomAlbum.musics.length);
+                const randomSong = randomAlbum.musics[randomIndex];
+                setCurrentSong(randomSong);
+                audioRef.current.src = randomSong.url_path; // Set audio source
+                audioRef.current.play(); // Play the song
+                setIsPlaying(true);
+            } else {
+                console.log('No songs available to play.');
+            }
+        } else {
+            console.log('No albums available to play.');
+        }
+    };
+
+    const pausePlaying = () => {
+        audioRef.current?.pause();
+        setIsPlaying(false);
+    };
 
     return (
         <>
@@ -56,22 +105,68 @@ export default function ListAlbum() {
                                     <button className={style.likeButton}>
                                         <ReactSVG src="/heart.svg" />
                                     </button>
-                                    <button className={style.playButton}>
-                                        <ReactSVG src="/play.svg" />
-                                    </button>
-
+                                    <button
+                            className={style.playButton}
+                            onClick={() => {
+                                console.log(album, 'chúchsuchscschswkfwhbflwf');
+                                let musicList = [];
+                                album.musics.map(music => {
+                                    musicList.push({
+                                        id_music: music?.id_music,
+                                        name: music?.name,
+                                        url_path: music?.url_path,
+                                        url_cover: music?.url_cover,
+                                        composer: music?.id_composer.name,
+                                        artists: Array.isArray(music?.artists) ? music.artists.map((artist) => ({
+                                            id_artist: artist.id_artist,
+                                            name: artist.name
+                                        })) : [],
+                                    },)
+                                })
+                                
+                               addListMusicToTheFirst(state, dispatch, musicList)
+                               
+// albumDetail?.musics.map(music => {
+//     console.log(music);
+//     addMusicToTheFirst(
+//         state,
+//         dispatch,
+//         music?.id_music as any,
+//         music?.name,
+//         music?.url_path,
+//         music?.url_cover,
+//         music?.id_composer?.name,
+//         music?.artists.map(artist => artist.artist),
+//     )
+// })
+                                if (album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                                    dispatch({
+                                        type: "IS_PLAYING",
+                                        payload: false
+                                    })
+                                     ;
+                                }
+                            }
+                            }
+                        >
+                            {album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                                <i className="fas fa-pause"></i>
+                            ) : (
+                                <i className="fas fa-play"></i>
+                            )}
+                        </button>
                                     <button className={style.moreButton}>
                                         <ReactSVG src="/more.svg" />
                                     </button>
                                 </div>
                             </div>
-                           
                             <Link href={`/albumdetail/${album.id_album}`} className={style.albumTitle}>
                                 {album.name}
                             </Link>
                         </div>
                     ))
                 )}
+                <audio ref={audioRef} />
             </div>
         </>
     );

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from 'react';
 import axios from '@/lib/axios';
-import style from './playlistdetail.module.scss';
+import style from './playlistDetail.module.scss';
 
 interface Music {
   id_music: string;

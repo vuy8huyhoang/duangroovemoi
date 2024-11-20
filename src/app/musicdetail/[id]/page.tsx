@@ -26,6 +26,11 @@ interface Artist {
   slug: string;
   url_cover: string;
 }
+interface MusicHistory {
+  id_music: string;
+  created_at: string;
+}
+
 
 const SongDetailPage: React.FC = ({ params }: any) => {
   const id = params.id;
@@ -39,6 +44,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
   const [time, setTime] = useState([]);
   const [heart, setHeart] = useState(false);
   const { state, dispatch } = useContext(AppContext);
+  const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
 
   function formatDate(isoString: string) {
     const date = new Date(isoString);
@@ -119,6 +125,17 @@ const SongDetailPage: React.FC = ({ params }: any) => {
         });
     }
   };
+  const addMusicToHistory = async (id_music: string, play_duration: number) => {
+    try {
+        const response: any = await axios.post("/music-history/me", { id_music, play_duration });
+        const newHistory: MusicHistory = response.result;
+        setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+        console.log("Added to history:", newHistory);
+    } catch (error) {
+        console.error("Error adding to music history:", error);
+    }
+};
+
 
   const playSong = (music: Music) => {
     if (audioRef.current) {
@@ -164,7 +181,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
           <h2>{musicdetail.name}</h2>
           <p className={style.songDuration}>Ca sĩ: {musicdetail.composer}</p>
           <div className={style.audioPlayer}>
-            <button
+            {/* <button
               className={style.playButton}
               onClick={() => {
                 addMusicToTheFirst(
@@ -177,7 +194,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
                   musicdetail.composer,
                   musicdetail.artists.map(artist => artist.artist)
                 )
-                if (musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                if (musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying) {
                   dispatch({
                     type: "IS_PLAYING",
                     payload: false
@@ -187,12 +204,46 @@ const SongDetailPage: React.FC = ({ params }: any) => {
               }
               }
             >
-              {musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+              {musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
                 "Dừng nhạc"
               ) : (
                 "Phát nhạc"
               )}
-            </button>
+            </button> */}
+            <button
+    className={style.playButton}
+    onClick={async () => {
+        // Thêm nhạc vào playlist và phát nhạc
+        addMusicToTheFirst(
+            state,
+            dispatch,
+            musicdetail.id_music.toString(),
+            musicdetail.name,
+            musicdetail.url_path,
+            musicdetail.url_cover,
+            musicdetail.composer,
+            musicdetail.artists.map((artist) => artist.artist)
+        );
+
+        // Thêm vào lịch sử nghe nhạc
+        await addMusicToHistory(musicdetail.id_music.toString(), 100);
+
+        // Dừng nhạc nếu đang phát và chọn lại nhạc
+        if (
+          musicdetail.id_music === state.currentPlaylist[0]?.id_music &&
+            state.isPlaying
+        ) {
+            dispatch({ type: "IS_PLAYING", payload: false });
+        }
+    }}
+>
+{musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
+                "Dừng nhạc"
+              ) : (
+                "Phát nhạc"
+              )}
+</button>
+
             <span
               className={clsx(style.heartIcon, {
                 [style.heartIcon_active]: heart,
@@ -235,7 +286,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
                       musicdetail.composer,
                       musicdetail.artists.map(artist => artist.artist)
                     )
-                    if (musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
+                    if (musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying) {
                       dispatch({
                         type: "IS_PLAYING",
                         payload: false
@@ -245,7 +296,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
                   }
                   }
                 >
-                  {musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                  {musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
                     <i className="fas fa-pause"></i>
                   ) : (
                     <i className="fas fa-play"></i>

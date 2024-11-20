@@ -8,7 +8,7 @@ import { AppContext } from "../../layout";
 
 
 const ResetPassword: React.FC = () => {
-    const { token } = useParams();  // Lấy token từ URL
+    const { token } = useParams();  
     const [newPassword, setNewPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const [error, setError] = useState<string>("");

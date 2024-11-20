@@ -107,6 +107,15 @@
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
 }
+.playButton {
+    background-color: none;
+    padding: 10px 12px;
+    border-radius: 25px; /* Cạnh tròn lớn hơn */
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+  } 
 
 .playButton svg {
     width: 30px;
@@ -169,7 +178,7 @@
     top: 50%;
     left: 10px;
     transform: translateY(-50%);
-    z-index: 1000;
+    z-index: 10;
 }
 
 .rightArrow {
@@ -177,7 +186,7 @@
     top: 50%;
     right: 10px;
     transform: translateY(-50%);
-    z-index: 1000;
+    z-index: 10;
 }
 
 .leftArrow:hover,

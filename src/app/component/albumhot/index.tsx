@@ -4,12 +4,30 @@ import axios from '@/lib/axios';
 import style from './albumhot.module.scss'; // Import file CSS module
 import { ReactSVG } from 'react-svg';
 import Link from 'next/link';
+
+import { addListMusicToTheFirst } from '../musicplayer';
 import { AppContext } from '@/app/layout';
 
 interface Album {
     id_album: number;
     name: string;
     url_cover: string;
+    musics: {
+        id_music: string;
+        name: string;
+        url_path: string;
+        url_cover: string;
+        composer: string;
+        artists: { 
+            id_artist:string;
+            name: string;
+
+         }[];
+    }[];
+}
+interface MusicHistory {
+    id_music: string;
+    created_at: string;
 }
 
 
@@ -18,6 +36,7 @@ export default function AlbumHot() {
     const [favoriteAlbum, setFavoriteAlbum] = useState<Set<number>>(new Set());
     const [loading, setLoading] = useState(true);
     const { state, dispatch } = useContext(AppContext);
+    const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
 
     useEffect(() => {
         axios.get("/album")
@@ -48,12 +67,24 @@ export default function AlbumHot() {
             }
             return updated;
         });
+
         const isLoggedIn = localStorage.getItem('accessToken'); // Thay đổi theo cách bạn lưu token
         if (!isLoggedIn) {
             alert('Vui lòng đăng nhập để yêu thích bài hát!');
             dispatch({ type: "SHOW_LOGIN", payload: true });
 
             return;
+
+
+        // if (typeof window !== "undefined") {
+
+        //     const isLoggedIn = localStorage.getItem('accessToken'); // Thay đổi theo cách bạn lưu token
+        //     if (!isLoggedIn) {
+        //         alert('Vui lòng đăng nhập để yêu thích bài hát!');
+        //         // router.push('/home');  // Chuyển hướng đến trang đăng nhập
+        //         return;
+        //     }
+
         }
     
         try {
@@ -66,6 +97,17 @@ export default function AlbumHot() {
         } catch (error) {
             console.error('Lỗi khi cập nhật trạng thái yêu thích:', error);
             // Thông báo lỗi cho người dùng nếu cần
+        }
+    };
+
+    const addMusicToHistory = async (id_music: string, play_duration: number) => {
+        try {
+            const response: any = await axios.post("/music-history/me", { id_music, play_duration });
+            const newHistory: MusicHistory = response.result;
+            setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+            console.log("Added to history:", newHistory);
+        } catch (error) {
+            console.error("Error adding to music history:", error);
         }
     };
 
@@ -91,9 +133,44 @@ export default function AlbumHot() {
                                 <button className={style.likeButton} onClick={() => toggleFavorite(album.id_album)}>
                                     <ReactSVG src="/heart.svg" className={favoriteAlbum.has(album.id_album) ? style.activeHeart : ''} />
                                 </button>
-                                    <button className={style.playButton}>
-                                        <ReactSVG src="/play.svg" />
-                                    </button>
+                                <button
+    className={style.playButton}
+    onClick={async () => {
+        // Tạo danh sách bài hát từ album
+        let musicList = album.musics.map(music => ({
+            id_music: music?.id_music,
+            name: music?.name,
+            url_path: music?.url_path,
+            url_cover: music?.url_cover,
+            composer: music?.composer,
+            artists: Array.isArray(music?.artists) ? music.artists.map((artist) => ({
+                id_artist: artist.id_artist,
+                name: artist.name
+            })) : [],
+        }));
+
+        // Thêm bài hát vào playlist và phát nhạc
+        addListMusicToTheFirst(state, dispatch, musicList);
+
+        // Lưu bài hát vào lịch sử nghe nhạc
+        // Giả sử play_duration = 100 giây (có thể thay đổi theo yêu cầu)
+        await addMusicToHistory(album.musics[0]?.id_music.toString(), 100);
+
+        // Dừng nhạc nếu đang phát và chọn lại nhạc
+        if (
+            album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music &&
+            state.isPlaying
+        ) {
+            dispatch({ type: "IS_PLAYING", payload: false });
+        }
+    }}
+>
+    {album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+        <i className="fas fa-pause"></i>
+    ) : (
+        <i className="fas fa-play"></i>
+    )}
+</button>
 
                                     <button className={style.moreButton}>
                                         <ReactSVG src="/more.svg" />
