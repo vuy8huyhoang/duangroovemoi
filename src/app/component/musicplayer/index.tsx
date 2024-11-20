@@ -79,17 +79,25 @@ export const addMusicToTheEnd = (
 };
 
 export const addListMusicToTheFirst = (state, dispatch, list) => {
+  // Xóa playlist hiện tại trong localStorage
   localStorage.removeItem("currentPlaylist");
   console.log(state.currentPlaylist);
+
+  // Cập nhật trạng thái đang phát nhạc
   dispatch({ type: "IS_PLAYING", payload: true });
+
+  // Tạo playlist mới không trùng lặp
+  const updatedPlaylist = [
+    ...list,
+    ...state.currentPlaylist.filter(
+      (song) => !list.some((music) => music.id_music === song.id_music)
+    ),
+  ];
+
+  // Cập nhật playlist trong state
   dispatch({
     type: "CURRENT_PLAYLIST",
-    payload: [
-      ...list,
-      ...state.currentPlaylist.filter((song) =>
-        list.map((music) => music.id_music).includes(song.id_music)
-      ),
-    ],
+    payload: updatedPlaylist,
   });
 };
 
