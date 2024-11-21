@@ -8,6 +8,19 @@ import Link from "next/link";
 export default function RightSidebar() {
     const { state, dispatch } = useContext(AppContext);
     const [playlist, setPlaylist] = useState<any[]>([]);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
+    const closeDropdown = () => {
+        setIsDropdownOpen(false);
+    };
+    const deletePlaylist = () => {
+        dispatch({ type: "CURRENT_PLAYLIST", payload: [] });
+        closeDropdown();
+    }
+
     useEffect(() => {
         setPlaylist(state?.currentPlaylist);
     }, [state?.currentPlaylist]);
@@ -40,7 +53,18 @@ export default function RightSidebar() {
             </div>
             <div className={styles.header}>
                
-                <button className={styles.moreBtn}>...</button>
+                    <button className={styles.moreBtn} onClick={(e) => {
+                        e.stopPropagation(); 
+                        toggleDropdown();
+                    }}>...</button>
+                    {isDropdownOpen && (
+                        <div className={styles.dropdown}>
+                            <div className={styles.dropdownItem} onClick={(e) => {
+                                deletePlaylist();
+                            }}>Xóa danh sách phát</div>
+                            <div className={styles.dropdownItem}>Thêm vào playlist</div>
+                        </div>
+                    )}
                 </div>
             </div>
             {playlist?.length > 0 && (
