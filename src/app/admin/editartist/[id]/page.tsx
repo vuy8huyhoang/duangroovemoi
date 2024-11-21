@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "@/lib/axios";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as yup from "yup";
 import styles from "../EditArtist.module.scss";
 
 interface Artist {
@@ -17,7 +19,6 @@ interface Artist {
 export default function EditArtist({ params }: { params: { id: string } }) {
     const [artist, setArtist] = useState<Artist | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [file, setFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [message, setMessage] = useState<string>("");
 
@@ -27,6 +28,7 @@ export default function EditArtist({ params }: { params: { id: string } }) {
                 .get(`/artist/${params.id}`)
                 .then((response: any) => {
                     if (response?.result?.data) {
+                        console.log(response);
                         setArtist(response.result.data);
                         setPreviewUrl(response.result.data.url_cover || null);
                     } else {
@@ -44,54 +46,75 @@ export default function EditArtist({ params }: { params: { id: string } }) {
         }
     }, [params.id]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        if (artist) {
-            setArtist({ ...artist, [name]: value });
-        }
+    const removeVietnameseTones = (str: string) => {
+        return str
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/đ/g, "d")
+            .replace(/Đ/g, "D")
+            .replace(/[^a-zA-Z0-9\s]/g, "")
+            .replace(/\s+/g, "-")
+            .toLowerCase();
     };
 
-    const handleVisibilityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value);
-        if (artist) {
-            setArtist({ ...artist, is_show: value });
-        }
-    };
+    const validationSchema = yup.object().shape({
+        name: yup.string().required("Tên nghệ sĩ là bắt buộc."),
+        file: yup
+            .mixed()
+            .nullable() 
+            .test(
+                "fileFormat",
+                "Định dạng file không hợp lệ. Chỉ chấp nhận .jpeg, .png, .jpg, .gif, .webp.",
+                (value) =>
+                    value === null || 
+                    (value instanceof File &&
+                        ["image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp"].includes(value.type))
+            )
+            .test(
+                "fileSize",
+                "Kích thước ảnh không được vượt quá 10MB.",
+                (value) =>
+                    value === null || 
+                    (value instanceof File && value.size <= 10 * 1024 * 1024) 
+            ),
+        is_show: yup
+            .number()
+            .oneOf([0, 1], "Trạng thái hiển thị không hợp lệ.")
+            .required("Trạng thái hiển thị là bắt buộc."),
+    });
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setFile(e.target.files[0]);
-            const fileUrl = URL.createObjectURL(e.target.files[0]);
-            setPreviewUrl(fileUrl);
-        }
-    };
 
-    const handleSubmit = async () => {
+
+
+    const handleSubmit = async (values: any, { setSubmitting }: any) => {
         if (!artist) return;
 
         setLoading(true);
+        setMessage("");
 
         try {
-            let imageUrl = artist.url_cover;
+            let imageUrl = artist.url_cover; 
 
-            if (file) {
+            if (values.file) {
                 const formData = new FormData();
-                formData.append("file", file);
+                formData.append("file", values.file);
 
                 const uploadResponse: any = await axios.post("/upload-image", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
 
                 if (uploadResponse?.result?.url) {
-                    imageUrl = uploadResponse.result.url;
+                    imageUrl = uploadResponse.result.url; 
                 } else {
-                    setMessage("Dữ liệu trả về không đúng định dạng.");
+                    setMessage("Lỗi khi upload ảnh mới.");
+                    setSubmitting(false);
+                    setLoading(false);
                     return;
                 }
             }
 
-            const slug = artist.name.toLowerCase().replace(/\s+/g, '-');
-            const artistData = { ...artist, slug, url_cover: imageUrl };
+            const slug = removeVietnameseTones(values.name); 
+            const artistData = { ...artist, name: values.name, slug, url_cover: imageUrl, is_show: values.is_show };
 
             const response = await axios.patch(`/artist/${artist.id_artist}`, artistData, {
                 headers: { "Content-Type": "application/json" },
@@ -105,11 +128,14 @@ export default function EditArtist({ params }: { params: { id: string } }) {
             }
         } catch (error) {
             console.error("Lỗi khi cập nhật dữ liệu nghệ sĩ:", error);
-            alert("Đã xảy ra lỗi khi gửi dữ liệu.");
+            setMessage("Đã xảy ra lỗi khi gửi dữ liệu.");
         } finally {
             setLoading(false);
+            setSubmitting(false);
         }
     };
+
+
 
     if (loading) return <div>Đang tải...</div>;
     if (!artist) return <div>Không tìm thấy nghệ sĩ.</div>;
@@ -117,58 +143,82 @@ export default function EditArtist({ params }: { params: { id: string } }) {
     return (
         <div className={styles.container}>
             <h2>Sửa thông tin nghệ sĩ</h2>
-            <div className={styles.formGroup}>
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Tên nghệ sĩ"
-                    value={artist.name}
-                    onChange={handleChange}
-                />
+            <Formik
+                initialValues={{
+                    name: artist.name,
+                    file: null,
+                    is_show: artist.is_show,
+                }}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+            >
+                {({ setFieldValue, values, isSubmitting }) => (
+                    <Form className={styles.formGroup}>
+                        <div>
+                            <Field
+                                type="text"
+                                name="name"
+                                placeholder="Tên nghệ sĩ"
+                                className={styles.inputField}
+                            />
+                            <ErrorMessage name="name" component="div" className={styles.error} />
+                        </div>
 
-                {previewUrl && (
-                    <div className={styles.preview}>
-                        <img src={previewUrl} alt="Xem trước hình ảnh" />
-                    </div>
+                        <div>
+                            <input
+                                id="file-upload"
+                                type="file"
+                                style={{ display: "none" }}
+                                onChange={(e) => {
+                                    const file = e.target.files ? e.target.files[0] : null;
+                                    setFieldValue("file", file);
+                                    if (file) {
+                                        setPreviewUrl(URL.createObjectURL(file)); 
+                                    } else {
+                                        setPreviewUrl(artist.url_cover); 
+                                    }
+                                }}
+                            />
+
+                            {previewUrl && (
+                                <div className={styles.preview}>
+                                    <img src={previewUrl} alt="Xem trước hình ảnh" />
+                                </div>
+                            )}
+                            <label htmlFor="file-upload" className={styles.customFileUpload}>
+                                Chọn ảnh
+                            </label>
+                            <ErrorMessage name="file" component="div" className={styles.error} />
+                        </div>
+
+                        <div className={styles.visibilityRadioButtons}>
+                                <label>Hiện</label>
+                                <Field
+                                    type="radio"
+                                    name="is_show"
+                                    value="1"
+                                    checked={values.is_show === 1}
+                                    onChange={() => setFieldValue("is_show", 1)}
+                                />
+                            
+                           
+                                <label>Ẩn</label>
+                                <Field
+                                    type="radio"
+                                    name="is_show"
+                                    value="0"
+                                    checked={values.is_show === 0}
+                                    onChange={() => setFieldValue("is_show", 0)}
+                                />
+                        </div>
+
+                        <button type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? "Đang gửi..." : "Cập nhật nghệ sĩ"}
+                        </button>
+                        {message && <p className={styles.message}>{message}</p>}
+                    </Form>
                 )}
-                <label htmlFor="file-upload" className={styles.customFileUpload}>
-                    Chọn ảnh
-                </label>
-                <input
-                    id="file-upload"
-                    type="file"
-                    style={{ display: 'none' }}
-                    onChange={handleFileChange}
-                />
-
-                <div className={styles.visibilityRadioButtons}>
-                    <div className={styles.hien}>
-                        <label>Hiện</label>
-                        <input
-                            type="radio"
-                            name="is_show"
-                            value="1"
-                            checked={artist.is_show === 1}
-                            onChange={handleVisibilityChange}
-                        />
-                    </div>
-                    <div className={styles.an}>
-                        <label>Ẩn</label>
-                        <input
-                            type="radio"
-                            name="is_show"
-                            value="0"
-                            checked={artist.is_show === 0}
-                            onChange={handleVisibilityChange}
-                        />
-                    </div>
-                </div>
-
-                <button onClick={handleSubmit} disabled={loading}>
-                    {loading ? "Đang gửi..." : "Cập nhật nghệ sĩ"}
-                </button>
-            </div>
-            {message && <p>{message}</p>}
+            </Formik>
         </div>
     );
 }
