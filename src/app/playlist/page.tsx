@@ -8,11 +8,19 @@ import { useRouter } from "next/navigation";
 
 interface Playlist {
   id_playlist: string;
-  id_music:string
-  name: string;
   
+  name: string;
+  musics: Music[];
   playlist_index: number // Thêm tên người tạo vào dữ liệu playlist
    
+}
+interface Music {
+  id_music: string;
+  name: string;
+  producer:string;
+  url_path: string;
+  url_cover: string;
+  total_duration: string | null;
 }
 
 
@@ -23,11 +31,12 @@ const PlaylistPage = () => {
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"all" | "mine">("all"); // Tab quản lý
+  
   const [newPlaylistName, setNewPlaylistName] = useState("");
   // const [newPlaylistIndex, setNewPlaylistIndex] = useState<number | null>(null);
   const [creating, setCreating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái modal
+
   
 
   const fetchPlaylists = async () => {
@@ -95,9 +104,38 @@ const PlaylistPage = () => {
     }
   };
 
-
-
   
+
+const deleteSongFromPlaylist = async (id_music: string, id_playlist: string) => {
+  try {
+      // Gọi API để xóa bài hát khỏi playlist
+      const response = await axios.delete("/playlist/add-music", {
+          data: { id_music: String(id_music), id_playlist: String(id_playlist) }
+      });
+
+      if (response.status === 200) {
+          // Xóa thành công, cập nhật lại danh sách playlist của bài hát
+          setPlaylists((prev) =>
+              prev.map((playlist) =>
+                  playlist.id_playlist === id_playlist
+                      ? {
+                            ...playlist,
+                            musics: playlist.musics.filter((music) => music.id_music !== id_music)
+                        }
+                      : playlist
+              )
+          );
+
+          alert("Xóa bài hát khỏi playlist thành công!");
+      }
+  } catch (error) {
+      console.error("Error deleting song from playlist:", error);
+      alert("Đã xảy ra lỗi khi xóa bài hát khỏi playlist!");
+  }
+};
+
+
+
 
   useEffect(() => {
     fetchPlaylists();
@@ -156,6 +194,10 @@ const PlaylistPage = () => {
             <p>{playlist.name}</p>
             
             
+            {/* Nút xóa playlist */}
+    
+
+    
           </div>
         ))}
       </div>

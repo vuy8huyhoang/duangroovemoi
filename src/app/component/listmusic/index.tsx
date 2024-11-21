@@ -17,6 +17,10 @@
         composer: string;
         artists: any[];
         genre: string;
+        music:string;
+        musics:{
+       id_music: string
+    }
     }
 
     interface MusicHistory {
@@ -26,6 +30,7 @@
 
     interface Playlist {
         id_playlist: string;
+        id_music:string;
         name: string;
         index_order: number;
     }
@@ -35,6 +40,7 @@
         const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
         const [favoriteMusic, setFavoriteMusic] = useState<Set<number>>(new Set());
         const [menuVisible, setMenuVisible] = useState<number | null>(null);
+        const [activeFilter, setActiveFilter] = useState<string>('Tất cả');
         const [submenuVisible, setSubmenuVisible] = useState<number | null>(null);
         const [playlists, setPlaylists] = useState<Playlist[]>([]);
         const { state, dispatch } = useContext(AppContext);
@@ -87,14 +93,43 @@
 
             try {
                 if (isFavorite) {
-                    await axios.delete("/favorite-music/me", { data: { id_music } });
+                    await axios.delete(`/favorite-music/me?id_music=${id_music}`);
+                    alert("Xóa bài hát yêu thích thành công")
                 } else {
                     await axios.post("/favorite-music/me", { id_music });
+                    alert("Thêm bài hát yêu thích thành công")
                 }
             } catch (error) {
                 console.error("Error updating favorite music:", error);
             }
         };
+
+        const handleFilterClick = (filter: string) => setActiveFilter(filter);
+
+    const filteredAlbums = activeFilter === 'Tất cả'
+        ? albums
+        : albums.filter(album => album.genre === activeFilter);
+
+        const toggleMenu = (id: number) => {
+            setMenuVisible((prev) => (prev === id ? null : id));
+        };
+        const toggleSubmenu = (id: number) => {
+            setSubmenuVisible((prev) => (prev === id ? null : id));
+        };
+
+        
+        const addToPlaylist = async (id_music, id_playlist: string, index_order: number) => 
+        {
+            try {
+                await axios.post('/playlist/add-music', { id_music, id_playlist, index_order });
+                alert(`Bài hát đã được thêm vào playlist!`);
+                console.log("dữ liệu đc thêm:", id_music, id_playlist, index_order );
+            } catch (error) {
+                console.error('Error adding to playlist:', error);
+                alert(`Lỗi khi thêm bài hát vào playlist.`);
+                  console.error("Error updating favorite music:", error);
+              }
+            };
 
         return (
             <div className={style.albumList}>
@@ -143,10 +178,42 @@
                                 <Link href={`/musicdetail/${album.id_music}`}>{album.composer}</Link>
                             </div>
                         </div>
+
+                        <div className={style.songControls}>
+                                    <i 
+                                        className={`fas fa-heart ${favoriteMusic.has(album.id_music) ? style.activeHeart : ''}`}
+                                        onClick={() => toggleFavorite(album.id_music)}
+                                ></i>
+                                    <i className="fas fa-ellipsis-h"
+                                    onClick={() => toggleMenu(album.id_music)} 
+                                    ></i>
+                                </div>
+                                {menuVisible === album.id_music && (
+                            <div className={style.menu}>
+                                <button onClick={() => toggleSubmenu(album.id_music)}>Thêm vào playlist</button>
+                                {submenuVisible === album.id_music && (
+                                    <div className={style.submenu}>
+                                {playlists.map((playlist,index) => (
+                            <button
+                                key={playlist.id_playlist}
+                                    onClick={() => addToPlaylist(album.id_music, playlist.id_playlist, playlist.index_order=index )}>
+
+                                    {playlist.name}
+                            </button>
+                        ))}
+                            </div>
+                        )}
+                                <button onClick={() => console.log('Chia sẻ')}>Chia sẻ</button>
+                                <button onClick={() => console.log('Tải về')}>Tải về</button>
+                            </div>
+                            )}
                     </div>
                 ))}
             </div>
+            
+       
+       
         );
     };
 
-    export default ListMusic;
+export default ListMusic;

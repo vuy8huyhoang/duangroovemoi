@@ -22,8 +22,9 @@ export default function EditUser({ params }: { params: { id: string } }) {
 
     useEffect(() => {
         
-        setUser(null); // Đảm bảo không hiển thị dữ liệu cũ
-        if (id) {console.log("Fetching user with ID:",id);
+        
+        if (id) {
+            console.log("Fetching user with ID:",id);
             
             axios
                 .get(`/user/${id}`)
@@ -88,7 +89,7 @@ export default function EditUser({ params }: { params: { id: string } }) {
             const userData = { ...user, url_avatar: imageUrl };
 
             const response:any = await axios.patch(`/user/${user.id_user}`, userData, {
-                headers: { "Content-Type": "application/json" },
+                // headers: { "Content-Type": "application/json" },
             });
 
             if (response.status === 200 || response.status === 201) {

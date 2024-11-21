@@ -90,6 +90,8 @@
   margin: 10px 0;
   font-size: 16px;
   color: #e0e0e0;
+  flex-grow: 1;
+    margin-left: 15px;
 }
 
 .songContentdetail {
@@ -101,7 +103,7 @@
 }
 
 .songContent p strong {
-  color: #ff4081;
+  color: white;
 }
 
 /* Audio Player */
@@ -264,9 +266,10 @@
   gap: 10px; /* Khoảng cách giữa ảnh bìa và tên bài hát */
   padding: 10px;
   border-radius: 8px;
-  background-color: #2d2d2d;  /* Màu nền nhẹ cho các bài hát */
+  // background-color: #2d2d2d;  /* Màu nền nhẹ cho các bài hát */
   margin-bottom: 10px; /* Khoảng cách giữa các bài hát */
   transition: background-color 0.3s ease; /* Hiệu ứng hover cho mỗi item */
+  border: 1px solid #2d2d2d;
 }
 
 .songContent:hover {
@@ -274,3 +277,105 @@
 }
 
 /* Tiếp tục các style khác của bạn... */
+.strong{
+  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: white;
+    width: 100px;
+    a {
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+}
+.speed{
+  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: white;
+    width: 100px;
+    a {
+        color: rgba(255, 255, 255, 0.567);
+        font-size: 14px;
+        font-weight: medium;
+        text-decoration: none;
+    }
+}
+.deleteButton {
+  background-color: #f44336; /* Màu nền đỏ */
+  color: white; /* Màu chữ trắng */
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Thêm hiệu ứng chuyển động */
+  
+  /* Hover hiệu ứng */
+  &:hover {
+    background-color: #d32f2f; /* Màu đỏ đậm hơn khi hover */
+    transform: scale(1.1); /* Phóng to nút khi hover */
+  }
+
+  /* Focus hiệu ứng */
+  &:focus {
+    outline: none; /* Loại bỏ outline khi focus */
+    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.5); /* Thêm bóng đổ */
+  }
+
+  /* Khi nút xóa bị vô hiệu hóa */
+  &:disabled {
+    background-color: #e0e0e0; /* Màu nền xám */
+    color: #bdbdbd; /* Màu chữ xám */
+    cursor: not-allowed; /* Thay đổi con trỏ khi vô hiệu hóa */
+  }
+}
+.songContent {
+  position: relative;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.songContent i.fas.fa-ellipsis-h {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.menu {
+  position: absolute;
+  top: 0;
+  right: 40px;
+  // background-color: white;
+  // border: 1px solid #170F23;
+  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  z-index: 10;
+}
+
+.menu button {
+  background-color: #170F23;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  margin-bottom: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.menu button:hover {
+  background-color: #d32f2f;
+}
+
+.menu button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.5);
+}

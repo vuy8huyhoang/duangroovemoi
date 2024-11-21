@@ -30,6 +30,14 @@ interface MusicHistory {
   id_music: string;
   created_at: string;
 }
+interface AggregatedHistory {
+  id_music: string;
+  name: string;
+  
+  total_play_duration: number;
+  view_count: number; 
+  last_played: string; 
+}
 
 
 const SongDetailPage: React.FC = ({ params }: any) => {
@@ -322,6 +330,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
           <p className={style.songArtist}>
             Ngày phát hành: {formatDate(musicdetail.release_date)}
           </p>
+          
         </div>
       </div>
       <Comment id_music={id} />

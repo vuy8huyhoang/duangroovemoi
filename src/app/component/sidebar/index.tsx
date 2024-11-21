@@ -5,9 +5,71 @@ import { ReactSVG } from 'react-svg';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { clsx } from 'clsx';
+import axios from '@/lib/axios'
+
+interface Playlist {
+    id_playlist: string;
+    id_music:string
+    name: string;
+    
+    playlist_index: number // Thêm tên người tạo vào dữ liệu playlist
+     
+  }
+
 export default function Sidebar() {
+    const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [activeItem, setActiveItem] = useState<string>('Khám Phá');
+    const [error, setError] = useState<string | null>(null);
+  
+    const [creating, setCreating] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái modal
+    const [newPlaylistName, setNewPlaylistName] = useState("");
     const pathname = usePathname();
+
+    const createPlaylist = async () => {
+        if (!newPlaylistName.trim()) {
+          alert("Vui lòng nhập tên playlist")
+          setError("Tên playlist không được để trống");
+          return;
+        }
+      
+        setCreating(true);
+        try {
+          // Tự động tính toán playlist_index dựa trên số lượng playlist hiện tại
+          const playlistIndex = playlists.length + 1;
+          // Gửi yêu cầu tạo playlist
+          const response: any = await axios.post("/playlist/me", {
+            name: newPlaylistName,
+            playlist_index: playlistIndex,
+          });
+      
+          // Kiểm tra và log phản hồi
+          console.log("API Response:", response);
+      
+          if (response && response.result && response.result.newID) {
+            const {   message } = response.result;
+            const status = response.status  
+            console.log("test success:",status);
+            
+            if (status === 201) {
+              // Nếu thành công, reset các trường và fetch lại playlist
+              setNewPlaylistName("");
+              
+              setIsModalOpen(false);
+              
+            } else {
+              // Nếu phản hồi không thành công, hiển thị thông báo lỗi
+              setError(message || "Failed to create playlist");
+            }
+          } 
+          
+        } catch (error: any) {
+          setError(error.message || "Failed to fetch playlists");
+        } finally {
+          setCreating(false); // Đặt trạng thái tạo playlist về false khi hoàn thành
+        }
+      };
+
     return (
         <div className={styles.sidebar}>
             <div className={styles.logo}>
@@ -94,11 +156,32 @@ export default function Sidebar() {
                 </li>
             </ul>
             <div className={styles.createPlaylist}>
-                <button>
+                <button onClick={() =>  setIsModalOpen(true) }>
                     <ReactSVG src="/vector (3).svg" />
                     Tạo playlist mới
                 </button>
             </div>
+            {isModalOpen && (
+          <div className={styles.modal}>
+            <div className={styles.modalContent}>
+              <h2>Tạo Playlist Mới</h2>
+              <input
+                type="text"
+                value={newPlaylistName}
+                onChange={(e) => setNewPlaylistName(e.target.value)}
+                placeholder="Tên playlist mới"
+              />
+              
+              
+
+
+              <button onClick={createPlaylist} disabled={creating || !newPlaylistName.trim()}>
+                {creating ? "Creating..." : "Tạo playlist"}
+              </button>
+              <button onClick={() => setIsModalOpen(false)}>Đóng</button>
+            </div>
+          </div>
+        )}
         </div>
     );
 }

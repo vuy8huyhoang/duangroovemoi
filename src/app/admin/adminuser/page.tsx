@@ -100,7 +100,7 @@ export default function AdminUser() {
                                     <td>
                                         <input type="checkbox" />
                                     </td>
-                                    <td>#{user.id_user}</td>
+                                    <td>{user.id_user}</td>
                                     <td><img src={user.url_avatar || "/Group 66.svg"} alt="Avatar" /></td>
                                     <td>{user.fullname}</td>
                                     <td>{user.email}</td>

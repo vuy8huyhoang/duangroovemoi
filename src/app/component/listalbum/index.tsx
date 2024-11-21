@@ -29,6 +29,7 @@ interface Album {
 
 export default function ListAlbum() {
     const [albumData, setAlbumData] = useState<Album[]>([]);
+    const [favoriteAlbum, setFavoriteAlbum] = useState<Set<number>>(new Set());
     const [loading, setLoading] = useState(true);
     const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -84,6 +85,49 @@ export default function ListAlbum() {
         audioRef.current?.pause();
         setIsPlaying(false);
     };
+    const toggleFavorite:any = async (id_album: any) => {
+        const isFavorite = favoriteAlbum.has(id_album);
+        setFavoriteAlbum((prev) => {
+            const updated = new Set(prev);
+            if (isFavorite) {
+                updated.delete(id_album);
+            } else {
+                updated.add(id_album);
+            }
+            return updated;
+        });
+
+        const isLoggedIn = localStorage.getItem('accessToken'); // Thay đổi theo cách bạn lưu token
+        if (!isLoggedIn) {
+            alert('Vui lòng đăng nhập để yêu thích bài hát!');
+            dispatch({ type: "SHOW_LOGIN", payload: true });
+
+            return;
+
+
+        // if (typeof window !== "undefined") {
+
+        //     const isLoggedIn = localStorage.getItem('accessToken'); // Thay đổi theo cách bạn lưu token
+        //     if (!isLoggedIn) {
+        //         alert('Vui lòng đăng nhập để yêu thích bài hát!');
+        //         // router.push('/home');  // Chuyển hướng đến trang đăng nhập
+        //         return;
+        //     }
+
+        }
+    
+        try {
+            console.log(isFavorite ? "Xóa album khỏi yêu thích" : "Thêm album vào yêu thích");
+            if (isFavorite) {
+                await axios.delete(`/favorite-album/me?id_album=${id_album}`, );
+            } else {
+                await axios.post(`/favorite-album/me`, { id_album});
+            }
+        } catch (error) {
+            console.error('Lỗi khi cập nhật trạng thái yêu thích:', error);
+            // Thông báo lỗi cho người dùng nếu cần
+        }
+    };
 
     return (
         <>
@@ -104,9 +148,9 @@ export default function ListAlbum() {
                             <div className={style.albumWrapper}>
                                 <img src={album.url_cover} alt={album.name} className={style.albumCover} />
                                 <div className={style.overlay}>
-                                    <button className={style.likeButton}>
-                                        <ReactSVG src="/heart.svg" />
-                                    </button>
+                                <button className={style.likeButton} onClick={() => toggleFavorite(album.id_album)}>
+                                    <ReactSVG src={favoriteAlbum.has(Number(album.id_album)) ? '/heart_active.svg' : '/heart.svg'} className={ style.activeHeart } />
+                                </button>
                                     <button
                             className={style.playButton}
                             onClick={() => {

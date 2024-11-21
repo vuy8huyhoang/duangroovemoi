@@ -92,9 +92,9 @@ export default function AlbumHot() {
         try {
             console.log(isFavorite ? "Xóa album khỏi yêu thích" : "Thêm album vào yêu thích");
             if (isFavorite) {
-                await axios.delete(`/favorite-album/me`, { data: { id_album } });
+                await axios.delete(`/favorite-album/me?id_album=${id_album}`, );
             } else {
-                await axios.post(`/favorite-album/me`, { id_album, favorite: true });
+                await axios.post(`/favorite-album/me`, { id_album});
             }
         } catch (error) {
             console.error('Lỗi khi cập nhật trạng thái yêu thích:', error);
@@ -133,7 +133,7 @@ export default function AlbumHot() {
                                 <img src={album.url_cover} alt={album.name} className={style.albumCover} />
                                 <div className={style.overlay}>
                                 <button className={style.likeButton} onClick={() => toggleFavorite(album.id_album)}>
-                                    <ReactSVG src="/heart.svg" className={favoriteAlbum.has(album.id_album) ? style.activeHeart : ''} />
+                                    <ReactSVG src={favoriteAlbum.has(album.id_album) ? '/heart_active.svg' : '/heart.svg'} className={ style.activeHeart } />
                                 </button>
                                     <button
                                         className={style.playButton}
