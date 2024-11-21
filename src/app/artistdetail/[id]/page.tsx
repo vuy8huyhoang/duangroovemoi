@@ -25,6 +25,11 @@ interface Music {
     url_cover: string;
     artists: any[];
 }
+interface MusicHistory {
+    id_music: string;
+    created_at: string;
+}
+
 
 export default function ArtistDetail({ params }) {
     const { id } = params; // Get id from URL params
@@ -36,6 +41,7 @@ export default function ArtistDetail({ params }) {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [currentSong, setCurrentSong] = useState<Music | null>(null);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
     const { state, dispatch } = useContext(AppContext);
 
     // Lấy thông tin nghệ sĩ
@@ -139,6 +145,17 @@ const handleFollowClick = (id_artist) => {
     if (!artist) {
         return <div>Không tìm thấy nghệ sĩ này.</div>;
     }
+    const addMusicToHistory = async (id_music: string, play_duration: number) => {
+        try {
+            const response: any = await axios.post("/music-history/me", { id_music, play_duration });
+            const newHistory: MusicHistory = response.result;
+            setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+            console.log("Added to history:", newHistory);
+        } catch (error) {
+            console.error("Error adding to music history:", error);
+        }
+    };
+    
 
     return (
         <div className={style.contentwrapper}>
@@ -193,7 +210,7 @@ const handleFollowClick = (id_artist) => {
                         <div className={style.image}>
                             <img src={music.url_cover} alt={music.name} className={style.musicCover} />
                             <div className={style.overlay}>
-                                            <button
+                                            {/* <button
                                                 className={style.playButton}
                                                 onClick={() => {
                                                     addMusicToTheFirst(
@@ -221,7 +238,41 @@ const handleFollowClick = (id_artist) => {
                                                 ) : (
                                                     <i className="fas fa-play"></i>
                                                 )}
-                                            </button>
+                                            </button> */}
+                                            <button
+    className={style.playButton}
+    onClick={async () => {
+        // Thêm nhạc vào playlist và phát nhạc
+        addMusicToTheFirst(
+            state,
+            dispatch,
+            music.id_music.toString(),
+            music.name,
+            music.url_path,
+            music.url_cover,
+            music.composer,
+            music.artists.map((artist) => artist.artist)
+        );
+
+        // Thêm vào lịch sử nghe nhạc
+        await addMusicToHistory(music.id_music.toString(), 100);
+
+        // Dừng nhạc nếu đang phát và chọn lại nhạc
+        if (
+            music.id_music === state.currentPlaylist[0]?.id_music &&
+            state.isPlaying
+        ) {
+            dispatch({ type: "IS_PLAYING", payload: false });
+        }
+    }}
+>
+    {music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+        <i className="fas fa-pause"></i>
+    ) : (
+        <i className="fas fa-play"></i>
+    )}
+</button>
+
                             </div>
                         </div>
                     </div>

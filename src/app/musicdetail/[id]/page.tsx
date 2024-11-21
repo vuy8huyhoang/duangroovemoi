@@ -218,7 +218,40 @@ const SongDetailPage: React.FC = ({ params }: any) => {
                 "Phát nhạc"
               )}
             </button> */}
-            <button
+            {/* <button
+    className={style.playButton}
+    onClick={async () => {
+        // Thêm nhạc vào playlist và phát nhạc
+        addMusicToTheFirst(
+            state,
+            dispatch,
+            musicdetail.id_music.toString(),
+            musicdetail.name,
+            musicdetail.url_path,
+            musicdetail.url_cover,
+            musicdetail.composer,
+            musicdetail.artists.map((artist) => artist.artist)
+        );
+
+        // Thêm vào lịch sử nghe nhạc
+        await addMusicToHistory(musicdetail.id_music.toString(), 100);
+
+        // Dừng nhạc nếu đang phát và chọn lại nhạc
+        if (
+          musicdetail.id_music === state.currentPlaylist[0]?.id_music &&
+            state.isPlaying
+        ) {
+            dispatch({ type: "IS_PLAYING", payload: false });
+        }
+    }}
+>
+{musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
+                "Dừng nhạc"
+              ) : (
+                "Phát nhạc"
+              )}
+</button> */}
+<button
     className={style.playButton}
     onClick={async () => {
         // Thêm nhạc vào playlist và phát nhạc
@@ -251,6 +284,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
                 "Phát nhạc"
               )}
 </button>
+
 
             <span
               className={clsx(style.heartIcon, {

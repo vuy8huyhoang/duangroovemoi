@@ -1,13 +1,35 @@
-'use client'
+"use client"
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./rightsidebar.module.scss";
 import { AppContext } from "@/app/layout";
 import {  addMusicToTheFirst } from "../musicplayer";
 import Link from "next/link";
+import axios from "@/lib/axios";
+
+
+
+interface MusicHistory {
+    id_music: string;
+    created_at: string;
+}
 
 export default function RightSidebar() {
     const { state, dispatch } = useContext(AppContext);
     const [playlist, setPlaylist] = useState<any[]>([]);
+    const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
+    const closeDropdown = () => {
+        setIsDropdownOpen(false);
+    };
+    const deletePlaylist = () => {
+        dispatch({ type: "CURRENT_PLAYLIST", payload: [] });
+        closeDropdown();
+    }
+
     useEffect(() => {
         setPlaylist(state?.currentPlaylist);
     }, [state?.currentPlaylist]);
@@ -27,8 +49,19 @@ export default function RightSidebar() {
                 type: "IS_PLAYING",
                 payload: true
             })
-        console.log("stt",index);
+                
         }
+        const addMusicToHistory = async (id_music: string, play_duration: number) => {
+            try {
+                const response: any = await axios.post("/music-history/me", { id_music, play_duration });
+                const newHistory: MusicHistory = response.result;
+                setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+                console.log("Added to history:", newHistory);
+            } catch (error) {
+                console.error("Error adding to music history:", error);
+            }
+        };
+        
 
     return (
        
@@ -36,11 +69,23 @@ export default function RightSidebar() {
             <div className={styles.all_header}>
             <div className={styles.header}>
                 <button className={styles.active}>Danh sách phát</button>
-                <button>Nghe gần đây</button>
+                   <Link href={`/historymusic`}><button>Nghe gần đây</button></Link>
+                
             </div>
             <div className={styles.header}>
                
-                <button className={styles.moreBtn}>...</button>
+                    <button className={styles.moreBtn} onClick={(e) => {
+                        e.stopPropagation(); 
+                        toggleDropdown();
+                    }}>...</button>
+                    {isDropdownOpen && (
+                        <div className={styles.dropdown}>
+                            <div className={styles.dropdownItem} onClick={(e) => {
+                                deletePlaylist();
+                            }}>Xóa danh sách phát</div>
+                            <div className={styles.dropdownItem}>Thêm vào playlist</div>
+                        </div>
+                    )}
                 </div>
             </div>
             {playlist?.length > 0 && (
@@ -80,28 +125,56 @@ export default function RightSidebar() {
                             <audio controls src={playlist?.[0].url_path} className={styles.audio}>
                             </audio>
                         </div>
+                        <div className={styles.songControls}>
+                            <i className="fas fa-heart"></i>
+                        </div>
+                        <div className={styles.moreOptions}>...</div>
                     </div>
 
                     <div className={styles.list}>
                         <div className={styles.titleSection}>Tiếp theo</div>
                         {playlist.slice(1).map((song, index) => (
-                            <div key={index} className={styles.song}>
+                            <div key={song.id_music} className={styles.song}>
                                 <div className={styles.thumbnail}>
                                     <img
                                         className={styles.hinh}
                                         src={song.url_cover}
                                         alt={song.name}
                                     />
-                                    <button
-                                        className={styles.playButton}
-                                        onClick={() => {
-                                            handleChangeMusic(index)
-                                        }
-                                        }
-                                    >
-            
-                                        <i className="fas fa-play"></i>       
-                                    </button>
+                                   <button
+    className={styles.playButton}
+    onClick={async () => {
+        // Thêm nhạc vào playlist và phát nhạc
+        addMusicToTheFirst(
+            state,
+            dispatch,
+            song.id_music.toString(),
+            song.name,
+            song.url_path,
+            song.url_cover,
+            song.composer,
+            song.artists.map((artist) => artist.artist)
+        );
+
+        // Thêm vào lịch sử nghe nhạc
+        await addMusicToHistory(song.id_music.toString(), 100);
+
+        // Dừng nhạc nếu đang phát và chọn lại nhạc
+        if (
+            song.id_music === state.currentPlaylist[0]?.id_music &&
+            state.isPlaying
+        ) {
+            dispatch({ type: "IS_PLAYING", payload: false });
+        }
+    }}
+>
+    {song.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+        <i className="fas fa-pause"></i>
+    ) : (
+        <i className="fas fa-play"></i>
+    )}
+</button>
+
                                 </div>
                                 <div className={styles.info}>
                                     <Link href={`/musicdetail/${song.id_music}`}>
@@ -115,6 +188,10 @@ export default function RightSidebar() {
                                     <audio controls src={song.url_path} className={styles.audio}>
                                     </audio>
                                 </div>
+                                <div className={styles.songControls}>
+                                    <i className="fas fa-heart"></i>
+                                </div>
+                                <div className={styles.moreOptions}>...</div>
                             </div>
                         ))}
                     </div>
