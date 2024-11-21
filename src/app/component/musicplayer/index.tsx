@@ -5,7 +5,7 @@ import { AppContext } from "@/app/layout";
 import clsx from "clsx";
 import { ReactSVG } from "react-svg";
 import { useRouter } from "next/navigation";
-
+import axios from '@/lib/axios';
 interface Music {
   id_music: string;
   name: string;
@@ -110,7 +110,7 @@ const MusicPlayer: React.FC = () => {
   const currentPlaylist = state?.currentPlaylist;
   const volume = state?.volume;
   const isPlaying = state?.isPlaying;
-
+  const [heart, setHeart]= useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -193,7 +193,29 @@ const MusicPlayer: React.FC = () => {
 
     return () => clearInterval(interval);
   }, [currentPlaylist]);
-
+  const handleHeartClick = (id_music) => {
+    if (heart == true) {
+      axios
+        .delete(`favorite-music/me?id_music=${id_music}`)
+        .then((response: any) => {
+          console.log("Album unliked successfully", response);
+          setHeart(false);
+        })
+        .catch((error: any) => {
+          console.error("Error unliking album", error);
+        });
+    } else {
+      axios
+        .post(`favorite-music/me`, { id_music })
+        .then((response: any) => {
+          console.log("Album liked successfully", response);
+          setHeart(true);
+        })
+        .catch((error: any) => {
+          console.error("Error liking album", error);
+        });
+    }
+  };
   useEffect(() => {
     if (isPlaying) {
       const interval = setInterval(() => {
@@ -329,6 +351,14 @@ const MusicPlayer: React.FC = () => {
               <ReactSVG src="/heart.svg"></ReactSVG>
             </div> */}
             <div className={classes.tool__playingWrapper}>
+            <span
+              className={clsx(classes.heartIcon, {
+                [classes.heartIcon_active]: heart,
+              })}
+              onClick={() => handleHeartClick(state.currentPlaylist[0].id_music)}
+            >
+              ♥
+            </span>
               <div
                 className={clsx(classes.icon, classes.movingBtn)}
                 onClick={() => {

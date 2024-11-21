@@ -298,3 +298,16 @@
     cursor: pointer;
   }
 }
+// heart 
+.heartIcon {
+  color: #eae0df;
+  font-size: 24px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  margin: 10px;
+}
+
+.heartIcon:hover,
+.heartIcon_active {
+  color: #ff4c3b; /* Highlight màu đỏ khi hoạt động */
+}
