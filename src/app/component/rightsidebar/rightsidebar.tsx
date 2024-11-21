@@ -69,7 +69,8 @@ export default function RightSidebar() {
             <div className={styles.all_header}>
             <div className={styles.header}>
                 <button className={styles.active}>Danh sách phát</button>
-                <button>Nghe gần đây</button>
+                   <Link href={`/historymusic`}><button>Nghe gần đây</button></Link>
+                
             </div>
             <div className={styles.header}>
                
