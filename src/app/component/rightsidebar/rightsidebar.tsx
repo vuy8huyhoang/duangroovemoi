@@ -4,10 +4,19 @@ import styles from "./rightsidebar.module.scss";
 import { AppContext } from "@/app/layout";
 import {  addMusicToTheFirst } from "../musicplayer";
 import Link from "next/link";
+import axios from "@/lib/axios";
+
+
+
+interface MusicHistory {
+    id_music: string;
+    created_at: string;
+}
 
 export default function RightSidebar() {
     const { state, dispatch } = useContext(AppContext);
     const [playlist, setPlaylist] = useState<any[]>([]);
+    const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
@@ -42,6 +51,17 @@ export default function RightSidebar() {
             })
                 
         }
+        const addMusicToHistory = async (id_music: string, play_duration: number) => {
+            try {
+                const response: any = await axios.post("/music-history/me", { id_music, play_duration });
+                const newHistory: MusicHistory = response.result;
+                setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+                console.log("Added to history:", newHistory);
+            } catch (error) {
+                console.error("Error adding to music history:", error);
+            }
+        };
+        
 
     return (
        
@@ -120,16 +140,40 @@ export default function RightSidebar() {
                                         src={song.url_cover}
                                         alt={song.name}
                                     />
-                                    <button
-                                        className={styles.playButton}
-                                        onClick={() => {
-                                            handleChangeMusic(index)
-                                        }
-                                        }
-                                    >
-            
-                                        <i className="fas fa-play"></i>       
-                                    </button>
+                                   <button
+    className={styles.playButton}
+    onClick={async () => {
+        // Thêm nhạc vào playlist và phát nhạc
+        addMusicToTheFirst(
+            state,
+            dispatch,
+            song.id_music.toString(),
+            song.name,
+            song.url_path,
+            song.url_cover,
+            song.composer,
+            song.artists.map((artist) => artist.artist)
+        );
+
+        // Thêm vào lịch sử nghe nhạc
+        await addMusicToHistory(song.id_music.toString(), 100);
+
+        // Dừng nhạc nếu đang phát và chọn lại nhạc
+        if (
+            song.id_music === state.currentPlaylist[0]?.id_music &&
+            state.isPlaying
+        ) {
+            dispatch({ type: "IS_PLAYING", payload: false });
+        }
+    }}
+>
+    {song.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+        <i className="fas fa-pause"></i>
+    ) : (
+        <i className="fas fa-play"></i>
+    )}
+</button>
+
                                 </div>
                                 <div className={styles.info}>
                                     <Link href={`/musicdetail/${song.id_music}`}>
