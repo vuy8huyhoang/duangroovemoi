@@ -80,6 +80,10 @@ export default function RightSidebar() {
                             <audio controls src={playlist?.[0].url_path} className={styles.audio}>
                             </audio>
                         </div>
+                        <div className={styles.songControls}>
+                            <i className="fas fa-heart"></i>
+                        </div>
+                        <div className={styles.moreOptions}>...</div>
                     </div>
 
                     <div className={styles.list}>
@@ -115,6 +119,10 @@ export default function RightSidebar() {
                                     <audio controls src={song.url_path} className={styles.audio}>
                                     </audio>
                                 </div>
+                                <div className={styles.songControls}>
+                                    <i className="fas fa-heart"></i>
+                                </div>
+                                <div className={styles.moreOptions}>...</div>
                             </div>
                         ))}
                     </div>
