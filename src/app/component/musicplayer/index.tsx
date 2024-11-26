@@ -198,7 +198,7 @@ const MusicPlayer: React.FC = () => {
       axios
         .delete(`favorite-music/me?id_music=${id_music}`)
         .then((response: any) => {
-          console.log("Album unliked successfully", response);
+          console.log("thành công", response);
           setHeart(false);
         })
         .catch((error: any) => {
