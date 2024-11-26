@@ -58,15 +58,13 @@ const PlaylistPage = () => {
     }
   };
 
-  
-
   const createPlaylist = async () => {
     if (!newPlaylistName || !newPlaylistName.replace(/\s/g, "")) {
-      
       setError("Vui lòng nhập tên playlist");
-      alert("Vui lòng nhập tên playlist")
-      return;
-    }
+      // alert("Vui lòng nhập tên playlist")
+      // return;
+    }else{
+
   
     setCreating(true);
     setError(null);
@@ -98,21 +96,22 @@ const PlaylistPage = () => {
           setError(message || "Tạo playlist thất bại");
         }
       } 
-      
     } catch (error: any) {
       setError(error.message || "Đã xảy ra lỗi khi tạo playlist");
     } finally {
       setCreating(false); // Đặt trạng thái tạo playlist về false khi hoàn thành
-    }
+    } 
+  }
   };
 
-  const deletePlaylist = async (id_playlist: string,) => {
+  const deletePlaylist = async (e, id_playlist: string,) => {
+    e.stopPropagation()
     if (!window.confirm("Bạn có chắc chắn muốn xóa playlist này?")) {
         return; // Người dùng hủy xóa
     }
 
     try {
-        const response:any = await axios.delete(`/playlist/me/${id_playlist}`);
+        const response:any = await axios.delete(`/playlist/me?id_playlist=${id_playlist}`);
 
         if (response.status === 200) {
             // Xóa thành công
@@ -128,19 +127,12 @@ const PlaylistPage = () => {
         alert("Đã xảy ra lỗi khi xóa playlist!");
     }
 };
-  
-
-
-
-
-
 
   useEffect(() => {
     fetchPlaylists();
   }, []);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className={style.playlistPage}>
@@ -166,7 +158,7 @@ const PlaylistPage = () => {
                 onChange={(e) => setNewPlaylistName(e.target.value)}
                 placeholder="Tên playlist mới"
               />
-              {error && !newPlaylistName &&(
+              {error &&(
               <p className={style.error}>{error}</p>
               )}
               {/* <input
@@ -197,12 +189,12 @@ const PlaylistPage = () => {
             
             {/* Nút xóa playlist */}
     
-            {/* <button
+            <button
                 className={style.deleteButton}
-                onClick={() => deletePlaylist(playlist.id_playlist)}
+                onClick={(e) => deletePlaylist(e, playlist.id_playlist)}
             >
                 Xóa
-            </button> */}
+            </button>
     
           </div>
         ))}

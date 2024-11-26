@@ -37,7 +37,7 @@ export default function EditUser({ params }: { params: { id: string } }) {
                 .get(`/user/${id}`)
                 .then((response:any) => {
                     if (response?.result?.data) {
-                        console.log("user data:", response.result);
+                        console.log("user data 1:", response.result);
                         
                         setUser(response.result.data);
                         setPreviewUrl(response.result.data.url_avatar || null);

@@ -32,8 +32,8 @@ interface Music {
 const PlaylistDetailPage: React.FC = ({ params }: any) => {
   const id = params.id;
   const [playlistDetail, setPlaylistDetail] = useState<Playlist | null>(null);
-  const [currentSong, setCurrentSong] = useState<Music | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  // const [currentSong, setCurrentSong] = useState<Music | null>(null);
+  // const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
   // const audioRef = useRef<HTMLAudioElement | null>(null);
   const [menuVisible, setMenuVisible] = useState<string | null>(null); // Quản lý hiển thị menu
@@ -57,21 +57,16 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  useEffect(() => {
-    if (audioRef.current && currentSong) {
-      audioRef.current.src = currentSong.url_path;
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
-  }, [currentSong]);
+  // useEffect(() => {
+  //   if (audioRef.current && currentSong) {
+  //     audioRef.current.src = currentSong.url_path;
+  //     audioRef.current.play();
+  //     setIsPlaying(true);
+  //   }
+  // }, [currentSong]);
 
   const handlePlaySong = (music: Music) => {
-    if (currentSong?.id_music === music.id_music && isPlaying) {
-      audioRef.current?.pause();
-      setIsPlaying(false);
-    } else {
-      setCurrentSong(music);
-    }
+      dispatch({type: "IS_PLAYLING", payload: state.isPlaying});
   };
   const toggleMenu = (id_music: string) => {
     setMenuVisible(menuVisible === id_music ? null : id_music); // Đóng mở menu
@@ -238,7 +233,7 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
         </div>
         
       </div>
-      <audio ref={audioRef} onEnded={() => setIsPlaying(false)} />
+      {/* <audio ref={audioRef} onEnded={() => setIsPlaying(false)} /> */}
     </div>
   );
 };
