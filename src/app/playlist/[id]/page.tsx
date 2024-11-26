@@ -39,6 +39,8 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
   const [menuVisible, setMenuVisible] = useState<string | null>(null); // Quản lý hiển thị menu
   const [submenuVisible, setSubmenuVisible] = useState<string | null>(null); // Quản lý hiển thị submenu
   const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
+  const [isEditing, setIsEditing] = useState(false); // Trạng thái chỉnh sửa
+  const [newName, setNewName] = useState<string>(""); // Tên mới của playlist
   const { state, dispatch } = useContext(AppContext);
 
   useEffect(() => {
@@ -115,6 +117,29 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
     }
 };
 
+const handleEditPlaylist = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  try {
+    const response:any = await axios.patch("/playlist/me", {
+      id_playlist: playlistDetail?.id_playlist,
+      name: newName,
+      
+    });
+
+    if (response.status === 200) {
+      // Cập nhật lại dữ liệu sau khi sửa thành công
+      setPlaylistDetail((prev) => prev && { ...prev, name: newName });
+      alert("Cập nhật playlist thành công!");
+      setIsEditing(false); // Đóng modal
+    }
+  } catch (error) {
+    console.error("Error updating playlist:", error);
+    alert("Đã xảy ra lỗi khi cập nhật playlist.");
+  }
+};
+
+
   if (loading) {
     return <p>Đang tải chi tiết playlist...</p>;
   }
@@ -190,7 +215,7 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
               <p className={style.songTitle}>
                 <strong className={style.strong}><Link href={`/musicdetail/${music.id_music}`}>{music.name}</Link></strong>
               </p>
-              <p className={style.speed}><Link href={`/musicdetail/${music.id_music}`}>{music.producer}</Link></p>
+              <p className={style.speed}><Link href={`/musicdetail/${music.id_music}`}>{music.composer}</Link></p>
               
               <i
                 className="fas fa-ellipsis-h"
