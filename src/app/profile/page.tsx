@@ -256,8 +256,8 @@ const handleSubmit = async (event:any) => {
                                 <div>
                                     <label>
                                         <input 
-                                            type="radio" 
-                                            value="nam" 
+                                            type="radio"    
+                                            value="male" 
                                             checked={editValue === 'male'} 
                                             onChange={() => setEditValue('male')} 
                                         />
@@ -274,7 +274,7 @@ const handleSubmit = async (event:any) => {
                                     </label>
                                 </div>
                             ) : (
-                                profileData?.gender
+                                profileData?.gender === 'male' ? 'Nam':'Nữ'
                             )}
                         </p>
                         {editingField === 'gender' ? (
