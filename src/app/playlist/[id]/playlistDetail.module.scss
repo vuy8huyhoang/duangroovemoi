@@ -251,6 +251,7 @@
   width: 60px;  /* Điều chỉnh kích thước của ảnh bìa */
   height: 60px; /* Điều chỉnh kích thước của ảnh bìa */
   margin-right: 10px; /* Khoảng cách giữa ảnh bìa và tên bài hát */
+  position: relative;
 }
 
 .coverImage {
@@ -274,6 +275,11 @@
 
 .songContent:hover {
   background-color: #444444;  /* Khi hover, màu nền đổi */
+ .imageContainer{
+  .playButton{
+    display: block !important;
+  }
+ } 
 }
 
 /* Tiếp tục các style khác của bạn... */
@@ -348,8 +354,8 @@
 
 .menu {
   position: absolute;
-  top: 0;
-  right: 40px;
+  bottom: -20px;
+  right: -20px;
   // background-color: white;
   // border: 1px solid #170F23;
   // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -378,4 +384,47 @@
 .menu button:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.5);
+}
+.playButton {
+  position: absolute;
+  bottom: 17px;
+  right: 33%;
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 5px;
+  font-size: 10px;
+  cursor: pointer;
+  z-index: 1000;
+  display: none;
+  &:hover{
+    display: block;
+
+  }
+}
+
+.playButton i {
+  color: #000;
+}
+
+
+
+.playing:hover .overlay {
+  opacity: 1;
+}
+
+.playButton i.fa-play {
+  display: inline;
+}
+
+.playButton i.fa-pause {
+  display: none;
+}
+
+.playing .playButton i.fa-play {
+  display: none;
+}
+
+.playing .playButton i.fa-pause {
+  display: inline;
 }

@@ -64,6 +64,7 @@ const PlaylistPage = () => {
     if (!newPlaylistName || !newPlaylistName.replace(/\s/g, "")) {
       
       setError("Vui lòng nhập tên playlist");
+      alert("Vui lòng nhập tên playlist")
       return;
     }
   
@@ -105,35 +106,31 @@ const PlaylistPage = () => {
     }
   };
 
+  const deletePlaylist = async (id_playlist: string,) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa playlist này?")) {
+        return; // Người dùng hủy xóa
+    }
+
+    try {
+        const response:any = await axios.delete(`/playlist/me/${id_playlist}`);
+
+        if (response.status === 200) {
+            // Xóa thành công
+            setPlaylists((prev) => prev.filter((playlist) => playlist.id_playlist !== id_playlist));
+            alert("Xóa playlist thành công!");
+        } else {
+            // Thông báo nếu xóa thất bại
+            console.error("Error deleting playlist:", response.result.message);
+            alert("Xóa playlist thất bại!");
+        }
+    } catch (error) {
+        console.error("Error deleting playlist:", error);
+        alert("Đã xảy ra lỗi khi xóa playlist!");
+    }
+};
   
 
-const deleteSongFromPlaylist = async (id_music: string, id_playlist: string) => {
-  try {
-      // Gọi API để xóa bài hát khỏi playlist
-      const response = await axios.delete("/playlist/add-music", {
-          data: { id_music: String(id_music), id_playlist: String(id_playlist) }
-      });
 
-      if (response.status === 200) {
-          // Xóa thành công, cập nhật lại danh sách playlist của bài hát
-          setPlaylists((prev) =>
-              prev.map((playlist) =>
-                  playlist.id_playlist === id_playlist
-                      ? {
-                            ...playlist,
-                            musics: playlist.musics.filter((music) => music.id_music !== id_music)
-                        }
-                      : playlist
-              )
-          );
-
-          alert("Xóa bài hát khỏi playlist thành công!");
-      }
-  } catch (error) {
-      console.error("Error deleting song from playlist:", error);
-      alert("Đã xảy ra lỗi khi xóa bài hát khỏi playlist!");
-  }
-};
 
 
 
@@ -200,7 +197,12 @@ const deleteSongFromPlaylist = async (id_music: string, id_playlist: string) => 
             
             {/* Nút xóa playlist */}
     
-
+            {/* <button
+                className={style.deleteButton}
+                onClick={() => deletePlaylist(playlist.id_playlist)}
+            >
+                Xóa
+            </button> */}
     
           </div>
         ))}

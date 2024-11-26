@@ -1,15 +1,21 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "@/lib/axios";
 import style from "./playlistdetail.module.scss";
 import Link from "next/link";
+import { addMusicToTheFirst } from "../../component/musicplayer";
+import { AppContext } from "@/app/layout";
 
 interface Playlist {
   id_playlist: string;
   name: string;
   url_cover: string;
   musics: Music[];
+}
+interface MusicHistory {
+  id_music: string;
+  created_at: string;
 }
 
 interface Music {
@@ -19,6 +25,8 @@ interface Music {
   url_path: string;
   url_cover: string;
   total_duration: string | null;
+  composer: string;
+  artists: any[];
 }
 
 const PlaylistDetailPage: React.FC = ({ params }: any) => {
@@ -30,12 +38,16 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [menuVisible, setMenuVisible] = useState<string | null>(null); // Quản lý hiển thị menu
   const [submenuVisible, setSubmenuVisible] = useState<string | null>(null); // Quản lý hiển thị submenu
+  const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
+  const { state, dispatch } = useContext(AppContext);
 
   useEffect(() => {
     axios
       .get(`/playlist/me?id_playlist=${id}`)
       .then((response:any) => {
         setPlaylistDetail(response.result.data[0]);
+        console.log("playlistdetail:", response.result);
+        
       })
       .catch((error) => {
         console.error("Error fetching playlist details", error);
@@ -92,6 +104,16 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
       alert("Đã xảy ra lỗi khi xóa bài hát khỏi playlist!");
     }
   };
+  const addMusicToHistory = async (id_music: string, play_duration: number) => {
+    try {
+        const response: any = await axios.post("/music-history/me", { id_music, play_duration });
+        const newHistory: MusicHistory = response.result;
+        setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+        console.log("Added to history:", newHistory);
+    } catch (error) {
+        console.error("Error adding to music history:", error);
+    }
+};
 
   if (loading) {
     return <p>Đang tải chi tiết playlist...</p>;
@@ -134,12 +156,41 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
                   alt={music.name}
                   className={style.coverImage}
                 />
+                 <button
+                                    className={style.playButton}
+                                    onClick={async () => {
+                                        addMusicToTheFirst(
+                                            state,
+                                            dispatch,
+                                            music.id_music.toString(),
+                                            music.name,
+                                            music.url_path,
+                                            music.url_cover,
+                                            music.composer,
+                                            music?.artists?.map((artist) => artist.artist)
+                                        );
+
+                                        await addMusicToHistory(music.id_music.toString(), 100);
+
+                                        if (
+                                            music.id_music === state.currentPlaylist[0]?.id_music &&
+                                            state.isPlaying
+                                        ) {
+                                            dispatch({ type: "IS_PLAYING", payload: false });
+                                        }
+                                    }}
+                                >
+                                    {music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                                        <i className="fas fa-pause"></i>
+                                    ) : (
+                                        <i className="fas fa-play"></i>
+                                    )}
+                                </button>
               </div>
               <p className={style.songTitle}>
                 <strong className={style.strong}><Link href={`/musicdetail/${music.id_music}`}>{music.name}</Link></strong>
               </p>
               <p className={style.speed}><Link href={`/musicdetail/${music.id_music}`}>{music.producer}</Link></p>
-              {/* <p>Thời lượng: {music.total_duration}</p> */}
               
               <i
                 className="fas fa-ellipsis-h"
