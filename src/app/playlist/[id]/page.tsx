@@ -35,7 +35,7 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
   const [currentSong, setCurrentSong] = useState<Music | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  // const audioRef = useRef<HTMLAudioElement | null>(null);
   const [menuVisible, setMenuVisible] = useState<string | null>(null); // Quản lý hiển thị menu
   const [submenuVisible, setSubmenuVisible] = useState<string | null>(null); // Quản lý hiển thị submenu
   const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
@@ -117,27 +117,27 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
     }
 };
 
-const handleEditPlaylist = async (e: React.FormEvent) => {
-  e.preventDefault();
+// const handleEditPlaylist = async (e: React.FormEvent) => {
+//   e.preventDefault();
 
-  try {
-    const response:any = await axios.patch("/playlist/me", {
-      id_playlist: playlistDetail?.id_playlist,
-      name: newName,
+//   try {
+//     const response:any = await axios.patch("/playlist/me", {
+//       id_playlist: playlistDetail?.id_playlist,
+//       name: newName,
       
-    });
+//     });
 
-    if (response.status === 200) {
-      // Cập nhật lại dữ liệu sau khi sửa thành công
-      setPlaylistDetail((prev) => prev && { ...prev, name: newName });
-      alert("Cập nhật playlist thành công!");
-      setIsEditing(false); // Đóng modal
-    }
-  } catch (error) {
-    console.error("Error updating playlist:", error);
-    alert("Đã xảy ra lỗi khi cập nhật playlist.");
-  }
-};
+//     if (response.status === 200) {
+//       // Cập nhật lại dữ liệu sau khi sửa thành công
+//       setPlaylistDetail((prev) => prev && { ...prev, name: newName });
+//       alert("Cập nhật playlist thành công!");
+//       setIsEditing(false); // Đóng modal
+//     }
+//   } catch (error) {
+//     console.error("Error updating playlist:", error);
+//     alert("Đã xảy ra lỗi khi cập nhật playlist.");
+//   }
+// };
 
 
   if (loading) {
@@ -195,7 +195,7 @@ const handleEditPlaylist = async (e: React.FormEvent) => {
                                             music?.artists?.map((artist) => artist.artist)
                                         );
 
-                                        await addMusicToHistory(music.id_music.toString(), 100);
+                                        addMusicToHistory(music.id_music.toString(), 100);
 
                                         if (
                                             music.id_music === state.currentPlaylist[0]?.id_music &&

@@ -267,7 +267,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
         );
 
         // Thêm vào lịch sử nghe nhạc
-        await addMusicToHistory(musicdetail.id_music.toString(), 100);
+        addMusicToHistory(musicdetail.id_music.toString(), 100);
 
         // Dừng nhạc nếu đang phát và chọn lại nhạc
         if (

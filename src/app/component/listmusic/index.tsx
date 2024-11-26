@@ -152,7 +152,7 @@
                                             album.artists.map((artist) => artist.artist)
                                         );
 
-                                        await addMusicToHistory(album.id_music.toString(), 100);
+                                        addMusicToHistory(album.id_music.toString(), 100);
 
                                         if (
                                             album.id_music === state.currentPlaylist[0]?.id_music &&

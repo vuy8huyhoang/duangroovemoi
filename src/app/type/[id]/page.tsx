@@ -30,11 +30,11 @@ const TypeDetailPage = ({ params }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
-  const [currentSong, setCurrentSong] = useState<Music | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  // const [currentSong, setCurrentSong] = useState<Music | null>(null);
+  // const [isPlaying, setIsPlaying] = useState(false);
   const { state, dispatch } = useContext(AppContext);
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  // const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const fetchMusicList = async () => {
     try {
@@ -66,28 +66,28 @@ const TypeDetailPage = ({ params }) => {
     }
   }, [idType]);
 
-  useEffect(() => {
-    if (audioRef.current && currentSong) {
-      audioRef.current.src = currentSong.url_path;
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
+  // useEffect(() => {
+  //   if (audioRef.current && currentSong) {
+  //     audioRef.current.src = currentSong.url_path;
+  //     audioRef.current.play();
+  //     setIsPlaying(true);
+  //   }
 
-    return () => {
-      audioRef.current?.pause();
-      setIsPlaying(false);
-    };
-  }, [currentSong]);
+  //   return () => {
+  //     audioRef.current?.pause();
+  //     setIsPlaying(false);
+  //   };
+  // }, [currentSong]);
 
-  const handlePlayPause = (music: Music) => {
-    if (currentSong?.id_music === music.id_music && isPlaying) {
-      audioRef.current?.pause();
-      setIsPlaying(false);
-    } else {
-      setCurrentSong(music);
-      setIsPlaying(true);
-    }
-  };
+  // const handlePlayPause = (music: Music) => {
+  //   if (currentSong?.id_music === music.id_music && isPlaying) {
+  //     audioRef.current?.pause();
+  //     setIsPlaying(false);
+  //   } else {
+  //     setCurrentSong(music);
+  //     setIsPlaying(true);
+  //   }
+  // };
 
   if (loading) return <div>Đang tải dữ liệu...</div>;
   if (error) return <div>{error}</div>;
@@ -123,7 +123,7 @@ const TypeDetailPage = ({ params }) => {
         );
 
         // Thêm vào lịch sử nghe nhạc
-        await addMusicToHistory(music.id_music.toString(), 100);
+        addMusicToHistory(music.id_music.toString(), 100);
 
         // Dừng nhạc nếu đang phát và chọn lại nhạc
         if (
@@ -166,7 +166,7 @@ const TypeDetailPage = ({ params }) => {
           )}
         </div>
 
-        <audio ref={audioRef}></audio>
+        {/* <audio ref={audioRef}></audio> */}
       </div>
       <TypeCmt />
     </>

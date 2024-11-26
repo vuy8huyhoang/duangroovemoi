@@ -177,7 +177,7 @@ export default function RightSidebar() {
                                             );
 
                                             // Thêm vào lịch sử nghe nhạc
-                                            await addMusicToHistory(song.id_music.toString(), 100);
+                                            addMusicToHistory(song.id_music.toString(), 100);
 
                                             // Dừng nhạc nếu đang phát và chọn lại nhạc
                                             if (

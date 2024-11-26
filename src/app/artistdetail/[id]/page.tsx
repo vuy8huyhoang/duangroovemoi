@@ -255,7 +255,7 @@ const handleFollowClick = (id_artist) => {
         );
 
         // Thêm vào lịch sử nghe nhạc
-        await addMusicToHistory(music.id_music.toString(), 100);
+        addMusicToHistory(music.id_music.toString(), 100);
 
         // Dừng nhạc nếu đang phát và chọn lại nhạc
         if (

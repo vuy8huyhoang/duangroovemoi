@@ -122,7 +122,7 @@ const ListMusicTop: React.FC = () => {
         );
 
         // Thêm vào lịch sử nghe nhạc
-        await addMusicToHistory(album.id_music.toString(), 100);
+        addMusicToHistory(album.id_music.toString(), 100);
 
         // Dừng nhạc nếu đang phát và chọn lại nhạc
         if (
