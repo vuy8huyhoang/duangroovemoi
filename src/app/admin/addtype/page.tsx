@@ -32,7 +32,7 @@ export default function AddType() {
         
         // Kiểm tra nếu tên thể loại trống
     if (!type.name.trim()) {
-        setError("Tên thể loại không được để trống.");
+        setError("Vui lòng nhập tên thể loại.");
         return; // Không gửi form nếu tên trống
       }
 
@@ -69,7 +69,9 @@ export default function AddType() {
                     placeholder="Tên thể loại"
                     value={type.name}
                     onChange={handleChange}
+                    className={styles.input} // Đảm bảo có lớp CSS cho input
                 />
+                {error && <p className={styles.error}>{error}</p>} {/* Hiển thị thông báo lỗi nếu có */}
                 <input
                     type="text"
                     name="slug"

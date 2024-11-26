@@ -19,6 +19,7 @@ export default function EditType({ params }: { params: { id: string } }) {
         is_show: 1,
     });
     const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string>(""); // State để lưu lỗi
 
     useEffect(() => {
         const fetchType = async () => {
@@ -42,6 +43,14 @@ export default function EditType({ params }: { params: { id: string } }) {
     };
 
     const handleSubmit = async () => {
+        
+        // Kiểm tra nếu tên thể loại trống
+        if (!type.name.trim()) {
+            setError("Vui lòng nhập tên thể loại."); // Hiển thị lỗi nếu tên thể loại trống
+            return;
+        }
+
+
         setLoading(true);
         const slug = type.name.toLowerCase().replace(/\s+/g, "-");
         const updatedType = { ...type, slug };
@@ -86,7 +95,9 @@ export default function EditType({ params }: { params: { id: string } }) {
                     placeholder="Tên thể loại"
                     value={type.name}
                     onChange={handleChange}
+                    className={styles.input}
                 />
+                {error && <p className={styles.error}>{error}</p>} {/* Hiển thị thông báo lỗi */}
                 <input
                     type="text"
                     name="slug"

@@ -61,13 +61,14 @@ const PlaylistPage = () => {
   
 
   const createPlaylist = async () => {
-    if (!newPlaylistName.trim()) {
-      alert("Vui lòng nhập tên playlist")
-      setError("Tên playlist không được để trống");
+    if (!newPlaylistName || !newPlaylistName.replace(/\s/g, "")) {
+      
+      setError("Vui lòng nhập tên playlist");
       return;
     }
   
     setCreating(true);
+    setError(null);
     try {
       // Tự động tính toán playlist_index dựa trên số lượng playlist hiện tại
       const playlistIndex = playlists.length + 1;
@@ -93,12 +94,12 @@ const PlaylistPage = () => {
           fetchPlaylists();
         } else {
           // Nếu phản hồi không thành công, hiển thị thông báo lỗi
-          setError(message || "Failed to create playlist");
+          setError(message || "Tạo playlist thất bại");
         }
       } 
       
     } catch (error: any) {
-      setError(error.message || "Failed to fetch playlists");
+      setError(error.message || "Đã xảy ra lỗi khi tạo playlist");
     } finally {
       setCreating(false); // Đặt trạng thái tạo playlist về false khi hoàn thành
     }
@@ -168,6 +169,9 @@ const deleteSongFromPlaylist = async (id_music: string, id_playlist: string) => 
                 onChange={(e) => setNewPlaylistName(e.target.value)}
                 placeholder="Tên playlist mới"
               />
+              {error && !newPlaylistName &&(
+              <p className={style.error}>{error}</p>
+              )}
               {/* <input
                 type="number"
                 value={newPlaylistIndex || ""}
@@ -177,7 +181,7 @@ const deleteSongFromPlaylist = async (id_music: string, id_playlist: string) => 
               
 
 
-              <button onClick={createPlaylist} disabled={creating || !newPlaylistName.trim()}>
+              <button onClick={createPlaylist} >
                 {creating ? "Creating..." : "Tạo playlist"}
               </button>
               <button onClick={() => setIsModalOpen(false)}>Đóng</button>

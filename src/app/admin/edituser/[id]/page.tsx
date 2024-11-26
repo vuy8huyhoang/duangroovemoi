@@ -19,6 +19,13 @@ export default function EditUser({ params }: { params: { id: string } }) {
     const [file, setFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [message, setMessage] = useState<string>("");
+    const [errorMessages, setErrorMessages] = useState({
+        fullname: "",
+        email: "",
+        password: "",
+        file: "",  // Thêm trường file để xử lý lỗi file
+
+    });
 
     useEffect(() => {
         
@@ -57,13 +64,90 @@ export default function EditUser({ params }: { params: { id: string } }) {
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            setFile(e.target.files[0]);
-            const fileUrl = URL.createObjectURL(e.target.files[0]);
+            const selectedFile = e.target.files[0];
+    
+            // Kiểm tra loại tệp hình ảnh
+            const validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+
+            // Kiểm tra kích thước tệp (10MB = 10 * 1024 * 1024 = 10485760 bytes)
+            const MAX_FILE_SIZE = 10485760; // 10MB
+
+
+            if (!validImageTypes.includes(selectedFile.type)) {
+                setErrorMessages({
+                    ...errorMessages,
+                    file: "Định dạng hình ảnh không hợp lệ. Chỉ hỗ trợ JPG, JPEG, PNG.",  // Hiển thị lỗi cho trường file
+                });
+                setFile(null);  // Reset tệp đã chọn
+                setPreviewUrl(null);  // Reset ảnh xem trước
+                return;
+            }
+            
+            // Kiểm tra kích thước tệp
+            if (selectedFile.size > MAX_FILE_SIZE) {
+                setErrorMessages({
+                    ...errorMessages,
+                    file: "Kích thước hình ảnh vượt quá 10MB.",  // Hiển thị lỗi khi kích thước vượt quá 10MB
+                });
+                setFile(null);  // Reset tệp đã chọn
+                setPreviewUrl(null);  // Reset ảnh xem trước
+                return;
+            }
+    
+            // Nếu tệp hợp lệ, thiết lập file và ảnh xem trước
+            setFile(selectedFile);
+            const fileUrl = URL.createObjectURL(selectedFile);
             setPreviewUrl(fileUrl);
+    
+            // Xóa thông báo lỗi nếu tệp hợp lệ
+            setErrorMessages({
+                ...errorMessages,
+                file: "",  // Xóa lỗi nếu tệp hợp lệ
+            });
         }
     };
 
     const handleSubmit = async () => {
+
+        // Kiểm tra dữ liệu đầu vào
+    let isValid = true;
+    const newErrorMessages = {
+        fullname: "",
+        email: "",
+        password: "",
+        file:""
+    };
+
+    if (!user.fullname) {
+        newErrorMessages.fullname = "Vui lòng nhập họ và tên.";
+        isValid = false;
+    };
+
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!user.email) {
+        newErrorMessages.email = "Vui lòng nhập email.";
+        isValid = false;
+    }else if (!emailRegex.test(user.email)) {
+        newErrorMessages.email = "Vui lòng nhập email hợp lệ.";
+        isValid = false;
+    };
+
+
+    // if (user.password.length < 6) {
+    //     newErrorMessages.password = "Mật khẩu phải có ít nhất 6 ký tự.";
+    //     isValid = false;
+    // };
+
+    setErrorMessages({
+        ...errorMessages,
+        ...newErrorMessages
+    });
+
+    if (!isValid) {
+        return;
+    }
+
         if (!user) return;
         setLoading(true);
 
@@ -120,6 +204,8 @@ export default function EditUser({ params }: { params: { id: string } }) {
                     value={user.fullname}
                     onChange={handleChange}
                 />
+                {errorMessages.fullname && <div className={styles.errorMessage}>{errorMessages.fullname}</div>}
+
                 <input
                     type="email"
                     name="email"
@@ -127,6 +213,8 @@ export default function EditUser({ params }: { params: { id: string } }) {
                     value={user.email}
                     onChange={handleChange}
                 />
+                {errorMessages.email && <div className={styles.errorMessage}>{errorMessages.email}</div>}
+
                 <select name="role" value={user.role} onChange={handleChange}>
                     <option value="user">User</option>
                     <option value="admin">Admin</option>
@@ -146,6 +234,7 @@ export default function EditUser({ params }: { params: { id: string } }) {
                     style={{ display: 'none' }}
                     onChange={handleFileChange}
                 />
+                {errorMessages.file && <div className={styles.errorMessage}>{errorMessages.file}</div>}
 
                 <div className={styles.visibilityRadioButtons}>
                     <div>
