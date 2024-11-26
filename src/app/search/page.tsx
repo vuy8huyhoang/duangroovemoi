@@ -13,10 +13,12 @@ const SearchResultsPage: React.FC = () => {
   const [musicList, setMusicList] = useState<any[]>([]);
   const [albumList, setAlbumList] = useState<any[]>([]);
   const [artistList, setArtistList] = useState<any[]>([]);
+  const [composerList, setcomposerList] = useState<any[]>([]);
 
   const [currentMusicPage, setCurrentMusicPage] = useState(1);
   const [currentArtistPage, setCurrentArtistPage] = useState(1);
   const [currentAlbumPage, setCurrentAlbumPage] = useState(1);
+  const [currentComposerPage, setCurrentComposerPage] = useState(1);
   const itemsPerPage = 9;
   const itemsPerPage0 = 12;
   const itemsPerPage1 = 5;
@@ -34,6 +36,7 @@ const SearchResultsPage: React.FC = () => {
           setMusicList(data.musicList || []);
           setAlbumList(data.albumList || []);
           setArtistList(data.artistList || []);
+          setcomposerList(data.composerList || []);
         } catch (error) {
           console.error("Error fetching search results:", error);
         }
@@ -60,6 +63,12 @@ const SearchResultsPage: React.FC = () => {
     currentAlbumPage * itemsPerPage1
   );
   const totalAlbumPages = Math.ceil(albumList.length / itemsPerPage1);
+
+  const paginatedComposers = composerList.slice(
+    (currentComposerPage - 1) * itemsPerPage0,
+    currentComposerPage * itemsPerPage0
+  );
+  const totalComposerPages = Math.ceil(composerList.length / itemsPerPage0);
 
   return (
     <div className={styles.searchResultsContainer}>
@@ -180,6 +189,43 @@ const SearchResultsPage: React.FC = () => {
             <button
               disabled={currentArtistPage === totalArtistPages}
               onClick={() => setCurrentArtistPage(currentArtistPage + 1)}
+            >
+              Sau
+            </button>
+          </div>
+        </section>
+      )}
+
+{composerList.length > 0 && (
+        <section>
+          <h2>Nhạc sĩ</h2>
+          <div className={styles.artistList}>
+            {paginatedComposers.map((composer) => (
+              <Link
+                key={composer.id_artist}
+                href={`/composerdetail/${composer.id_composer}`}
+                className={styles.artistItem}
+              >
+               
+        
+                <p className={styles.artistName}>{composer.name}</p>
+              </Link>
+            ))}
+          </div>
+
+          <div className={styles.pagination}>
+            <button
+              disabled={currentComposerPage === 1}
+              onClick={() => setCurrentComposerPage(currentComposerPage - 1)}
+            >
+              Trước
+            </button>
+            <span>
+              Trang {currentComposerPage} / {totalComposerPages}
+            </span>
+            <button
+              disabled={currentComposerPage === totalComposerPages}
+              onClick={() => setCurrentArtistPage(currentComposerPage + 1)}
             >
               Sau
             </button>

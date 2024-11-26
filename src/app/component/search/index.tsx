@@ -22,7 +22,7 @@ const Search: React.FC = () => {
       value={query}
       onChange={handleSearch}
       onKeyDown={handleKeyDown}
-      placeholder="Tìm kiếm bài hát, album, nghệ sĩ..."
+      placeholder="Tìm kiếm bài hát, album, nghệ sĩ, nhạc sĩ"
       className={style.timkiem}
     />
   );

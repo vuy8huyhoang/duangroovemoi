@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
     "date-fns-tz": "^3.2.0",
+    "formik": "^2.4.6",
     "fs": "0.0.1-security",
     "jose": "^5.8.0",
     "my-app": "file:",
@@ -39,7 +40,8 @@
     "sass": "^1.80.2",
     "stream": "^0.0.3",
     "uuid": "^10.0.0",
-    "validator": "^13.12.0"
+    "validator": "^13.12.0",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^20.16.5",
