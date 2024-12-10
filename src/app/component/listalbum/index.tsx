@@ -175,19 +175,6 @@ export default function ListAlbum() {
                                 
                                addListMusicToTheFirst(state, dispatch, musicList)
                                
-// albumDetail?.musics.map(music => {
-//     console.log(music);
-//     addMusicToTheFirst(
-//         state,
-//         dispatch,
-//         music?.id_music as any,
-//         music?.name,
-//         music?.url_path,
-//         music?.url_cover,
-//         music?.id_composer?.name,
-//         music?.artists.map(artist => artist.artist),
-//     )
-// })
                                 if (album.musics[0]?.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying) {
                                     dispatch({
                                         type: "IS_PLAYING",
