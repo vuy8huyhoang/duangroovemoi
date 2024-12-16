@@ -41,6 +41,12 @@ interface AlbumDetail {
     artists: any[];
 }
 
+interface MusicHistory {
+    id_music: string;
+    created_at: string;
+}
+
+
 export default function AlbumDetail({ params }) {
     const id = params.id; // Get id from URL
     const [albumDetail, setAlbumDetail] = useState<AlbumDetail | null>(null);
@@ -50,6 +56,7 @@ export default function AlbumDetail({ params }) {
     const [loading, setLoading] = useState(true);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [time, setTime] = useState([]);
+    const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
     const [isFollowed, setIsFollowed] = useState<boolean>(false);
     const [heart, setHeart] = useState(false);
     const [hoveredSong, setHoveredSong] = useState<string | null>(null);
@@ -234,6 +241,17 @@ export default function AlbumDetail({ params }) {
     if (!albumDetail) {
         return <p>Không tìm thấy album</p>;
     }
+    const addMusicToHistory = async (id_music: string, play_duration: number) => {
+        try {
+            const response: any = await axios.post("/music-history/me", { id_music, play_duration });
+            const newHistory: MusicHistory = response.result;
+            setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+            console.log("Added to history:", newHistory);
+        } catch (error) {
+            console.error("Error adding to music history:", error);
+        }
+    };
+    
 
     return (
         <div className={style.contentwrapper}>
@@ -350,35 +368,39 @@ export default function AlbumDetail({ params }) {
                                                     <i className={`fas ${currentSong?.id_music === albumDetail.id_album && isPlaying ? 'fa-pause' : 'fa-play'}`}></i>
                                                 </button> */}
                                                 <button
-                                            className={style.playButton1}
-                                            onClick={() =>
-                                            {
-                                                addMusicToTheFirst(
-                                                    state,
-                                                    dispatch,
-                                                    track.id_music as any,
-                                                    track.name,
-                                                    track.url_path,
-                                                    track.url_cover,
-                                                    track.composer,
-                                                    track.artists.map(artist => artist.artist)
-                                                )
-                                                if (track.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying) {
-                                                    dispatch({
-                                                        type: "IS_PLAYING",
-                                                        payload: false
-                                                    })
-                                                     ;
-                                                }
-                                               }
-                                            }
-                                        >
-                                            {track.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
-                                                <i className="fas fa-pause"></i>
-                                            ) : (
-                                                <i className="fas fa-play"></i>
-                                            )}
-                                        </button>
+    className={style.playButton}
+    onClick={async () => {
+        // Thêm nhạc vào playlist và phát nhạc
+        addMusicToTheFirst(
+            state,
+            dispatch,
+            track.id_music.toString(),
+            track.name,
+            track.url_path,
+            track.url_cover,
+            track.composer,
+            track.artists.map((artist) => artist.artist)
+        );
+
+        // Thêm vào lịch sử nghe nhạc
+        await addMusicToHistory(track.id_music.toString(), 100);
+
+        // Dừng nhạc nếu đang phát và chọn lại nhạc
+        if (
+            track.id_music === state.currentPlaylist[0]?.id_music &&
+            state.isPlaying
+        ) {
+            dispatch({ type: "IS_PLAYING", payload: false });
+        }
+    }}
+>
+    {track.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+        <i className="fas fa-pause"></i>
+    ) : (
+        <i className="fas fa-play"></i>
+    )}
+</button>
+
                                             </div>
                                         </div>
                                     </div>
