@@ -246,7 +246,6 @@ const handleSubmit = async () => {
     <>
       <div className={styles.container}>
         <h2>Chỉnh sửa album</h2>
-        <h3>Chọn bài hát</h3>
         <div className={styles.formGroup}>
           
         <div className={styles.inputGroup}>

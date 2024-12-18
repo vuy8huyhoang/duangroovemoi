@@ -49,7 +49,6 @@ const TypePage = () => {
 
   return (
     <>
-
       <div className={style.container}>
         <h1 className={style.title}>Danh Sách Thể Loại</h1>
         <ul className={style.typeList}>

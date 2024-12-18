@@ -32,7 +32,6 @@ const TypeDetailPage = ({ params }) => {
   const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
   const { state, dispatch } = useContext(AppContext);
 
-  // const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const fetchMusicList = async () => {
     try {
@@ -70,7 +69,7 @@ const TypeDetailPage = ({ params }) => {
   return (
     <>
       <div>
-        <h1 className={styles.title}>Danh Sách Nhạc Thể Loại: {idType}</h1>
+        <h1 className={styles.title}>Danh Sách Nhạc Thể Loại</h1>
         <div className={styles.albumList}>
           {Array.isArray(musicList) && musicList.length > 0 ? (
             musicList.map((music) => (

@@ -56,45 +56,45 @@
     }
     
     .customFileUpload {
-        display: block;
-        width: 100%;
-        padding: 10px;
-        font-size: 1rem;
+        display: inline-block;
+        padding: 12px 25px;
+        font-size: 16px;
         font-weight: bold;
         color: #ffffff;
-        background-color: #4a90e2;
-        border-radius: 5px;
+        background-color: #007bff;
+        border: 2px solid transparent;
+        border-radius: 8px;
         cursor: pointer;
         text-align: center;
-        margin-bottom: 15px;
-        transition: background-color 0.3s;
-    }
-
-    .customFileUpload:hover {
-        background-color: #357ab8;
-    }
-
-    button {
-        display: block;
-        width: 100%;
-        padding: 10px;
-        font-size: 1rem;
-        font-weight: bold;
-        color: #ffffff;
-        background-color: #4a90e2;
-        border-radius: 5px;
-        cursor: pointer;
-        text-align: center;
-        margin-bottom: 15px;
-        transition: background-color 0.3s;
-
-       
-        &:hover {
-            background-color: #357ab8;
+        transition: all 0.3s ease;
+        margin-top: 15px;
+      }
+      
+      .customFileUpload:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      
+      #file-upload {
+        display: none;
+      }
+      
+      .preview {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      
+        img {
+          max-width: 100%;
+          max-height: 200px;
+          border-radius: 10px;
+          box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+          border: 1px solid #ccc;
         }
-        
-    
-    }
+      }
+      
 }
 .visibilityRadioButtons {
     display: flex;

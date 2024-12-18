@@ -66,7 +66,7 @@ const ListMusic: React.FC = () => {
       ? albums
       : albums.filter((album) => album.genre === activeFilter);
 
-  const paginatedAlbums = filteredAlbums.slice(
+  const phantrang = filteredAlbums.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -93,7 +93,7 @@ const ListMusic: React.FC = () => {
       </div>
 
       <div className={style.albumList}>
-        {paginatedAlbums.map((album) => (
+        {phantrang.map((album) => (
           <div
             key={album.id_music}
             className={style.songCard}
