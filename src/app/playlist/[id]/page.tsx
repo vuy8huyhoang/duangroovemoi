@@ -21,7 +21,7 @@ interface MusicHistory {
 interface Music {
   id_music: string;
   name: string;
-  producer: string;
+  producer:string;
   url_path: string;
   url_cover: string;
   total_duration: string | null;
@@ -41,15 +41,16 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
   const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
   const [isEditing, setIsEditing] = useState(false); // Trạng thái chỉnh sửa
   const [newName, setNewName] = useState<string>(""); // Tên mới của playlist
+  const [error, setError] = useState<string | null>(null);
   const { state, dispatch } = useContext(AppContext);
 
   useEffect(() => {
     axios
       .get(`/playlist/me?id_playlist=${id}`)
-      .then((response: any) => {
+      .then((response:any) => {
         setPlaylistDetail(response.result.data[0]);
         console.log("playlistdetail:", response.result);
-
+        
       })
       .catch((error) => {
         console.error("Error fetching playlist details", error);
@@ -66,7 +67,7 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
   // }, [currentSong]);
 
   const handlePlaySong = (music: Music) => {
-    dispatch({ type: "IS_PLAYLING", payload: state.isPlaying });
+      dispatch({type: "IS_PLAYLING", payload: state.isPlaying});
   };
   const toggleMenu = (id_music: string) => {
     setMenuVisible(menuVisible === id_music ? null : id_music); // Đóng mở menu
@@ -103,36 +104,42 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
   };
   const addMusicToHistory = async (id_music: string, play_duration: number) => {
     try {
-      const response: any = await axios.post("/music-history/me", { id_music, play_duration });
-      const newHistory: MusicHistory = response.result;
-      setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      console.log("Added to history:", newHistory);
+        const response: any = await axios.post("/music-history/me", { id_music, play_duration });
+        const newHistory: MusicHistory = response.result;
+        setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+        console.log("Added to history:", newHistory);
     } catch (error) {
-      console.error("Error adding to music history:", error);
+        console.error("Error adding to music history:", error);
     }
-  };
+};
 
-  // const handleEditPlaylist = async (e: React.FormEvent) => {
-  //   e.preventDefault();
+const handleEditPlaylist = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-  //   try {
-  //     const response:any = await axios.patch("/playlist/me", {
-  //       id_playlist: playlistDetail?.id_playlist,
-  //       name: newName,
+  if (!newName.trim()) { // Kiểm tra nếu newName rỗng
+    setError("Vui lòng nhập tên playlist");
+    return;
+  }
 
-  //     });
+  try {
+    const response:any = await axios.patch("/playlist/me", {
+      id_playlist: playlistDetail?.id_playlist,
+      name: newName,
+      
+    });
 
-  //     if (response.status === 200) {
-  //       // Cập nhật lại dữ liệu sau khi sửa thành công
-  //       setPlaylistDetail((prev) => prev && { ...prev, name: newName });
-  //       alert("Cập nhật playlist thành công!");
-  //       setIsEditing(false); // Đóng modal
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating playlist:", error);
-  //     alert("Đã xảy ra lỗi khi cập nhật playlist.");
-  //   }
-  // };
+    if (response.status === 200) {
+      // Cập nhật lại dữ liệu sau khi sửa thành công
+      setPlaylistDetail((prev) => prev && { ...prev, name: newName });
+      alert("Cập nhật playlist thành công!");
+      setIsEditing(false); // Đóng modal
+      setError(null); // Xóa lỗi cũ
+    }
+  } catch (error) {
+    console.error("Error updating playlist:", error);
+    alert("Đã xảy ra lỗi khi cập nhật playlist.");
+  }
+};
 
 
   if (loading) {
@@ -154,64 +161,101 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
       </div>
       <div className={style.modalContent}>
         <div className={style.modalContentRight}>
-          <div className={style.imageContainer}>
-            {playlistDetail.musics.slice(0).map((music) => (
-              <img
-                src={music.url_cover}
-                alt={music.name}
-                className={style.coverImage}
-              />
-            ))}
+          <div className={style.imageContainer1}>
+          {playlistDetail.musics.slice(0).map((music) => ( 
+            <img
+              src={music.url_cover}
+              alt={music.name}
+              className={style.coverImage}
+            />
+          ))}
           </div>
           <h2>{playlistDetail.name}</h2>
+
+          <button
+            className={style.editButton}
+            onClick={() => setIsEditing(true)}
+          >
+            <i className="fas fa-edit"></i> Sửa
+          </button>
+          
           <p>Số bài hát: {playlistDetail.musics.length}</p>
         </div>
+        {/* Modal chỉnh sửa playlist */}
+      {isEditing && (
+        <div className={style.editModal}>
+          <form onSubmit={handleEditPlaylist}>
+            <label>
+              Sửa tên playlist:
+              <input
+                type="text"
+                value={newName}
+                onChange={(e) => {setNewName(e.target.value)
+                  setError(null); // Xóa lỗi khi người dùng chỉnh sửa
+                }}
+                placeholder="Tên playlist mới"
+                // required
+              />
+            </label>
+            {error &&
+              <p className={style.error}>{error}</p>
+              }
+            
+            <div className={style.buttonGroup}>
+              <button type="submit">Lưu</button>
+              <button type="button" onClick={() => setIsEditing(false)}>
+                Hủy
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
         <div className={style.modalContentLeft}>
           {playlistDetail.musics.map((music) => (
             <div key={music.id_music} className={style.songContent}
-              onClick={() => handlePlaySong(music)}>
+            onClick={() => handlePlaySong(music)}>
               <div className={style.imageContainer}>
                 <img
                   src={music.url_cover}
                   alt={music.name}
                   className={style.coverImage}
                 />
-                <button
-                  className={style.playButton}
-                  onClick={async () => {
-                    addMusicToTheFirst(
-                      state,
-                      dispatch,
-                      music.id_music.toString(),
-                      music.name,
-                      music.url_path,
-                      music.url_cover,
-                      music.composer,
-                      music?.artists?.map((artist) => artist.artist)
-                    );
+                 <button
+                                    className={style.playButton}
+                                    onClick={async () => {
+                                        addMusicToTheFirst(
+                                            state,
+                                            dispatch,
+                                            music.id_music.toString(),
+                                            music.name,
+                                            music.url_path,
+                                            music.url_cover,
+                                            music.composer,
+                                            music?.artists?.map((artist) => artist.artist)
+                                        );
 
-                    addMusicToHistory(music.id_music.toString(), 100);
+                                        addMusicToHistory(music.id_music.toString(), 100);
 
-                    if (
-                      music.id_music === state.currentPlaylist[0]?.id_music &&
-                      state.isPlaying
-                    ) {
-                      dispatch({ type: "IS_PLAYING", payload: false });
-                    }
-                  }}
-                >
-                  {music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
-                    <i className="fas fa-pause"></i>
-                  ) : (
-                    <i className="fas fa-play"></i>
-                  )}
-                </button>
+                                        if (
+                                            music.id_music === state.currentPlaylist[0]?.id_music &&
+                                            state.isPlaying
+                                        ) {
+                                            dispatch({ type: "IS_PLAYING", payload: false });
+                                        }
+                                    }}
+                                >
+                                    {music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                                        <i className="fas fa-pause"></i>
+                                    ) : (
+                                        <i className="fas fa-play"></i>
+                                    )}
+                                </button>
               </div>
               <p className={style.songTitle}>
                 <strong className={style.strong}><Link href={`/musicdetail/${music.id_music}`}>{music.name}</Link></strong>
               </p>
               <p className={style.speed}><Link href={`/musicdetail/${music.id_music}`}>{music.composer}</Link></p>
-
+              
               <i
                 className="fas fa-ellipsis-h"
                 onClick={() => toggleMenu(music.id_music)}
@@ -228,10 +272,10 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
               )}
 
             </div>
-
+            
           ))}
         </div>
-
+        
       </div>
       {/* <audio ref={audioRef} onEnded={() => setIsPlaying(false)} /> */}
     </div>
