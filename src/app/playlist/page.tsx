@@ -36,6 +36,7 @@ const PlaylistPage = () => {
   // const [newPlaylistIndex, setNewPlaylistIndex] = useState<number | null>(null);
   const [creating, setCreating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái modal
+  const [showMenuId, setShowMenuId] = useState<string | null>(null);
 
   
 
@@ -127,6 +128,9 @@ const PlaylistPage = () => {
         alert("Đã xảy ra lỗi khi xóa playlist!");
     }
 };
+const toggleMenu = (id: string) => {
+  setShowMenuId(showMenuId === id ? null : id);
+};
 
   useEffect(() => {
     fetchPlaylists();
@@ -183,19 +187,32 @@ const PlaylistPage = () => {
           <div key={playlist.id_playlist} className={style.playlistItem}
           onClick={() => router.push(`/playlist/${playlist.id_playlist}`)}>
             <img src="/playlist.png" alt="Playlist cover" />
-            
+
             <p>{playlist.name}</p>
-            
-            
-            {/* Nút xóa playlist */}
-    
-            <button
-                className={style.deleteButton}
-                onClick={(e) => deletePlaylist(e, playlist.id_playlist)}
-            >
-                Xóa
-            </button>
-    
+
+            {/* Dấu ba chấm */}
+            <div className={style.menuWrapper}>
+              <button
+                className={style.menuButton}
+                onClick={(e) => {
+                  e.stopPropagation(); // Ngăn sự kiện click lan ra ngoài
+                  toggleMenu(playlist.id_playlist);
+                }}
+              >
+                &#8942;
+              </button>
+
+              {/* Menu khi click vào dấu ba chấm */}
+              {showMenuId === playlist.id_playlist && (
+                <div className={style.menu}>
+                  <button
+                    onClick={(e) => deletePlaylist(e, playlist.id_playlist)}
+                  >
+                    Xóa
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>
