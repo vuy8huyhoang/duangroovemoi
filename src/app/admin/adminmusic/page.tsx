@@ -29,11 +29,30 @@ interface Song {
 
 export default function AdminMusic() {
   const [songs, setSongs] = useState<Song[]>([]);
-  const [artists, setArtists] = useState<Artist[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
-  const songsPerPage = 10;
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortOption, setSortOption] = useState<string>("latest");
+  const [songsPerPage, setSongsPerPage] = useState<number>(10);
+  const filteredSongs = songs.filter(
+    (song) =>
+      song.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      song.artists.some((artistWrapper) =>
+        artistWrapper.artist.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+  );
+  const sortedSongs = filteredSongs.sort((a, b) => {
+    if (sortOption === "latest") {
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    } else if (sortOption === "oldest") {
+      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+    } else if (sortOption === "nameAsc") {
+      return a.name.localeCompare(b.name);
+    } else if (sortOption === "nameDesc") {
+      return b.name.localeCompare(a.name);
+    }
+    return 0;
+  });
 
   useEffect(() => {
     axios
@@ -69,15 +88,61 @@ export default function AdminMusic() {
 
   const indexOfLastSong = currentPage * songsPerPage;
   const indexOfFirstSong = indexOfLastSong - songsPerPage;
-  const currentSongs = songs.slice(indexOfFirstSong, indexOfLastSong);
+  const currentSongs = filteredSongs.slice(indexOfFirstSong, indexOfLastSong);
   const totalPages = Math.ceil(songs.length / songsPerPage);
-
+  
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  useEffect(() => {
+    setCurrentPage(1); 
+  }, [searchTerm]);
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h1>Quản lý bài hát</h1>
+        <div className={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Tìm kiếm bài hát hoặc nghệ sĩ..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={styles.searchInput}
+          />
+        </div>
+        <div className={styles.paginationControl}>
+          <label htmlFor="songsPerPage">Số bài hát trên một trang:</label>
+          <select
+            id="songsPerPage"
+            value={songsPerPage}
+            onChange={(e) => setSongsPerPage(Number(e.target.value))}
+            className={styles.paginationSelect}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+            <option value={20}>20</option>
+            <option value={25}>25</option>
+            <option value={30}>30</option>
+            <option value={35}>35</option>
+            <option value={40}>40</option>
+            <option value={45}>45</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+
+          </select>
+        </div>
+        <div className={styles.sortContainer}>
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            className={styles.sortSelect}
+          >
+            <option value="latest">Ngày tạo (Mới nhất)</option>
+            <option value="oldest">Ngày tạo (Cũ nhất)</option>
+            <option value="nameAsc">Tên (A-Z)</option>
+            <option value="nameDesc">Tên (Z-A)</option>
+          </select>
+        </div>
         <Link href="/admin/addmusic" passHref>
           <button className={styles.addButton}>
             <ReactSVG className={styles.csvg} src="/plus.svg" />
