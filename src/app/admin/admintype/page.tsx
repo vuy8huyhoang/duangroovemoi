@@ -17,7 +17,9 @@ const TypeManagement = () => {
     const [categories, setCategories] = useState<Type[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const typesPerPage = 10; 
+    const [typesPerPage, setTypesPerPage] = useState<number>(10);
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    const [sortOption, setSortOption] = useState<string>("nameAsc");
 
     useEffect(() => {
         fetchType();
@@ -43,17 +45,77 @@ const TypeManagement = () => {
         }
     };
 
+    const filteredTypes = categories.filter(
+        (type) =>
+            type.name.toLowerCase().includes(searchTerm.toLowerCase()) 
+           
+    );
+
+    const sortedTypes = filteredTypes.sort((a, b) => {
+        if (sortOption === "nameAsc") {
+            return a.name.localeCompare(b.name);
+        } else if (sortOption === "nameDesc") {
+            return b.name.localeCompare(a.name);
+        } else if (sortOption === "dateAsc") {
+            return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        } else if (sortOption === "dateDesc") {
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }
+        return 0;
+    });
+
     const indexOfLastType = currentPage * typesPerPage;
     const indexOfFirstType = indexOfLastType - typesPerPage;
-    const currentTypes = categories.slice(indexOfFirstType, indexOfLastType);
-    const totalPages = Math.ceil(categories.length / typesPerPage);
+    const currentTypes = sortedTypes.slice(indexOfFirstType, indexOfLastType);
+    const totalPages = Math.ceil(sortedTypes.length / typesPerPage);
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, typesPerPage]);
+
 
     return (
         <div className={styles.container}>
             <div className={styles.header}>
                 <h1>Quản lý thể loại</h1>
+                <div className={styles.searchContainer}>
+                    <input
+                        type="text"
+                        placeholder="Tìm kiếm thể loại..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className={styles.searchInput}
+                    />
+                </div>
+                <div className={styles.paginationControl}>
+                    <label htmlFor="typesPerPage">Số thể loại trên một trang:</label>
+                    <select
+                        id="typesPerPage"
+                        value={typesPerPage}
+                        onChange={(e) => setTypesPerPage(Number(e.target.value))}
+                        className={styles.paginationSelect}
+                    >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={15}>15</option>
+                        <option value={20}>20</option>
+                        <option value={25}>25</option>
+                    </select>
+                </div>
+                <div className={styles.sortContainer}>
+                    <select
+                        value={sortOption}
+                        onChange={(e) => setSortOption(e.target.value)}
+                        className={styles.sortSelect}
+                    >
+                        <option value="nameAsc">Tên (A-Z)</option>
+                        <option value="nameDesc">Tên (Z-A)</option>
+                        <option value="dateAsc">Ngày tạo (Cũ nhất)</option>
+                        <option value="dateDesc">Ngày tạo (Mới nhất)</option>
+                    </select>
+                </div>
                 <Link href="/admin/addtype" passHref>
                     <button className={styles.addButton}>
                         <ReactSVG className={styles.csvg} src="/plus.svg" />
