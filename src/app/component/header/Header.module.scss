@@ -7,11 +7,11 @@
   padding: 10px 20px;
   color: white;
   height: 60px;
-  width: 84.2%;
+  width: 100%;
   position: fixed;
   top: 0; 
   right: 0;
-  z-index: 9999; // Đảm bảo header nằm trên tất cả các phần tử khác
+  z-index: 990; // Đảm bảo header nằm trên tất cả các phần tử khác
 }
 
   
@@ -35,7 +35,7 @@
     color: #666;
   }
   .headerCenter{
-    margin-left: 140px;
+    margin-left: 350px;
   }
   
   .headerRight {

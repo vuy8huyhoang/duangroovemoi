@@ -18,6 +18,7 @@ const TypePage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [showAll, setShowAll] = useState<boolean>(false); 
+  
   const fetchTypeList = async () => {
     try {
       const response :any = await axios.get('/type');

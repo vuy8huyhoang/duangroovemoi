@@ -261,19 +261,20 @@ export default function AddAlbum() {
         </div>
 
         {previewUrl && (
-          <div className={styles.preview}>
-            <img src={previewUrl} alt="Xem trước ảnh bìa" />
-          </div>
-        )}
-        <label htmlFor="file-upload" className={styles.customFileUpload}>
-          Chọn ảnh bìa
-        </label>
-        <input
-          id="file-upload"
-          type="file"
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-        />
+  <div className={styles.preview}>
+    <img src={previewUrl} alt="Xem trước ảnh bìa" />
+  </div>
+)}
+
+
+<input
+  id="file-upload"
+  type="file"
+  accept="image/*"
+  onChange={handleFileChange}
+/>
+
+       
 
         <button onClick={handleSubmit} disabled={loading}>
           {loading ? "Đang gửi..." : "Thêm album"}

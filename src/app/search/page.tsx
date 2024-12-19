@@ -13,12 +13,12 @@ const SearchResultsPage: React.FC = () => {
   const [musicList, setMusicList] = useState<any[]>([]);
   const [albumList, setAlbumList] = useState<any[]>([]);
   const [artistList, setArtistList] = useState<any[]>([]);
-  const [composerList, setcomposerList] = useState<any[]>([]);
+  // const [composerList, setcomposerList] = useState<any[]>([]);
 
   const [currentMusicPage, setCurrentMusicPage] = useState(1);
   const [currentArtistPage, setCurrentArtistPage] = useState(1);
   const [currentAlbumPage, setCurrentAlbumPage] = useState(1);
-  const [currentComposerPage, setCurrentComposerPage] = useState(1);
+  // const [currentComposerPage, setCurrentComposerPage] = useState(1);
   const itemsPerPage = 9;
   const itemsPerPage0 = 12;
   const itemsPerPage1 = 5;
@@ -36,7 +36,7 @@ const SearchResultsPage: React.FC = () => {
           setMusicList(data.musicList || []);
           setAlbumList(data.albumList || []);
           setArtistList(data.artistList || []);
-          setcomposerList(data.composerList || []);
+          // setcomposerList(data.composerList || []);
         } catch (error) {
           console.error("Error fetching search results:", error);
         }
@@ -64,11 +64,11 @@ const SearchResultsPage: React.FC = () => {
   );
   const totalAlbumPages = Math.ceil(albumList.length / itemsPerPage1);
 
-  const paginatedComposers = composerList.slice(
-    (currentComposerPage - 1) * itemsPerPage0,
-    currentComposerPage * itemsPerPage0
-  );
-  const totalComposerPages = Math.ceil(composerList.length / itemsPerPage0);
+  // const paginatedComposers = composerList.slice(
+  //   (currentComposerPage - 1) * itemsPerPage0,
+  //   currentComposerPage * itemsPerPage0
+  // );
+  // const totalComposerPages = Math.ceil(composerList.length / itemsPerPage0);
 
   return (
     <div className={styles.searchResultsContainer}>
@@ -196,7 +196,7 @@ const SearchResultsPage: React.FC = () => {
         </section>
       )}
 
-{composerList.length > 0 && (
+{/* {composerList.length > 0 && (
         <section>
           <h2>Nhạc sĩ</h2>
           <div className={styles.artistList}>
@@ -231,7 +231,7 @@ const SearchResultsPage: React.FC = () => {
             </button>
           </div>
         </section>
-      )}
+      )} */}
 
       <MusicPartner />
     </div>

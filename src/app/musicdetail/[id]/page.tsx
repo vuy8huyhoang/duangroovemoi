@@ -166,6 +166,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
   if (!musicdetail && artistdetail) {
     return <p>Không tìm thấy music</p>;
   }
+  
 
   return (
     <div className={style.contentwrapper}>
@@ -189,68 +190,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
           <h2>{musicdetail.name}</h2>
           <p className={style.songDuration}>Ca sĩ: {musicdetail.composer}</p>
           <div className={style.audioPlayer}>
-            {/* <button
-              className={style.playButton}
-              onClick={() => {
-                addMusicToTheFirst(
-                  state,
-                  dispatch,
-                  musicdetail.id_music as any,
-                  musicdetail.name,
-                  musicdetail.url_path,
-                  musicdetail.url_cover,
-                  musicdetail.composer,
-                  musicdetail.artists.map(artist => artist.artist)
-                )
-                if (musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying) {
-                  dispatch({
-                    type: "IS_PLAYING",
-                    payload: false
-                  })
-                    ;
-                }
-              }
-              }
-            >
-              {musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
-                "Dừng nhạc"
-              ) : (
-                "Phát nhạc"
-              )}
-            </button> */}
-            {/* <button
-    className={style.playButton}
-    onClick={async () => {
-        // Thêm nhạc vào playlist và phát nhạc
-        addMusicToTheFirst(
-            state,
-            dispatch,
-            musicdetail.id_music.toString(),
-            musicdetail.name,
-            musicdetail.url_path,
-            musicdetail.url_cover,
-            musicdetail.composer,
-            musicdetail.artists.map((artist) => artist.artist)
-        );
-
-        // Thêm vào lịch sử nghe nhạc
-        await addMusicToHistory(musicdetail.id_music.toString(), 100);
-
-        // Dừng nhạc nếu đang phát và chọn lại nhạc
-        if (
-          musicdetail.id_music === state.currentPlaylist[0]?.id_music &&
-            state.isPlaying
-        ) {
-            dispatch({ type: "IS_PLAYING", payload: false });
-        }
-    }}
->
-{musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
-                "Dừng nhạc"
-              ) : (
-                "Phát nhạc"
-              )}
-</button> */}
+        
 <button
     className={style.playButton}
     onClick={async () => {
@@ -315,35 +255,40 @@ const SongDetailPage: React.FC = ({ params }: any) => {
                 className={style.musicCover}
               />
               <div className={style.overlay}>
-                <button
-                  className={style.playButton1}
-                  onClick={() => {
-                    addMusicToTheFirst(
-                      state,
-                      dispatch,
-                      musicdetail.id_music as any,
-                      musicdetail.name,
-                      musicdetail.url_path,
-                      musicdetail.url_cover,
-                      musicdetail.composer,
-                      musicdetail.artists.map(artist => artist.artist)
-                    )
-                    if (musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying) {
-                      dispatch({
-                        type: "IS_PLAYING",
-                        payload: false
-                      })
-                        ;
-                    }
-                  }
-                  }
-                >
-                  {musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
-                    <i className="fas fa-pause"></i>
-                  ) : (
-                    <i className="fas fa-play"></i>
-                  )}
-                </button>
+              <button
+    className={style.playButton}
+    onClick={async () => {
+        // Thêm nhạc vào playlist và phát nhạc
+        addMusicToTheFirst(
+            state,
+            dispatch,
+            musicdetail.id_music.toString(),
+            musicdetail.name,
+            musicdetail.url_path,
+            musicdetail.url_cover,
+            musicdetail.composer,
+            musicdetail.artists.map((artist) => artist.artist)
+        );
+
+        // Thêm vào lịch sử nghe nhạc
+        await addMusicToHistory(musicdetail.id_music.toString(), 100);
+
+        // Dừng nhạc nếu đang phát và chọn lại nhạc
+        if (
+          musicdetail.id_music === state.currentPlaylist[0]?.id_music &&
+            state.isPlaying
+        ) {
+            dispatch({ type: "IS_PLAYING", payload: false });
+        }
+    }}
+>
+    {musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+        <i className="fas fa-pause"></i>
+    ) : (
+        <i className="fas fa-play"></i>
+    )}
+</button>
+
               </div>
             </div>
             <div className={style.Titles}>
