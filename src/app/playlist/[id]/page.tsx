@@ -212,9 +212,7 @@ const handleEditPlaylist = async (e: React.FormEvent) => {
       )}
         <div className={style.modalContentLeft}>
           <h2>Danh sách bài hát</h2>
-                    <div className={style.songHeader}>  
-                        <span className={style.songTitle}>Tên bài hát</span>
-                    </div>
+                    
           {playlistDetail.musics.map((music) => (
             <div key={music.id_music} className={style.songContent}
             onClick={() => handlePlaySong(music)}>
