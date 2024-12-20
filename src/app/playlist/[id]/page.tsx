@@ -25,7 +25,7 @@ interface Music {
   url_path: string;
   url_cover: string;
   total_duration: string | null;
-  id_composer: any;
+  composer: string;
   artists: any[];
 }
 
@@ -171,7 +171,7 @@ const handleEditPlaylist = async (e: React.FormEvent) => {
           ))}
           </div>
           <h2>{playlistDetail.name}</h2>
-            <p>Số bài hát: {playlistDetail.musics.length}</p>
+
           <button
             className={style.editButton}
             onClick={() => setIsEditing(true)}
@@ -179,7 +179,7 @@ const handleEditPlaylist = async (e: React.FormEvent) => {
             <i className="fas fa-edit"></i> Sửa
           </button>
           
-          
+          <p>Số bài hát: {playlistDetail.musics.length}</p>
         </div>
         {/* Modal chỉnh sửa playlist */}
       {isEditing && (
@@ -211,8 +211,10 @@ const handleEditPlaylist = async (e: React.FormEvent) => {
         </div>
       )}
         <div className={style.modalContentLeft}>
-        <h2>Danh sách bài hát</h2>
-                    
+          <h2>Danh sách bài hát</h2>
+                    <div className={style.songHeader}>  
+                        <span className={style.songTitle}>Tên bài hát</span>
+                    </div>
           {playlistDetail.musics.map((music) => (
             <div key={music.id_music} className={style.songContent}
             onClick={() => handlePlaySong(music)}>
@@ -232,7 +234,7 @@ const handleEditPlaylist = async (e: React.FormEvent) => {
                                             music.name,
                                             music.url_path,
                                             music.url_cover,
-                                            music.id_composer,
+                                            music.composer,
                                             music?.artists?.map((artist) => artist.artist)
                                         );
 
@@ -256,7 +258,7 @@ const handleEditPlaylist = async (e: React.FormEvent) => {
               <p className={style.songTitle}>
                 <strong className={style.strong}><Link href={`/musicdetail/${music.id_music}`}>{music.name}</Link></strong>
               </p>
-              <p className={style.speed}><Link href={`/musicdetail/${music.id_music}`}>{music.id_composer.name}</Link></p>
+              <p className={style.speed}><Link href={`/musicdetail/${music.id_music}`}>{music.composer}</Link></p>
               
               <i
                 className="fas fa-ellipsis-h"
