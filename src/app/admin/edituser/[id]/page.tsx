@@ -177,7 +177,7 @@ export default function EditUser({ params }: { params: { id: string } }) {
             });
 
             if (response.status === 200 || response.status === 201) {
-                alert("User updated successfully!");
+                alert("Cập nhật người dùng thành công!");
                 window.location.href = "/admin/adminuser";
             } else {
                 alert("User update failed.");
