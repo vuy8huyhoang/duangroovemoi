@@ -383,7 +383,7 @@ export default function AlbumDetail({ params }) {
         );
 
         // Thêm vào lịch sử nghe nhạc
-        await addMusicToHistory(track.id_music.toString(), 100);
+        addMusicToHistory(track.id_music.toString(), 100);
 
         // Dừng nhạc nếu đang phát và chọn lại nhạc
         if (
