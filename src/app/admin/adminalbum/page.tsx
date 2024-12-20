@@ -32,7 +32,35 @@ export default function AdminAlbum() {
   const [albums, setAlbums] = useState<Album[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const albumsPerPage = 10;
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortOption, setSortOption] = useState<string>("latest");
+  const [albumsPerPage, setAlbumsPerPage] = useState<number>(10);
+
+  const filteredAlbums = albums.filter(
+    (album) =>
+      album.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      album.artist.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const sortedAlbums = filteredAlbums.sort((a, b) => {
+    if (sortOption === "latest") {
+      return new Date(b.release_date).getTime() - new Date(a.release_date).getTime();
+    } else if (sortOption === "oldest") {
+      return new Date(a.release_date).getTime() - new Date(b.release_date).getTime();
+    } else if (sortOption === "nameAsc") {
+      return a.name.localeCompare(b.name);
+    } else if (sortOption === "nameDesc") {
+      return b.name.localeCompare(a.name);
+    }
+    return 0;
+  });
+
+  const indexOfLastAlbum = currentPage * albumsPerPage;
+  const indexOfFirstAlbum = indexOfLastAlbum - albumsPerPage;
+  const currentAlbums = sortedAlbums.slice(indexOfFirstAlbum, indexOfLastAlbum);
+  const totalPages = Math.ceil(filteredAlbums.length / albumsPerPage);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   useEffect(() => {
     axios
@@ -78,17 +106,48 @@ export default function AdminAlbum() {
     }
   };
 
-  const indexOfLastAlbum = currentPage * albumsPerPage;
-  const indexOfFirstAlbum = indexOfLastAlbum - albumsPerPage;
-  const currentAlbums = albums.slice(indexOfFirstAlbum, indexOfLastAlbum);
-  const totalPages = Math.ceil(albums.length / albumsPerPage);
-
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h1>Quản lý Album</h1>
+        <div className={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Tìm kiếm album"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={styles.searchInput}
+          />
+        </div>
+        <div className={styles.paginationControl}>
+          <label htmlFor="albumsPerPage">Số album trên một trang:</label>
+          <select
+            id="albumsPerPage"
+            value={albumsPerPage}
+            onChange={(e) => setAlbumsPerPage(Number(e.target.value))}
+            className={styles.paginationSelect}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+            <option value={20}>20</option>
+            <option value={25}>25</option>
+            <option value={30}>30</option>
+            <option value={50}>50</option>
+          </select>
+        </div>
+        <div className={styles.sortContainer}>
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            className={styles.sortSelect}
+          >
+            <option value="latest">Ngày phát hành (Mới nhất)</option>
+            <option value="oldest">Ngày phát hành (Cũ nhất)</option>
+            <option value="nameAsc">Tên album (A-Z)</option>
+            <option value="nameDesc">Tên album (Z-A)</option>
+          </select>
+        </div>
         <Link href="/admin/addalbum" passHref>
           <button className={styles.addButton}>
             <ReactSVG className={styles.csvg} src="/plus.svg" />
@@ -144,11 +203,7 @@ export default function AdminAlbum() {
                     <ul className={styles.songList}>
                       {album.musics.map((music) => (
                         <li key={music.id_music}>
-                          <a
-                            href={music.url_path}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
+                          <a href={music.url_path} target="_blank" rel="noopener noreferrer">
                             {music.name}
                           </a>
                         </li>
@@ -157,14 +212,8 @@ export default function AdminAlbum() {
                   </td>
                   <td>
                     <button
-                      className={
-                        album.is_show === 1
-                          ? styles.showButton
-                          : styles.hideButton
-                      }
-                      onClick={() =>
-                        handleToggleVisibility(album.id_album, album.is_show)
-                      }
+                      className={album.is_show === 1 ? styles.showButton : styles.hideButton}
+                      onClick={() => handleToggleVisibility(album.id_album, album.is_show)}
                     >
                       {album.is_show === 1 ? "Hiện" : "Ẩn"}
                     </button>
