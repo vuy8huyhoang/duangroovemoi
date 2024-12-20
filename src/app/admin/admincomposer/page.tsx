@@ -16,7 +16,9 @@ export default function AdminComposer() {
     const [loading, setLoading] = useState<boolean>(true);
     const [composers, setComposers] = useState<Composer[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [itemsPerPage] = useState<number>(10);
+    const [composersPerPage, setComposersPerPage] = useState<number>(10);
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    const [sortOption, setSortOption] = useState<string>("nameAsc");
 
     useEffect(() => {
         axios
@@ -48,21 +50,76 @@ export default function AdminComposer() {
         }
     };
 
-    // Tính toán phân trang
-    const indexOfLastComposer = currentPage * itemsPerPage;
-    const indexOfFirstComposer = indexOfLastComposer - itemsPerPage;
-    const currentComposers = composers.slice(indexOfFirstComposer, indexOfLastComposer);
+    const filteredComposers = composers.filter((composer) =>
+        composer.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
-    // Tạo các số trang
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(composers.length / itemsPerPage); i++) {
-        pageNumbers.push(i);
-    }
+    const sortedComposers = filteredComposers.sort((a, b) => {
+        if (sortOption === "nameAsc") {
+            return a.name.localeCompare(b.name);
+        } else if (sortOption === "nameDesc") {
+            return b.name.localeCompare(a.name);
+        } else if (sortOption === "dateAsc") {
+            return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        } else if (sortOption === "dateDesc") {
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }
+        return 0;
+    });
 
+    const indexOfLastComposer = currentPage * composersPerPage;
+    const indexOfFirstComposer = indexOfLastComposer - composersPerPage;
+    const currentComposers = sortedComposers.slice(indexOfFirstComposer, indexOfLastComposer);
+    const totalPages = Math.ceil(sortedComposers.length / composersPerPage);
+
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, composersPerPage]);
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h1>Quản lý nhạc sĩ</h1>
+            <h1>Quản lý nhạc sĩ</h1>
+                <div className={styles.searchContainer}>
+                    <input
+                        type="text"
+                        placeholder="Tìm kiếm nhạc sĩ..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className={styles.searchInput}
+                    />
+                </div>
+                <div className={styles.paginationControl}>
+                    <label htmlFor="composersPerPage">Số nhạc sĩ mỗi trang:</label>
+                    <select
+                        id="composersPerPage"
+                        value={composersPerPage}
+                        onChange={(e) => setComposersPerPage(Number(e.target.value))}
+                        className={styles.paginationSelect}
+                    >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={15}>15</option>
+                        <option value={20}>20</option>
+                        <option value={25}>25</option>
+                        <option value={50}>50</option>
+                        <option value={100}>100</option>
+                    </select>
+                </div>
+                <div className={styles.sortContainer}>
+                    <select
+                        value={sortOption}
+                        onChange={(e) => setSortOption(e.target.value)}
+                        className={styles.sortSelect}
+                    >
+                        <option value="nameAsc">Tên (A-Z)</option>
+                        <option value="nameDesc">Tên (Z-A)</option>
+                        <option value="dateAsc">Ngày tạo (Cũ nhất)</option>
+                        <option value="dateDesc">Ngày tạo (Mới nhất)</option>
+                    </select>
+                </div>
+                
                 <Link href="/admin/addcomposer" passHref>
                     <button className={styles.addButton}>
                         <ReactSVG className={styles.csvg} src="/plus.svg" />
@@ -126,9 +183,13 @@ export default function AdminComposer() {
 
             {/* Phân trang */}
             <div className={styles.pagination}>
-                {pageNumbers.map(number => (
-                    <button key={number} onClick={() => setCurrentPage(number)} className={currentPage === number ? styles.active : ''}>
-                        {number}
+                {[...Array(totalPages)].map((_, index) => (
+                    <button
+                        key={index}
+                        onClick={() => paginate(index + 1)}
+                        className={currentPage === index + 1 ? styles.activePage : ''}
+                    >
+                        {index + 1}
                     </button>
                 ))}
             </div>
