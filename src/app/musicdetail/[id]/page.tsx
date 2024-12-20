@@ -33,10 +33,10 @@ interface MusicHistory {
 interface AggregatedHistory {
   id_music: string;
   name: string;
-  
+
   total_play_duration: number;
-  view_count: number; 
-  last_played: string; 
+  view_count: number;
+  last_played: string;
 }
 
 
@@ -135,14 +135,14 @@ const SongDetailPage: React.FC = ({ params }: any) => {
   };
   const addMusicToHistory = async (id_music: string, play_duration: number) => {
     try {
-        const response: any = await axios.post("/music-history/me", { id_music, play_duration });
-        const newHistory: MusicHistory = response.result;
-        setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-        console.log("Added to history:", newHistory);
+      const response: any = await axios.post("/music-history/me", { id_music, play_duration });
+      const newHistory: MusicHistory = response.result;
+      setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+      console.log("Added to history:", newHistory);
     } catch (error) {
-        console.error("Error adding to music history:", error);
+      console.error("Error adding to music history:", error);
     }
-};
+  };
 
 
   const playSong = (music: Music) => {
@@ -166,7 +166,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
   if (!musicdetail && artistdetail) {
     return <p>Không tìm thấy music</p>;
   }
-  
+
 
   return (
     <div className={style.contentwrapper}>
@@ -179,7 +179,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
       </div>
       <div className={style.modalContent}>
         <div className={style.modalContentRight}>
-          
+
           <div className={style.imageContainer}>
             <img
               src={musicdetail.url_cover}
@@ -190,40 +190,40 @@ const SongDetailPage: React.FC = ({ params }: any) => {
           <h2>{musicdetail.name}</h2>
           <p className={style.songDuration}>Ca sĩ: {musicdetail.composer}</p>
           <div className={style.audioPlayer}>
-        
-<button
-    className={style.playButton}
-    onClick={async () => {
-        // Thêm nhạc vào playlist và phát nhạc
-        addMusicToTheFirst(
-            state,
-            dispatch,
-            musicdetail.id_music.toString(),
-            musicdetail.name,
-            musicdetail.url_path,
-            musicdetail.url_cover,
-            musicdetail.composer,
-            musicdetail.artists.map((artist) => artist.artist)
-        );
 
-        // Thêm vào lịch sử nghe nhạc
-        addMusicToHistory(musicdetail.id_music.toString(), 100);
+            <button
+              className={style.playButton}
+              onClick={async () => {
+                // Thêm nhạc vào playlist và phát nhạc
+                addMusicToTheFirst(
+                  state,
+                  dispatch,
+                  musicdetail.id_music.toString(),
+                  musicdetail.name,
+                  musicdetail.url_path,
+                  musicdetail.url_cover,
+                  musicdetail.composer,
+                  musicdetail.artists.map((artist) => artist.artist)
+                );
 
-        // Dừng nhạc nếu đang phát và chọn lại nhạc
-        if (
-          musicdetail.id_music === state.currentPlaylist[0]?.id_music &&
-            state.isPlaying
-        ) {
-            dispatch({ type: "IS_PLAYING", payload: false });
-        }
-    }}
->
-{musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
+                // Thêm vào lịch sử nghe nhạc
+                addMusicToHistory(musicdetail.id_music.toString(), 100);
+
+                // Dừng nhạc nếu đang phát và chọn lại nhạc
+                if (
+                  musicdetail.id_music === state.currentPlaylist[0]?.id_music &&
+                  state.isPlaying
+                ) {
+                  dispatch({ type: "IS_PLAYING", payload: false });
+                }
+              }}
+            >
+              {musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
                 "Dừng nhạc"
               ) : (
                 "Phát nhạc"
               )}
-</button>
+            </button>
 
 
             <span
@@ -242,9 +242,8 @@ const SongDetailPage: React.FC = ({ params }: any) => {
           <p>Bài Hát</p>
           <div
             key={musicdetail.id_music}
-            className={`${style.songCard} ${
-              hoveredSong === musicdetail.id_music ? style.hovered : ""
-            }`}
+            className={`${style.songCard} ${hoveredSong === musicdetail.id_music ? style.hovered : ""
+              }`}
             onMouseEnter={() => setHoveredSong(musicdetail.id_music)}
             onMouseLeave={() => setHoveredSong(null)}
           >
@@ -255,39 +254,39 @@ const SongDetailPage: React.FC = ({ params }: any) => {
                 className={style.musicCover}
               />
               <div className={style.overlay}>
-              <button
-    className={style.playButton}
-    onClick={async () => {
-        // Thêm nhạc vào playlist và phát nhạc
-        addMusicToTheFirst(
-            state,
-            dispatch,
-            musicdetail.id_music.toString(),
-            musicdetail.name,
-            musicdetail.url_path,
-            musicdetail.url_cover,
-            musicdetail.composer,
-            musicdetail.artists.map((artist) => artist.artist)
-        );
+                <button
+                  className={style.playButton1}
+                  onClick={async () => {
+                    // Thêm nhạc vào playlist và phát nhạc
+                    addMusicToTheFirst(
+                      state,
+                      dispatch,
+                      musicdetail.id_music.toString(),
+                      musicdetail.name,
+                      musicdetail.url_path,
+                      musicdetail.url_cover,
+                      musicdetail.composer,
+                      musicdetail.artists.map((artist) => artist.artist)
+                    );
 
-        // Thêm vào lịch sử nghe nhạc
-        await addMusicToHistory(musicdetail.id_music.toString(), 100);
+                    // Thêm vào lịch sử nghe nhạc
+                    await addMusicToHistory(musicdetail.id_music.toString(), 100);
 
-        // Dừng nhạc nếu đang phát và chọn lại nhạc
-        if (
-          musicdetail.id_music === state.currentPlaylist[0]?.id_music &&
-            state.isPlaying
-        ) {
-            dispatch({ type: "IS_PLAYING", payload: false });
-        }
-    }}
->
-    {musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
-        <i className="fas fa-pause"></i>
-    ) : (
-        <i className="fas fa-play"></i>
-    )}
-</button>
+                    // Dừng nhạc nếu đang phát và chọn lại nhạc
+                    if (
+                      musicdetail.id_music === state.currentPlaylist[0]?.id_music &&
+                      state.isPlaying
+                    ) {
+                      dispatch({ type: "IS_PLAYING", payload: false });
+                    }
+                  }}
+                >
+                  {musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                    <i className="fas fa-pause"></i>
+                  ) : (
+                    <i className="fas fa-play"></i>
+                  )}
+                </button>
 
               </div>
             </div>
@@ -297,7 +296,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
             </div>
             <span className={style.songDuration}>
               {musicdetail.total_duration &&
-              time[Number(musicdetail.total_duration)]
+                time[Number(musicdetail.total_duration)]
                 ? formatTime(time[Number(musicdetail.total_duration)])
                 : "00:00 "}
             </span>
@@ -309,7 +308,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
           <p className={style.songArtist}>
             Ngày phát hành: {formatDate(musicdetail.release_date)}
           </p>
-          
+
         </div>
       </div>
       <Comment id_music={id} />
