@@ -1,19 +1,26 @@
 export type Action = {
-  type: "CURRENT_PLAYLIST" | "VOLUME" | "IS_PLAYING" | "SHOW_LOGIN" |"SHOW_RIGHT_SIDEBAR";
+  type:
+    | "CURRENT_PLAYLIST"
+    | "VOLUME"
+    | "IS_PLAYING"
+    | "SHOW_LOGIN"
+    | "SHOW_RIGHT_SIDEBAR"
+    | "PROFILE"
+    | "SHOW_VIP";
   payload: any;
 };
-let initialState
+let initialState;
 if (typeof window !== "undefined") {
-   initialState = {
-
+  initialState = {
     currentPlaylist: JSON.parse(localStorage.getItem("currentPlaylist")) || [],
     volume: 0.5,
     isPlaying: false,
     showLogin: false,
-    showRightSidebar: false
+    showRightSidebar: false,
+    showVIP: false,
+    profile: null,
   };
 }
-
 
 // Reducer
 export const reducer = (state: typeof initialState, action: Action) => {
@@ -42,6 +49,16 @@ export const reducer = (state: typeof initialState, action: Action) => {
       return {
         ...state,
         showRightSidebar: action.payload,
+      };
+    case "SHOW_VIP":
+      return {
+        ...state,
+        showVIP: action.payload,
+      };
+    case "PROFILE":
+      return {
+        ...state,
+        profile: action.payload,
       };
     default:
       return state;

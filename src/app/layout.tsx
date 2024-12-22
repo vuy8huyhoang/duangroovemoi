@@ -10,6 +10,7 @@ import { createContext, useReducer } from "react";
 import { initialState, reducer } from "./global";
 import ProtectRoute from "./ProtectRoute";
 import RightSidebar from "./component/rightsidebar/rightsidebar";
+import VipOverlay from "./VipOverlay";
 
 export const AppContext = createContext<any>(undefined);
 
@@ -18,9 +19,8 @@ export default function Layout({ children }: any) {
   const isAdmin = pathname.startsWith("/admin");
   const [state, dispatch] = useReducer(reducer, initialState);
   if (typeof window !== "undefined") {
-
-    if (!localStorage.getItem('currentPlaylist')) {
-      localStorage.setItem('currentPlaylist', JSON.stringify([]));
+    if (!localStorage.getItem("currentPlaylist")) {
+      localStorage.setItem("currentPlaylist", JSON.stringify([]));
     }
   }
   return (
@@ -42,13 +42,13 @@ export default function Layout({ children }: any) {
             <div className="container">
               <Sidebar />
               <Header />
+              {state?.showVIP && <VipOverlay />}
               <MusicPlayer />
-              
 
               <div className="contain">{children}</div>
-              {state?.currentPlaylist && state?.currentPlaylist?.length > 0 &&
-                <RightSidebar />}
-
+              {state?.currentPlaylist && state?.currentPlaylist?.length > 0 && (
+                <RightSidebar />
+              )}
             </div>
           ) : (
             // authguard && (

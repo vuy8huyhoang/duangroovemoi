@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import styles from "./search.module.scss";
 import Link from "next/link";
-import MusicPartner from "../component/musicpartner";
+import MusicPartner from "../component/home/musicpartner";
 
 const SearchResultsPage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -195,7 +195,7 @@ const SearchResultsPage: React.FC = () => {
         </section>
       )}
 
-{/* {composerList.length > 0 && (
+      {/* {composerList.length > 0 && (
         <section>
           <h2>Nhạc sĩ</h2>
           <div className={styles.artistList}>

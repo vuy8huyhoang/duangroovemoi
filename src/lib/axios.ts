@@ -1,7 +1,8 @@
 import axiosLib from "axios";
 
 // const base = "/api/";
-const base = "https://api-groove.vercel.app/";
+const base = "http://localhost:4000/";
+// const base = "https://api-groove.vercel.app/";
 
 // Tạo một axios của axios
 const axios = axiosLib.create({
@@ -14,10 +15,8 @@ axios.interceptors.request.use(
   (config: any) => {
     let accessToken;
     if (typeof window !== "undefined") {
+      accessToken = localStorage.getItem("accessToken");
 
-       accessToken = localStorage.getItem("accessToken");
-      // const accessToken =
-      //   "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6InUyIiwiZXhwIjoxNzYwNTQzMDEzfQ.-rk8KHiVACAVJXe6OOG_winL7vr1nQTmk2VdLbUMlwo";
       if (accessToken) {
         config.headers["token"] = accessToken; // Gắn accessToken vào header với tên 'token'
       }

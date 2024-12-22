@@ -50,14 +50,17 @@ const ListMusic: React.FC = () => {
 
   const addMusicToHistory = async (id_music: string, play_duration: number) => {
     try {
-        const response: any = await axios.post("/music-history/me", { id_music, play_duration });
-        const newHistory: MusicHistory = response.result;
-        setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-        console.log("Added to history:", newHistory);
+      const response: any = await axios.post("/music-history/me", {
+        id_music,
+        play_duration,
+      });
+      const newHistory: MusicHistory = response.result;
+      setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+      console.log("Added to history:", newHistory);
     } catch (error) {
-        console.error("Error adding to music history:", error);
+      console.error("Error adding to music history:", error);
     }
-};
+  };
 
   const handleFilterClick = (filter: string) => setActiveFilter(filter);
 
@@ -76,21 +79,22 @@ const ListMusic: React.FC = () => {
   return (
     <>
       <div className={style.headerSection}>
-        <h2>Mới phát hành</h2>
+        <h2 className="home__heading">Mới phát hành</h2>
       </div>
 
-      <div className={style.filterBar}>
+      {/* <div className={style.filterBar}>
         {["Tất cả"].map((filter) => (
           <button
             key={filter}
-            className={`${style.filter} ${activeFilter === filter ? style.active : ""
-              }`}
+            className={`${style.filter} ${
+              activeFilter === filter ? style.active : ""
+            }`}
             onClick={() => handleFilterClick(filter)}
           >
             {filter}
           </button>
         ))}
-      </div>
+      </div> */}
 
       <div className={style.albumList}>
         {phantrang.map((album) => (
@@ -134,13 +138,13 @@ const ListMusic: React.FC = () => {
                     }
                   }}
                 >
-                  {album.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                  {album.id_music === state.currentPlaylist[0]?.id_music &&
+                  state.isPlaying ? (
                     <i className="fas fa-pause"></i>
                   ) : (
                     <i className="fas fa-play"></i>
                   )}
                 </button>
-
               </div>
             </div>
             <div className={style.songInfo}>

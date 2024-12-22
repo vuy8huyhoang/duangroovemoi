@@ -3,7 +3,7 @@ import axios from "@/lib/axios";
 import style from "./listmusictop.module.scss";
 import { ReactSVG } from "react-svg";
 import Link from "next/link";
-import { addMusicToTheFirst } from "../musicplayer";
+import { addMusicToTheFirst } from "../../musicplayer";
 import { AppContext } from "@/app/layout";
 
 interface Album {
@@ -14,15 +14,13 @@ interface Album {
   created_at: string;
   composer: string;
   url_path: string;
-  artists: any[
-  ]
+  artists: any[];
 }
 
 interface MusicHistory {
   id_music: string;
   created_at: string;
 }
-
 
 const ListMusicTop: React.FC = () => {
   const [albums, setAlbums] = useState<Album[]>([]);
@@ -66,24 +64,26 @@ const ListMusicTop: React.FC = () => {
   };
   const addMusicToHistory = async (id_music: string, play_duration: number) => {
     try {
-        const response: any = await axios.post("/music-history/me", { id_music, play_duration });
-        const newHistory: MusicHistory = response.result;
-        setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-        console.log("Added to history:", newHistory);
+      const response: any = await axios.post("/music-history/me", {
+        id_music,
+        play_duration,
+      });
+      const newHistory: MusicHistory = response.result;
+      setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+      console.log("Added to history:", newHistory);
     } catch (error) {
-        console.error("Error adding to music history:", error);
+      console.error("Error adding to music history:", error);
     }
-};
-
+  };
 
   return (
     <>
-      <div className={style.headerSection}>
-        <h2>Top bài hát</h2>
+      {/* <div className={style.headerSection}>
+        <h2 className="home__heading">Chill</h2>
         <div className={style.all}>
-          <a href="#" className={style.viewAllButton}>
+          <Link href="/groovechart" className={style.viewAllButton}>
             Tất cả
-          </a>
+          </Link>
           <ReactSVG className={style.csvg} src="/all.svg" />
         </div>
       </div>
@@ -106,40 +106,40 @@ const ListMusicTop: React.FC = () => {
                     alt={album.name}
                     className={style.albumCover}
                   />
-                    <button
-    className={style.playButton}
-    onClick={async () => {
-        // Thêm nhạc vào playlist và phát nhạc
-        addMusicToTheFirst(
-            state,
-            dispatch,
-            album.id_music.toString(),
-            album.name,
-            album.url_path,
-            album.url_cover,
-            album.composer,
-            album.artists.map((artist) => artist.artist)
-        );
+                  <button
+                    className={style.playButton}
+                    onClick={async () => {
+                      // Thêm nhạc vào playlist và phát nhạc
+                      addMusicToTheFirst(
+                        state,
+                        dispatch,
+                        album.id_music.toString(),
+                        album.name,
+                        album.url_path,
+                        album.url_cover,
+                        album.composer,
+                        album.artists.map((artist) => artist.artist)
+                      );
 
-        // Thêm vào lịch sử nghe nhạc
-        addMusicToHistory(album.id_music.toString(), 100);
+                      // Thêm vào lịch sử nghe nhạc
+                      addMusicToHistory(album.id_music.toString(), 100);
 
-        // Dừng nhạc nếu đang phát và chọn lại nhạc
-        if (
-            album.id_music === state.currentPlaylist[0]?.id_music &&
-            state.isPlaying
-        ) {
-            dispatch({ type: "IS_PLAYING", payload: false });
-        }
-    }}
->
-    {album.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
-        <i className="fas fa-pause"></i>
-    ) : (
-        <i className="fas fa-play"></i>
-    )}
-</button>
-
+                      // Dừng nhạc nếu đang phát và chọn lại nhạc
+                      if (
+                        album.id_music === state.currentPlaylist[0]?.id_music &&
+                        state.isPlaying
+                      ) {
+                        dispatch({ type: "IS_PLAYING", payload: false });
+                      }
+                    }}
+                  >
+                    {album.id_music === state.currentPlaylist[0]?.id_music &&
+                    state.isPlaying ? (
+                      <i className="fas fa-pause"></i>
+                    ) : (
+                      <i className="fas fa-play"></i>
+                    )}
+                  </button>
                 </div>
                 <div className={style.songInfo}>
                   <div className={style.songName}>
@@ -161,8 +161,7 @@ const ListMusicTop: React.FC = () => {
         <button onClick={nextSlide} className={style.rightArrow}>
           <ReactSVG src="/next-arrow.svg" />
         </button>
-      </div>
-
+      </div> */}
     </>
   );
 };

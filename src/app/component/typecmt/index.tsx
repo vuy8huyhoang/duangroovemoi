@@ -1,12 +1,13 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Link from 'next/link';
-import style from './type.module.scss';
-import ListMusicTop from '../listmusictop';
-import ListMusicType from '../listmusicType';
-import ListAlbum from '../listalbum';
-import MusicPartner from '../musicpartner';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Link from "next/link";
+import style from "./type.module.scss";
+import ListMusicTop from "../home/listmusictop";
+import ListMusicType from "../listmusicType";
+import ListAlbum from "../home/listalbum";
+import MusicPartner from "../home/musicpartner";
+import clsx from "clsx";
 interface Type {
   id_type: string;
   name: string;
@@ -16,13 +17,13 @@ const TypePage = () => {
   const [typeList, setTypeList] = useState<Type[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [showAll, setShowAll] = useState<boolean>(false); 
+  const [showAll, setShowAll] = useState<boolean>(false);
 
   const fetchTypeList = async () => {
     try {
-      const response = await axios.get('https://api-groove.vercel.app/type');
+      const response = await axios.get("https://api-groove.vercel.app/type");
       console.log(response.data);
-      setTypeList(response.data.data || []); 
+      setTypeList(response.data.data || []);
     } catch (err) {
       console.error("Error fetching type list:", err);
       setError("Có lỗi xảy ra khi tải danh sách thể loại.");
@@ -33,10 +34,10 @@ const TypePage = () => {
 
   useEffect(() => {
     fetchTypeList();
-  }, []); 
+  }, []);
 
   const handleShowAll = () => {
-    setShowAll(true); 
+    setShowAll(true);
   };
 
   if (loading) {
@@ -50,7 +51,9 @@ const TypePage = () => {
   return (
     <>
       <div className={style.container}>
-        <h1 className={style.title}>Danh Sách Thể Loại</h1>
+        <h1 className={clsx(style.title, "home__heading")}>
+          Danh Sách Thể Loại
+        </h1>
         <ul className={style.typeList}>
           {Array.isArray(typeList) && typeList.length > 0 ? (
             typeList.slice(0, showAll ? typeList.length : 4).map((type) => (
@@ -69,12 +72,11 @@ const TypePage = () => {
             Tất cả
           </button>
         )}
-      <ListMusicType />
-      <ListMusicTop />
-      <ListAlbum />
-      <MusicPartner/>
+        <ListMusicType />
+        <ListMusicTop />
+        <ListAlbum />
+        <MusicPartner />
       </div>
-
     </>
   );
 };

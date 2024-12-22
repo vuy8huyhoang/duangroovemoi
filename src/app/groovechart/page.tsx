@@ -4,15 +4,14 @@ import axios from "@/lib/axios";
 import styles from "./style.module.scss";
 import { ReactSVG } from "react-svg";
 import Bxh from "../component/bxh";
-import ListType from "../component/listtype";
-import ListAlbum from "../component/listalbum";
-import ListMusic from "../component/listmusic";
-import ListMusicTop from "../component/listmusictop";
-import AlbumHot from "../component/albumhot";
+import ListType from "../component/home/listtype";
+import ListAlbum from "../component/home/listalbum";
+import ListMusic from "../component/home/listmusic";
+import ListMusicTop from "../component/home/listmusictop";
+import AlbumHot from "../component/home/albumhot";
 import { addMusicToTheFirst } from "../component/musicplayer";
 import { AppContext } from "../layout";
 import Link from "next/link";
-
 
 interface MusicHistory {
   id_music: string;
@@ -29,8 +28,8 @@ interface Music {
   }[];
   url_path: string;
   artists: any[];
-  vỉew: number;
-  artits:{
+  view: number;
+  artits: {
     id_artist: string;
     name: string;
     url_cover: string;
@@ -38,7 +37,7 @@ interface Music {
     last_update: string;
     is_show: string;
     followers: string;
-  }
+  };
 }
 
 export default function GrooveChartPage() {
@@ -82,22 +81,24 @@ export default function GrooveChartPage() {
   };
   const addMusicToHistory = async (id_music: string, play_duration: number) => {
     try {
-        const response: any = await axios.post("/music-history/me", { id_music, play_duration });
-        const newHistory: MusicHistory = response.result;
-        setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-        console.log("Added to history:", newHistory);
+      const response: any = await axios.post("/music-history/me", {
+        id_music,
+        play_duration,
+      });
+      const newHistory: MusicHistory = response.result;
+      setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
+      console.log("Added to history:", newHistory);
     } catch (error) {
-        console.error("Error adding to music history:", error);
+      console.error("Error adding to music history:", error);
     }
-};
-
+  };
 
   return (
     <div className={styles.contentwrapper}>
       <h1 className={styles.title}>BẢNG XẾP HẠNG</h1>
       <div className={styles.musicList}>
         {musicData
-          .sort((a, b) => b.vỉew - a.vỉew)
+          .sort((a, b) => b.view - a.view)
           .map((music, index) => (
             <div
               key={music.id_music}
@@ -115,53 +116,52 @@ export default function GrooveChartPage() {
                   className={styles.musicCover}
                 />
                 <div className={styles.overlay}>
-                <button
-    className={styles.playButton}
-    onClick={async () => {
-        // Thêm nhạc vào playlist và phát nhạc
-        addMusicToTheFirst(
-            state,
-            dispatch,
-            music.id_music.toString(),
-            music.name,
-            music.url_path,
-            music.url_cover,
-            music.composer,
-            music.artists.map((artist) => artist.artist)
-        );
+                  <button
+                    className={styles.playButton}
+                    onClick={async () => {
+                      // Thêm nhạc vào playlist và phát nhạc
+                      addMusicToTheFirst(
+                        state,
+                        dispatch,
+                        music.id_music.toString(),
+                        music.name,
+                        music.url_path,
+                        music.url_cover,
+                        music.composer,
+                        music.artists.map((artist) => artist.artist)
+                      );
 
-        // Thêm vào lịch sử nghe nhạc
-        addMusicToHistory(music.id_music.toString(), 100);
+                      // Thêm vào lịch sử nghe nhạc
+                      addMusicToHistory(music.id_music.toString(), 100);
 
-        // Dừng nhạc nếu đang phát và chọn lại nhạc
-        if (
-          music.id_music === state.currentPlaylist[0]?.id_music &&
-            state.isPlaying
-        ) {
-            dispatch({ type: "IS_PLAYING", payload: false });
-        }
-    }}
->
-    {music.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
-        <i className="fas fa-pause"></i>
-    ) : (
-        <i className="fas fa-play"></i>
-    )}
-</button>
-
+                      // Dừng nhạc nếu đang phát và chọn lại nhạc
+                      if (
+                        music.id_music === state.currentPlaylist[0]?.id_music &&
+                        state.isPlaying
+                      ) {
+                        dispatch({ type: "IS_PLAYING", payload: false });
+                      }
+                    }}
+                  >
+                    {music.id_music === state.currentPlaylist[0]?.id_music &&
+                    state.isPlaying ? (
+                      <i className="fas fa-pause"></i>
+                    ) : (
+                      <i className="fas fa-play"></i>
+                    )}
+                  </button>
                 </div>
               </div>
-             
+
               <div className={styles.Titles}>
                 <Link href={`/musicdetail/${music.id_music}`}>
-                <h5 className={styles.musicName}>{music.name}</h5>
+                  <h5 className={styles.musicName}>{music.name}</h5>
                 </Link>
-                
-                
-                <p className={styles.musicViews}>Lượt xem: {music.vỉew}</p> 
+
+                <p className={styles.musicViews}>Lượt xem: {music.view}</p>
                 <p className={styles.musicArtist}>{music.composer}</p>
               </div>
-            
+
               <div className={styles.songControls}>
                 <i className="fas fa-heart"></i>
               </div>
@@ -170,8 +170,8 @@ export default function GrooveChartPage() {
           ))}
       </div>
       <audio ref={audioRef} />
-      <ListMusicTop />
-      <ListType />
+      {/* <ListMusicTop /> */}
+      {/* <ListType /> */}
     </div>
   );
 }

@@ -2,8 +2,8 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "@/lib/axios";
 import style from "./songdetail.module.scss";
-import AlbumHot from "@/app/component/albumhot";
-import MusicPartner from "@/app/component/musicpartner";
+import AlbumHot from "@/app/component/home/albumhot";
+import MusicPartner from "@/app/component/home/musicpartner";
 import Comment from "@/app/component/comment";
 import clsx from "clsx";
 import { addMusicToTheFirst } from "@/app/component/musicplayer";
@@ -38,7 +38,6 @@ interface AggregatedHistory {
   view_count: number;
   last_played: string;
 }
-
 
 const SongDetailPage: React.FC = ({ params }: any) => {
   const id = params.id;
@@ -135,7 +134,10 @@ const SongDetailPage: React.FC = ({ params }: any) => {
   };
   const addMusicToHistory = async (id_music: string, play_duration: number) => {
     try {
-      const response: any = await axios.post("/music-history/me", { id_music, play_duration });
+      const response: any = await axios.post("/music-history/me", {
+        id_music,
+        play_duration,
+      });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
       console.log("Added to history:", newHistory);
@@ -143,7 +145,6 @@ const SongDetailPage: React.FC = ({ params }: any) => {
       console.error("Error adding to music history:", error);
     }
   };
-
 
   const playSong = (music: Music) => {
     if (audioRef.current) {
@@ -167,7 +168,6 @@ const SongDetailPage: React.FC = ({ params }: any) => {
     return <p>Không tìm thấy music</p>;
   }
 
-
   return (
     <div className={style.contentwrapper}>
       <div className={style.banner}>
@@ -179,7 +179,6 @@ const SongDetailPage: React.FC = ({ params }: any) => {
       </div>
       <div className={style.modalContent}>
         <div className={style.modalContentRight}>
-
           <div className={style.imageContainer}>
             <img
               src={musicdetail.url_cover}
@@ -190,7 +189,6 @@ const SongDetailPage: React.FC = ({ params }: any) => {
           <h2>{musicdetail.name}</h2>
           <p className={style.songDuration}>Ca sĩ: {musicdetail.composer}</p>
           <div className={style.audioPlayer}>
-
             <button
               className={style.playButton}
               onClick={async () => {
@@ -218,13 +216,11 @@ const SongDetailPage: React.FC = ({ params }: any) => {
                 }
               }}
             >
-              {musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music && state?.isPlaying ? (
-                "Dừng nhạc"
-              ) : (
-                "Phát nhạc"
-              )}
+              {musicdetail.id_music === state?.currentPlaylist?.[0]?.id_music &&
+              state?.isPlaying
+                ? "Dừng nhạc"
+                : "Phát nhạc"}
             </button>
-
 
             <span
               className={clsx(style.heartIcon, {
@@ -242,8 +238,9 @@ const SongDetailPage: React.FC = ({ params }: any) => {
           <p>Bài Hát</p>
           <div
             key={musicdetail.id_music}
-            className={`${style.songCard} ${hoveredSong === musicdetail.id_music ? style.hovered : ""
-              }`}
+            className={`${style.songCard} ${
+              hoveredSong === musicdetail.id_music ? style.hovered : ""
+            }`}
             onMouseEnter={() => setHoveredSong(musicdetail.id_music)}
             onMouseLeave={() => setHoveredSong(null)}
           >
@@ -274,20 +271,21 @@ const SongDetailPage: React.FC = ({ params }: any) => {
 
                     // Dừng nhạc nếu đang phát và chọn lại nhạc
                     if (
-                      musicdetail.id_music === state.currentPlaylist[0]?.id_music &&
+                      musicdetail.id_music ===
+                        state.currentPlaylist[0]?.id_music &&
                       state.isPlaying
                     ) {
                       dispatch({ type: "IS_PLAYING", payload: false });
                     }
                   }}
                 >
-                  {musicdetail.id_music === state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                  {musicdetail.id_music ===
+                    state.currentPlaylist[0]?.id_music && state.isPlaying ? (
                     <i className="fas fa-pause"></i>
                   ) : (
                     <i className="fas fa-play"></i>
                   )}
                 </button>
-
               </div>
             </div>
             <div className={style.Titles}>
@@ -296,7 +294,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
             </div>
             <span className={style.songDuration}>
               {musicdetail.total_duration &&
-                time[Number(musicdetail.total_duration)]
+              time[Number(musicdetail.total_duration)]
                 ? formatTime(time[Number(musicdetail.total_duration)])
                 : "00:00 "}
             </span>
@@ -308,7 +306,6 @@ const SongDetailPage: React.FC = ({ params }: any) => {
           <p className={style.songArtist}>
             Ngày phát hành: {formatDate(musicdetail.release_date)}
           </p>
-
         </div>
       </div>
       <Comment id_music={id} />

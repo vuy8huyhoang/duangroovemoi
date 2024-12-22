@@ -4,101 +4,97 @@
   align-items: center;
   background-color: rgba(18, 18, 18, 0.9); // Nền đen với độ mờ
   backdrop-filter: blur(6px);
-  padding: 10px 20px;
+  padding: 10px 40px;
   color: white;
   height: 60px;
-  width: 100%;
+  width: calc(100% - 240px);
   position: fixed;
-  top: 0; 
+  top: 0;
   right: 0;
   z-index: 990; // Đảm bảo header nằm trên tất cả các phần tử khác
 }
 
-  
-  .headerLeft i, .headerRight i {
-    font-size: 20px;
-    color: #ccc; // Màu xám cho icon
-    cursor: pointer;
-  }
-  
-  .headerCenter input {
-    width: 400px;
-    max-width: 100%;
-    padding: 8px 12px;
-    background-color: #333; // Nền của input
-    border: none;
-    border-radius: 20px;
-    color: #ccc; // Màu chữ
-  }
-  
-  .headerCenter input::placeholder {
-    color: #666;
-  }
-  .headerCenter{
-    margin-left: 350px;
-  }
-  
-  .headerRight {
-    display: flex;
-    gap: 15px;
-  }
-  
-  .headerLeft i {
-    margin-right: 30px;
-  }
-    
-  
-    .headerLeft,
-    .headerCenter,
-    .headerRight {
-      display: flex;
-      align-items: center;
-    }
-  
-    .settingsContainer {
-      position: relative;
-    }
-  
-    .dropdownMenu {
-      position: absolute;
-      top: 40px;
-      right: 0;
-      background-color: #fff;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 10px;
-      border-radius: 4px;
-      z-index: 1000;
-  
-      ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-  
-        li {
-          width: 125px;
-          padding: 8px 12px;
-          text-align: center;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-          color: #333;
-          border-radius: 5px;
-          a{
-            text-decoration: none;
-            color: #333;
-          }
-          &:hover {
-            background-color: #b3b2b2;
-            border-radius: 5px;
-          }
-        }
+.headerLeft i,
+.headerRight i {
+  font-size: 20px;
+  color: #ccc; // Màu xám cho icon
+  cursor: pointer;
+}
+
+.headerCenter input {
+  width: 400px;
+  max-width: 100%;
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.05); // Nền của input
+  border: none;
+  border-radius: 20px;
+  color: #ccc; // Màu chữ
+}
+
+.headerCenter input::placeholder {
+  color: #666;
+}
+
+.headerRight {
+  display: flex;
+  gap: 15px;
+}
+
+.headerLeft i {
+  margin-right: 30px;
+}
+
+.headerLeft,
+.headerCenter,
+.headerRight {
+  display: flex;
+  align-items: center;
+}
+
+.settingsContainer {
+  position: relative;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 4px;
+  z-index: 1000;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      width: 125px;
+      padding: 8px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      color: #333;
+      border-radius: 5px;
+      a {
+        text-decoration: none;
+        color: #333;
+      }
+      &:hover {
+        background-color: #b3b2b2;
+        border-radius: 5px;
       }
     }
-  
-    .username {
-      margin-left: 10px;
-      font-weight: bold;
-    }
-.avt{
+  }
+}
+
+.username {
+  margin-left: 10px;
+  font-weight: bold;
+}
+.avt {
   width: 30px;
   border-radius: 20px;
 }

@@ -1,13 +1,14 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import axios from '@/lib/axios';
-import Link from 'next/link';
-import style from './type.module.scss';
-import ListMusicTop from '../component/listmusictop';
-import ListMusicType from '../component/listmusicType';
-import ListAlbum from '../component/listalbum';
-import MusicPartner from '../component/musicpartner';
-import SlideShow from '../component/slideshow';
+import React, { useEffect, useState } from "react";
+import axios from "@/lib/axios";
+import Link from "next/link";
+import style from "./type.module.scss";
+import ListMusicTop from "../component/home/listmusictop";
+import ListMusicType from "../component/listmusicType";
+import ListAlbum from "../component/home/listalbum";
+import MusicPartner from "../component/home/musicpartner";
+import SlideShow from "../component/slideshow";
+import clsx from "clsx";
 interface Type {
   id_type: string;
   name: string;
@@ -17,13 +18,13 @@ const TypePage = () => {
   const [typeList, setTypeList] = useState<Type[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [showAll, setShowAll] = useState<boolean>(false); 
-  
+  const [showAll, setShowAll] = useState<boolean>(false);
+
   const fetchTypeList = async () => {
     try {
-      const response :any = await axios.get('/type');
+      const response: any = await axios.get("/type");
       console.log(response.result);
-      setTypeList(response.result.data || []); 
+      setTypeList(response.result.data || []);
     } catch (err) {
       console.error("Error fetching type list:", err);
       setError("Có lỗi xảy ra khi tải danh sách thể loại.");
@@ -34,10 +35,10 @@ const TypePage = () => {
 
   useEffect(() => {
     fetchTypeList();
-  }, []); 
+  }, []);
 
   const handleShowAll = () => {
-    setShowAll(true); 
+    setShowAll(true);
   };
 
   if (loading) {
@@ -50,9 +51,11 @@ const TypePage = () => {
 
   return (
     <>
-      <SlideShow/>
+      <SlideShow />
       <div className={style.container}>
-        <h1 className={style.title}>Danh Sách Thể Loại</h1>
+        <h1 className={clsx(style.title, "home__heading")}>
+          Danh Sách Thể Loại
+        </h1>
         <ul className={style.typeList}>
           {Array.isArray(typeList) && typeList.length > 0 ? (
             typeList.slice(0, showAll ? typeList.length : 4).map((type) => (
@@ -71,12 +74,11 @@ const TypePage = () => {
             Tất cả
           </button>
         )}
-      <ListMusicType />
-      <ListMusicTop />
-      <ListAlbum />
-      <MusicPartner/>
+        <ListMusicType />
+        <ListMusicTop />
+        <ListAlbum />
+        <MusicPartner />
       </div>
-
     </>
   );
 };
