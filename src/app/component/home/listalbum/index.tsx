@@ -221,9 +221,9 @@ export default function ListAlbum() {
                     >
                       <i className="fas fa-play"></i>
                     </button>
-                    <button className={style.moreButton}>
+                    {/* <button className={style.moreButton}>
                       <ReactSVG src="/more.svg" />
-                    </button>
+                    </button> */}
                   </div>
                 </div>
                 <Link
