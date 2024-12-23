@@ -121,10 +121,10 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
 
     try {
       await emailjs.send(
-        "service_83tf7pd", // Dịch vụ email của bạn
+        "service_nw3uiza", // Dịch vụ email của bạn
         "template_f2p2rez", // ID template của bạn
         emailParams,
-        "6LZQc95vA7RoyLanq" // ID người dùng của bạn từ EmailJS
+        "7hNdrSVu8GuH-wnIl" // ID người dùng của bạn từ EmailJS
       );
       return otp; // Trả về OTP
     } catch (error) {
