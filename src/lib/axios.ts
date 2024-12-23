@@ -1,8 +1,8 @@
 import axiosLib from "axios";
 
 // const base = "/api/";
-const base = "http://localhost:4000/";
-// const base = "https://api-groove.vercel.app/";
+// const base = "http://localhost:4000/";
+const base = "https://api-groove.vercel.app/";
 
 // Tạo một axios của axios
 const axios = axiosLib.create({
