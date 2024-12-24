@@ -9,9 +9,12 @@ const VipOverlay = () => {
   const [selectedTab, setSelectedTab] = useState("momo");
 
   const completePayment = () => {
-    axios.post("complete-payment", {email: state?.profile?.email, vip_code: state?.profile?.vip_code})
-    dispatch({type: "SHOW_VIP", payload: false})
-  }
+    axios.post("complete-payment", {
+      email: state?.profile?.email,
+      vip_code: state?.profile?.vip_code,
+    });
+    dispatch({ type: "SHOW_VIP", payload: false });
+  };
 
   return (
     <div
@@ -33,7 +36,7 @@ const VipOverlay = () => {
               className="size-6"
             >
               <path
-                stroke-linecap="round"
+                strokeLinecap="round"
                 stroke-linejoin="round"
                 d="M6 18 18 6M6 6l12 12"
               />
@@ -69,133 +72,156 @@ const VipOverlay = () => {
         </div>
       )}
 
-      {showPayment &&   (
-    <div className="max-w-lg mx-auto p-6 shadow-md rounded-lg relative bg-transparent">
-      {/* Nút đóng */}
-      <button
-        className="absolute top-4 right-4 text-gray-400 hover:text-gray-100"
-        onClick={() => dispatch({ type: "SHOW_VIP", payload: false })}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth="2"
-          stroke="currentColor"
-          className="w-5 h-5"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
-
-      {/* Thông tin khách hàng */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold text-gray-100">Thông tin khách hàng</h2>
-        <p className="text-sm text-gray-300 mt-2">
-          Code:{" "}
-          <span className="font-medium text-gray-50">{state?.profile?.vip_code}</span>
-        </p>
-        <p className="text-sm text-gray-300 mt-2">
-          Số tiền:{" "}
-          <span className="font-medium text-gray-50">20.000VNĐ</span>
-        </p>
-      </div>
-
-      {/* Tabs lựa chọn phương thức thanh toán */}
-      <div className="border-b border-gray-600">
-        <nav className="flex">
+      {showPayment && (
+        <div className="max-w-lg mx-auto p-6 shadow-md rounded-lg relative bg-transparent">
+          {/* Nút đóng */}
           <button
-            className={`flex-1 text-[12px] text-center text-sm font-medium ${
-              selectedTab === "momo"
-                ? "text-blue-400 border-b-2 border-blue-400"
-                : "text-gray-400 hover:text-gray-200"
-            }`}
-            onClick={() => setSelectedTab("momo")}
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-100"
+            onClick={() => dispatch({ type: "SHOW_VIP", payload: false })}
           >
-            Thanh toán Momo
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
           </button>
-          <button
-            className={`flex-1 text-[12px] text-center text-sm font-medium ${
-              selectedTab === "bank"
-                ? "text-blue-400 border-b-2 border-blue-400"
-                : "text-gray-400 hover:text-gray-200"
-            }`}
-            onClick={() => setSelectedTab("bank")}
-          >
-            Chuyển khoản ngân hàng
-          </button>
-        </nav>
-      </div>
 
-      {/* Nội dung Tab */}
-      <div className="mt-6">
-        {selectedTab === "momo" && (
-          <div className="text-center">
-            <h3 className="text-lg font-semibold text-gray-100 mb-4">Thanh toán bằng Momo</h3>
-            <img
-              src="/momo.jpg"
-              alt="Momo QR"
-              className="object-cover rounded-md shadow-md w-32 mx-auto"
-            />
-            <div className="mt-4 text-sm text-gray-300">
-              <p className="font-medium text-gray-50">Cú pháp chuyển khoản:</p>
-              <p>[CODE]-[Tên khách hàng]-groove</p>
-            </div>
+          {/* Thông tin khách hàng */}
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-100">
+              Thông tin khách hàng
+            </h2>
+            <p className="text-sm text-gray-300 mt-2">
+              Code:{" "}
+              <span className="font-medium text-gray-50">
+                {state?.profile?.vip_code}
+              </span>
+            </p>
+            <p className="text-sm text-gray-300 mt-2">
+              Số tiền:{" "}
+              <span className="font-medium text-gray-50">20.000VNĐ</span>
+            </p>
           </div>
-        )}
 
-        {selectedTab === "bank" && (
-          <div className="text-sm text-gray-300">
-            <h3 className="text-lg font-semibold text-gray-100 mb-4">Chuyển khoản ngân hàng</h3>
-            <div className="space-y-2">
-              <p>
-                <span className="font-medium text-gray-50">Ngân hàng:</span> Vietcombank
-              </p>
-              <p>
-                <span className="font-medium text-gray-50">Số tài khoản:</span> 0123456789
-              </p>
-              <p>
-                <span className="font-medium text-gray-50">Tên tài khoản:</span> Công Ty Groove
-              </p>
-              <p className="mt-4 font-medium text-gray-50">Cú pháp chuyển khoản:</p>
-              <p className="">[CODE]-[Tên khách hàng]-groove</p>
-            </div>
+          {/* Tabs lựa chọn phương thức thanh toán */}
+          <div className="border-b border-gray-600">
+            <nav className="flex">
+              <button
+                className={`flex-1 text-[12px] text-center text-sm font-medium ${
+                  selectedTab === "momo"
+                    ? "text-blue-400 border-b-2 border-blue-400"
+                    : "text-gray-400 hover:text-gray-200"
+                }`}
+                onClick={() => setSelectedTab("momo")}
+              >
+                Thanh toán Momo
+              </button>
+              <button
+                className={`flex-1 text-[12px] text-center text-sm font-medium ${
+                  selectedTab === "bank"
+                    ? "text-blue-400 border-b-2 border-blue-400"
+                    : "text-gray-400 hover:text-gray-200"
+                }`}
+                onClick={() => setSelectedTab("bank")}
+              >
+                Chuyển khoản ngân hàng
+              </button>
+            </nav>
           </div>
-        )}
-      </div>
 
-      {/* Ghi chú */}
-      <div className="mt-4 text-center text-red-500 text-[12px]">
-        <p className="text-red-500">* Sau khi chuyển khoản, vui lòng nhấp vào nút Hoàn tất *</p>
-        <p className="text-red-500">* Tài khoản sẽ được nâng cấp sau từ 5 phút đến 24 giờ *</p>
-        <p className="text-red-500">
-          * Hỗ trợ (Zalo):{" "}
-          <a
-            href="https://zalo.me/0794437748"
-            className="text-blue-400 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            0794437748
-          </a>
-        </p>
-      </div>
+          {/* Nội dung Tab */}
+          <div className="mt-6">
+            {selectedTab === "momo" && (
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-gray-100 mb-4">
+                  Thanh toán bằng Momo
+                </h3>
+                <img
+                  src="/momo.jpg"
+                  alt="Momo QR"
+                  className="object-cover rounded-md shadow-md w-32 mx-auto"
+                />
+                <div className="mt-4 text-sm text-gray-300">
+                  <p className="font-medium text-gray-50">
+                    Cú pháp chuyển khoản:
+                  </p>
+                  <p>[CODE]-[Tên khách hàng]-groove</p>
+                </div>
+              </div>
+            )}
 
-      {/* Nút hoàn tất */}
-      <div className="text-center mt-6">
-        <button
-          className="px-6 py-3 bg-blue-600 text-white font-medium text-sm rounded-lg shadow-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          onClick={completePayment}
-        >
-          Hoàn tất
-        </button>
-      </div>
-    </div>
-  )}
+            {selectedTab === "bank" && (
+              <div className="text-sm text-gray-300">
+                <h3 className="text-lg font-semibold text-gray-100 mb-4">
+                  Chuyển khoản ngân hàng
+                </h3>
+                <div className="space-y-2">
+                  <p>
+                    <span className="font-medium text-gray-50">Ngân hàng:</span>{" "}
+                    Vietcombank
+                  </p>
+                  <p>
+                    <span className="font-medium text-gray-50">
+                      Số tài khoản:
+                    </span>{" "}
+                    0123456789
+                  </p>
+                  <p>
+                    <span className="font-medium text-gray-50">
+                      Tên tài khoản:
+                    </span>{" "}
+                    Công Ty Groove
+                  </p>
+                  <p className="mt-4 font-medium text-gray-50">
+                    Cú pháp chuyển khoản:
+                  </p>
+                  <p className="">[CODE]-[Tên khách hàng]-groove</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Ghi chú */}
+          <div className="mt-4 text-center text-red-500 text-[12px]">
+            <p className="text-red-500">
+              * Sau khi chuyển khoản, vui lòng nhấp vào nút Hoàn tất *
+            </p>
+            <p className="text-red-500">
+              * Tài khoản sẽ được nâng cấp sau từ 5 phút đến 24 giờ *
+            </p>
+            <p className="text-red-500">
+              * Hỗ trợ (Zalo):{" "}
+              <a
+                href="https://zalo.me/0794437748"
+                className="text-blue-400 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                0794437748
+              </a>
+            </p>
+          </div>
+
+          {/* Nút hoàn tất */}
+          <div className="text-center mt-6">
+            <button
+              className="px-6 py-3 bg-blue-600 text-white font-medium text-sm rounded-lg shadow-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              onClick={completePayment}
+            >
+              Hoàn tất
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

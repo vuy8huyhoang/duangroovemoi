@@ -20,10 +20,12 @@ const ProtectRoute = () => {
       if (localStorage.getItem("accessToken")) {
         axios("/profile").then((res: any) => {
           if (res.status !== 200) {
-            console.log("chưa đăng nhập");
+            // console.log("chưa đăng nhập");
             localStorage.removeItem("accessToken");
             goBack();
-          } else console.log("Đã đăng nhập");
+          } else {
+            // console.log("Đã đăng nhập");
+          }
         });
       } else {
         goBack();

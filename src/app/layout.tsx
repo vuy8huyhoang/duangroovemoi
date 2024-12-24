@@ -1,6 +1,6 @@
 "use client";
 import Sidebar from "./component/sidebar";
-import "./globals.css";
+import "./globals.scss";
 import Header from "./component/header/Header";
 import { usePathname } from "next/navigation";
 import AdminSidebar from "./component/AdminSidebar";
@@ -11,6 +11,7 @@ import { initialState, reducer } from "./global";
 import ProtectRoute from "./ProtectRoute";
 import RightSidebar from "./component/rightsidebar/rightsidebar";
 import VipOverlay from "./VipOverlay";
+import Login from "./component/auth";
 
 export const AppContext = createContext<any>(undefined);
 
@@ -42,6 +43,7 @@ export default function Layout({ children }: any) {
             <div className="container">
               <Sidebar />
               <Header />
+              {state?.showLogin && <Login />}
               {state?.showVIP && <VipOverlay />}
               <MusicPlayer />
 

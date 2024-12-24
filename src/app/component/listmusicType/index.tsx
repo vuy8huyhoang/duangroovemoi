@@ -4,6 +4,9 @@ import style from "./listmusicType.module.scss";
 import Link from "next/link";
 import { addMusicToTheFirst } from "../musicplayer";
 import { AppContext } from "@/app/layout";
+import { Img } from "react-image";
+import clsx from "clsx";
+import { formatTimeFromNow } from "@/utils/String";
 
 interface Mussic {
   id_music: number;
@@ -19,6 +22,7 @@ interface Mussic {
     id_music: string;
   };
   artists: any[];
+  created_at: string;
 }
 interface MusicHistory {
   id_music: string;
@@ -42,7 +46,13 @@ const ListMusic: React.FC = () => {
       .get("/music")
       .then((response: any) => {
         if (response && response.result && response.result.data) {
-          setAlbums(response.result.data);
+          setAlbums(
+            response.result.data.sort((a, b) => {
+              const dateA = new Date(a.created_at).getTime() || 0;
+              const dateB = new Date(b.created_at).getTime() || 0;
+              return dateB - dateA;
+            })
+          );
         }
       })
       .catch((error: any) => console.error("Error fetching albums:", error));
@@ -56,7 +66,7 @@ const ListMusic: React.FC = () => {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      console.log("Added to history:", newHistory);
+      // console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }
@@ -105,10 +115,25 @@ const ListMusic: React.FC = () => {
             onMouseLeave={() => setHoveredSong(null)}
           >
             <div className={style.albumCoverWrapper}>
-              <img
-                src={album.url_cover}
+              <Img
+                src={album.url_cover} // URL ảnh từ album
                 alt={album.name}
+                // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
                 className={style.albumCover}
+                unloader={
+                  <img
+                    className={clsx(
+                      style.albumCover,
+                      "rounded-full overflow-hidden"
+                    )}
+                    src="/default.png"
+                    alt="default"
+                    // className={clsx(
+                    //   style.albumCover,
+                    //   style.albumCover__default
+                    // )}
+                  />
+                } // Thay thế ảnh khi lỗi
               />
               <div className={style.overlay}>
                 <button
@@ -158,6 +183,11 @@ const ListMusic: React.FC = () => {
                   {album.composer}
                 </Link>
               </div>
+              <div className="text-[13px] text-gray-500">
+                <Link href={`/musicdetail/${album.id_music}`}>
+                  {formatTimeFromNow(album.created_at)}
+                </Link>
+              </div>
             </div>
             <div className={style.songControls}>
               <i className="fas fa-heart"></i>
@@ -172,7 +202,20 @@ const ListMusic: React.FC = () => {
           disabled={currentPage === 1}
           onClick={() => setCurrentPage(currentPage - 1)}
         >
-          Trước
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15.75 19.5 8.25 12l7.5-7.5"
+            />
+          </svg>
         </button>
         <span>
           Trang {currentPage} / {totalPages}
@@ -181,7 +224,20 @@ const ListMusic: React.FC = () => {
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage(currentPage + 1)}
         >
-          Sau
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m8.25 4.5 7.5 7.5-7.5 7.5"
+            />
+          </svg>
         </button>
       </div>
 

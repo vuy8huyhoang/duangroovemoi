@@ -6,6 +6,7 @@ import styles from "./login.module.scss";
 import { ReactSVG } from "react-svg";
 import Link from "next/link";
 import { AppContext } from "@/app/layout";
+import clsx from "clsx";
 
 interface Profile {
   birthday: string;
@@ -20,7 +21,7 @@ interface Profile {
   url_avatar: string;
 }
 
-const Login = ({ closePopup }: { closePopup: () => void }) => {
+const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -31,26 +32,66 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
     fullname: "",
     password: "",
     otp: "", // Thêm trường OTP
+    resetPassword: "",
   });
+
   const [errors, setErrors] = useState({
     email: "",
     fullname: "",
     password: "",
     otp: "", // Thêm lỗi cho OTP
+    resetPassword: "",
   });
 
   const [isOtpSent, setIsOtpSent] = useState(false); // Trạng thái gửi OTP
 
+  const togglePopup = () => {
+    dispatch({ type: "SHOW_LOGIN", payload: !state?.showLogin });
+  };
+
   const toggleForm = () => {
     setIsLogin(!isLogin);
+    setErrors({
+      email: "",
+      fullname: "",
+      password: "",
+      otp: "", // Thêm lỗi cho OTP
+      resetPassword: "",
+    });
   };
 
   const handleForgotPassword = () => {
     setIsForgotPassword(true);
+    setErrors({
+      email: "",
+      fullname: "",
+      password: "",
+      otp: "", // Thêm lỗi cho OTP
+      resetPassword: "",
+    });
   };
 
   const handleBackToLogin = () => {
     setIsForgotPassword(false);
+    setErrors({
+      email: "",
+      fullname: "",
+      password: "",
+      otp: "", // Thêm lỗi cho OTP
+      resetPassword: "",
+    });
+  };
+
+  const handleBackToRegister = () => {
+    setIsForgotPassword(false);
+    setIsLogin(false);
+    setErrors({
+      email: "",
+      fullname: "",
+      password: "",
+      otp: "", // Thêm lỗi cho OTP
+      resetPassword: "",
+    });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,7 +151,10 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
     return isValid;
   };
 
-  const sendOtpEmail = async (email: string, fullname: string): Promise<string> => {
+  const sendOtpEmail = async (
+    email: string,
+    fullname: string
+  ): Promise<string> => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     const emailParams = {
@@ -159,17 +203,20 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
         const profileResponse: any = await axios.get("/profile", {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
-        console.log("Profile Response:", profileResponse);
+        // console.log("Profile Response:", profileResponse);
 
         const fetchedProfileData = profileResponse?.result?.data;
         if (fetchedProfileData) {
           setProfileData(fetchedProfileData);
           if (typeof window !== "undefined") {
-            localStorage.setItem("profileData", JSON.stringify(fetchedProfileData));
+            localStorage.setItem(
+              "profileData",
+              JSON.stringify(fetchedProfileData)
+            );
           }
-          console.log("Profile Data Set:", fetchedProfileData);
+          // console.log("Profile Data Set:", fetchedProfileData);
           alert("Đăng nhập thành công!");
-          closePopup();
+          togglePopup();
 
           if (fetchedProfileData.role === "admin") {
             window.location.href = "/admin";
@@ -190,8 +237,12 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
       if (error.response) {
         if (error.response.status === 401) {
           setErrors((prev) => ({ ...prev, password: "Nhập sai mật khẩu." }));
-        } if (error.response.status === 404) {
-          setErrors((prev) => ({ ...prev, email: "Tên đăng nhập không tồn tại." }));
+        }
+        if (error.response.status === 404) {
+          setErrors((prev) => ({
+            ...prev,
+            email: "Tên đăng nhập không tồn tại.",
+          }));
         }
       } else {
         alert("Đã xảy ra lỗi khi kết nối với server.");
@@ -204,6 +255,12 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
   const handleRegister = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
+    if (user.password !== user.resetPassword) {
+      setErrors((prev) => {
+        return { ...prev, resetPassword: "Nhập lại mật khẩu không đúng" };
+      });
+      return;
+    }
     if (!validateRegisterForm()) return;
 
     setLoading(true);
@@ -212,17 +269,14 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
         headers: { "Content-Type": "application/json" },
       });
       const otp = await sendOtpEmail(user.email, user.fullname);
-       // Lưu OTP vào localStorage hoặc cơ sở dữ liệu
+      // Lưu OTP vào localStorage hoặc cơ sở dữ liệu
       if (response.status === 200 || response.status === 201) {
         localStorage.setItem("otp", otp);
         alert("Đăng ký thành công! Mã OTP đã được gửi đến email của bạn.");
-      setIsOtpSent(true); // Hiển thị form OTP
-  
+        setIsOtpSent(true); // Hiển thị form OTP
       } else {
         alert("Đăng ký không thành công.");
       }
-      
-
     } catch (error) {
       alert("Đã xảy ra lỗi khi gửi OTP.");
     } finally {
@@ -232,27 +286,33 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
 
   const handleVerifyOtp = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-  
+
+    if (user.password !== user.resetPassword) {
+      setErrors((prev) => {
+        return { ...prev, resetPassword: "Mật khẩu nhập lại không đúng" };
+      });
+    }
+
     if (!user.otp) {
       setErrors((prev) => ({ ...prev, otp: "Mã OTP là bắt buộc." }));
       return;
     }
-  
+
     const storedOtp = localStorage.getItem("otp"); // Lấy OTP từ localStorage
-  
+
     if (storedOtp === user.otp) {
       dispatch({ type: "SHOW_LOGIN", payload: true });
-      alert("X");
-    
-      
-      // Chuyển hướng đến trang đăng nhập
-      
+      localStorage.removeItem("otp");
+      // alert("X");
     } else {
       setErrors((prev) => ({ ...prev, otp: "Mã OTP không chính xác." }));
       alert("Mã OTP không chính xác. Vui lòng thử lại.");
     }
   };
-  const handleForgotPasswordSubmit = async (e: React.FormEvent): Promise<void> => {
+
+  const handleForgotPasswordSubmit = async (
+    e: React.FormEvent
+  ): Promise<void> => {
     e.preventDefault();
 
     const emailInput = (e.target as HTMLFormElement).email.value;
@@ -267,16 +327,16 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
         email: emailInput,
       });
 
-      alert("Đã gửi yêu cầu khôi phục mật khẩu. Vui lòng kiểm tra email của bạn.");
-
+      alert(
+        "Đã gửi yêu cầu khôi phục mật khẩu. Vui lòng kiểm tra email của bạn."
+      );
     } catch (error: any) {
       console.error("Lỗi khi yêu cầu khôi phục mật khẩu:", error);
 
       if (error.response) {
         if (error.response.status === 404) {
           alert("Email không tồn tại. Vui lòng kiểm tra lại.");
-        }
-        else {
+        } else {
           alert("Đã xảy ra lỗi khi yêu cầu khôi phục mật khẩu.");
         }
       } else {
@@ -286,38 +346,73 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
       setLoading(false);
     }
   };
+
   return (
     <div className={styles.popupOverlay}>
       <div className={styles.popupContent}>
         {!isForgotPassword ? (
+          ////////////////////////////////////////////////////// login
           <>
-            <h2>{isLogin ? "Đăng nhập vào Groove" : "Đăng ký vào Groove"}</h2>
-            <form onSubmit={isLogin ? handleLogin : handleRegister}>
+            <div className={styles.logo}>
+              <img src="/logo.svg" alt="" />
+            </div>
+            <h2>{isLogin ? "Welcome back!" : "Let's start!"}</h2>
+            <form
+              className="w-full"
+              onSubmit={isLogin ? handleLogin : handleRegister}
+            >
               {isLogin ? (
                 <>
                   <div className={styles.formGroup}>
-                    <label htmlFor="email">Email</label>
+                    {/* <label htmlFor="email">Email</label> */}
                     <input
                       type="email"
                       id="email"
                       name="email"
-                      placeholder="Email"
+                      placeholder="Email..."
                       value={user.email}
                       onChange={handleChange}
                     />
-                    {errors.email && <p className={styles.errorText}>{errors.email}</p>}
+                    {errors.email && (
+                      <p className={styles.errorText}>{errors.email}</p>
+                    )}
                   </div>
                   <div className={styles.formGroup}>
-                    <label htmlFor="password">Mật khẩu</label>
+                    {/* <label htmlFor="password">Mật khẩu</label> */}
                     <input
                       type="password"
                       id="password"
                       name="password"
-                      placeholder="Mật khẩu"
+                      placeholder="Mật khẩu..."
                       value={user.password}
                       onChange={handleChange}
                     />
-                    {errors.password && <p className={styles.errorText}>{errors.password}</p>}
+                    {errors.password && (
+                      <p className={styles.errorText}>{errors.password}</p>
+                    )}
+                  </div>
+                  <div className={clsx("flex justify-between")}>
+                    <div
+                      onClick={handleForgotPassword}
+                      className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
+                    >
+                      Quên mật khẩu?
+                    </div>
+                    {isLogin ? (
+                      <div
+                        onClick={toggleForm}
+                        className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
+                      >
+                        Bạn chưa có tài khoản?
+                      </div>
+                    ) : (
+                      <div
+                        onClick={toggleForm}
+                        className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
+                      >
+                        Bạn đã có tài khoản?
+                      </div>
+                    )}
                   </div>
                   <button
                     type="submit"
@@ -329,65 +424,133 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
                 </>
               ) : isOtpSent ? (
                 <>
-                 <form onSubmit={handleVerifyOtp}>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="otp">Mã OTP</label>
-                    <input
-                      type="text"
-                      id="otp"
-                      name="otp"
-                      placeholder="Nhập mã OTP"
-                      value={user.otp}
-                      onChange={handleChange}
-                    />
-                    {errors.otp && <p className={styles.errorText}>{errors.otp}</p>}
-                  </div>
-                  <button
-                    type="submit"
-                    className={styles.loginBtn}
-                    disabled={loading}
-                  >
-                    {loading ? "Đang xác thực..." : "Xác thực OTP"}
-                  </button>
+                  <form onSubmit={handleVerifyOtp}>
+                    <div className={styles.formGroup}>
+                      {/* <label htmlFor="otp">Mã OTP</label> */}
+                      <input
+                        type="text"
+                        id="otp"
+                        name="otp"
+                        placeholder="Nhập mã OTP..."
+                        value={user.otp}
+                        onChange={handleChange}
+                      />
+                      {errors.otp && (
+                        <p className={styles.errorText}>{errors.otp}</p>
+                      )}
+                    </div>
+                    <div className={clsx("flex justify-between")}>
+                      <div
+                        onClick={handleForgotPassword}
+                        className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
+                      >
+                        Quên mật khẩu?
+                      </div>
+                      {isLogin ? (
+                        <div
+                          onClick={toggleForm}
+                          className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
+                        >
+                          Bạn chưa có tài khoản?
+                        </div>
+                      ) : (
+                        <div
+                          onClick={toggleForm}
+                          className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
+                        >
+                          Bạn đã có tài khoản?
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      type="submit"
+                      className={styles.loginBtn}
+                      disabled={loading}
+                    >
+                      {loading ? "Đang xác thực..." : "Xác thực OTP"}
+                    </button>
                   </form>
                 </>
               ) : (
                 <>
                   <div className={styles.formGroup}>
-                    <label htmlFor="fullname">Họ và tên</label>
+                    {/* <label htmlFor="fullname">Họ và tên</label> */}
                     <input
                       type="text"
                       id="fullname"
                       name="fullname"
-                      placeholder="Họ và tên"
+                      placeholder="Họ và tên..."
                       value={user.fullname}
                       onChange={handleChange}
                     />
-                    {errors.fullname && <p className={styles.errorText}>{errors.fullname}</p>}
+                    {errors.fullname && (
+                      <p className={styles.errorText}>{errors.fullname}</p>
+                    )}
                   </div>
                   <div className={styles.formGroup}>
-                    <label htmlFor="email">Email</label>
+                    {/* <label htmlFor="email">Email</label> */}
                     <input
                       type="email"
                       id="email"
                       name="email"
-                      placeholder="Email"
+                      placeholder="Email..."
                       value={user.email}
                       onChange={handleChange}
                     />
-                    {errors.email && <p className={styles.errorText}>{errors.email}</p>}
+                    {errors.email && (
+                      <p className={styles.errorText}>{errors.email}</p>
+                    )}
                   </div>
                   <div className={styles.formGroup}>
-                    <label htmlFor="password">Mật khẩu</label>
+                    {/* <label htmlFor="password">Mật khẩu</label> */}
                     <input
                       type="password"
                       id="password"
                       name="password"
-                      placeholder="Mật khẩu"
+                      placeholder="Mật khẩu..."
                       value={user.password}
                       onChange={handleChange}
                     />
-                    {errors.password && <p className={styles.errorText}>{errors.password}</p>}
+                    {errors.password && (
+                      <p className={styles.errorText}>{errors.password}</p>
+                    )}
+                  </div>
+                  <div className={styles.formGroup}>
+                    {/* <label htmlFor="password">Mật khẩu</label> */}
+                    <input
+                      type="resetPassword"
+                      id="resetPassword"
+                      name="resetPassword"
+                      placeholder="Nhập lại mật khẩu..."
+                      value={user.resetPassword}
+                      onChange={handleChange}
+                    />
+                    {errors.resetPassword && (
+                      <p className={styles.errorText}>{errors.resetPassword}</p>
+                    )}
+                  </div>
+                  <div className={clsx("flex justify-between")}>
+                    <div
+                      onClick={handleForgotPassword}
+                      className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
+                    >
+                      Quên mật khẩu?
+                    </div>
+                    {isLogin ? (
+                      <div
+                        onClick={toggleForm}
+                        className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
+                      >
+                        Bạn chưa có tài khoản?
+                      </div>
+                    ) : (
+                      <div
+                        onClick={toggleForm}
+                        className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
+                      >
+                        Bạn đã có tài khoản?
+                      </div>
+                    )}
                   </div>
                   <button
                     type="submit"
@@ -399,53 +562,45 @@ const Login = ({ closePopup }: { closePopup: () => void }) => {
                 </>
               )}
             </form>
-            <p className={styles.forgotPassword}>
-              {isLogin && (
-                <a href="#" onClick={handleForgotPassword}>
-                  Quên mật khẩu của bạn?
-                </a>
-              )}
-            </p>
-            <p className={styles.additionalInfo}>
-              {isLogin ? (
-                <>
-                  Bạn chưa có tài khoản?{" "}
-                  <a href="#" onClick={toggleForm}>Đăng ký Groove</a>
-                </>
-              ) : (
-                <>
-                  Bạn đã có tài khoản?{" "}
-                  <a href="#" onClick={toggleForm}>Đăng nhập vào Groove</a>
-                </>
-              )}
-            </p>
           </>
         ) : (
+          ////////////////////////////////////////////////////// reset password
           <>
             <h2>Khôi phục mật khẩu</h2>
             <form onSubmit={handleForgotPasswordSubmit}>
               <div className={styles.formGroup}>
-                <label htmlFor="email">Email hoặc tên người dùng</label>
+                {/* <label htmlFor="email">Email hoặc tên người dùng</label> */}
                 <input
                   type="text"
                   id="email"
                   name="email"
-                  placeholder="Email hoặc tên người dùng"
+                  placeholder="Email..."
                 />
               </div>
-              {errors.email && <p className={styles.errorText}>{errors.email}</p>}
+              {errors.email && (
+                <p className={styles.errorText}>{errors.email}</p>
+              )}
+              <div className={clsx("flex justify-between")}>
+                <div
+                  onClick={handleBackToRegister}
+                  className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
+                >
+                  Bạn chưa có tài khoản?
+                </div>
+                <div
+                  onClick={handleBackToLogin}
+                  className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
+                >
+                  Tiếp tục đăng nhập?
+                </div>
+              </div>
               <button type="submit" className={styles.loginBtn}>
                 Tìm tài khoản
               </button>
             </form>
-            <p className={styles.backToLogin}>
-              <a href="#" onClick={handleBackToLogin}>
-                Trở về đăng nhập
-              </a>
-            </p>
           </>
         )}
-        <button className={styles.closeBtn} onClick={closePopup}>
+        <button type="button" className={styles.closeBtn} onClick={togglePopup}>
           <ReactSVG src="/close.svg" />
         </button>
       </div>

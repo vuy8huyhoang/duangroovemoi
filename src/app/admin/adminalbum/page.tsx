@@ -44,9 +44,13 @@ export default function AdminAlbum() {
 
   const sortedAlbums = filteredAlbums.sort((a, b) => {
     if (sortOption === "latest") {
-      return new Date(b.release_date).getTime() - new Date(a.release_date).getTime();
+      return (
+        new Date(b.release_date).getTime() - new Date(a.release_date).getTime()
+      );
     } else if (sortOption === "oldest") {
-      return new Date(a.release_date).getTime() - new Date(b.release_date).getTime();
+      return (
+        new Date(a.release_date).getTime() - new Date(b.release_date).getTime()
+      );
     } else if (sortOption === "nameAsc") {
       return a.name.localeCompare(b.name);
     } else if (sortOption === "nameDesc") {
@@ -66,7 +70,7 @@ export default function AdminAlbum() {
     axios
       .get("/album")
       .then((response: any) => {
-        console.log("Full API response:", response);
+        // console.log("Full API response:", response);
         if (response && response.result && response.result.data) {
           setAlbums(response.result.data);
         } else {
@@ -98,7 +102,9 @@ export default function AdminAlbum() {
       await axios.put(`/album/${id_album}`, updatedAlbum);
       setAlbums((prevAlbums) =>
         prevAlbums.map((album) =>
-          album.id_album === id_album ? { ...album, is_show: updatedAlbum.is_show } : album
+          album.id_album === id_album
+            ? { ...album, is_show: updatedAlbum.is_show }
+            : album
         )
       );
     } catch (error) {
@@ -203,7 +209,11 @@ export default function AdminAlbum() {
                     <ul className={styles.songList}>
                       {album.musics.map((music) => (
                         <li key={music.id_music}>
-                          <a href={music.url_path} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={music.url_path}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             {music.name}
                           </a>
                         </li>
@@ -212,23 +222,38 @@ export default function AdminAlbum() {
                   </td>
                   <td>
                     <button
-                      className={album.is_show === 1 ? styles.showButton : styles.hideButton}
-                      onClick={() => handleToggleVisibility(album.id_album, album.is_show)}
+                      className={
+                        album.is_show === 1
+                          ? styles.showButton
+                          : styles.hideButton
+                      }
+                      onClick={() =>
+                        handleToggleVisibility(album.id_album, album.is_show)
+                      }
                     >
                       {album.is_show === 1 ? "Hiện" : "Ẩn"}
                     </button>
                   </td>
                   <td className={styles.actions}>
                     <button className={styles.editButton}>
-                      <Link href={`/admin/editalbum/${album.id_album}`} passHref>
-                        <ReactSVG className={styles.csvg} src="/Rectangle 80.svg" />
+                      <Link
+                        href={`/admin/editalbum/${album.id_album}`}
+                        passHref
+                      >
+                        <ReactSVG
+                          className={styles.csvg}
+                          src="/Rectangle 80.svg"
+                        />
                       </Link>
                     </button>
                     <button
                       className={styles.deleteButton}
                       onClick={() => handleDeleteAlbum(album.id_album)}
                     >
-                      <ReactSVG className={styles.csvg} src="/Rectangle 79.svg" />
+                      <ReactSVG
+                        className={styles.csvg}
+                        src="/Rectangle 79.svg"
+                      />
                     </button>
                   </td>
                 </tr>

@@ -39,7 +39,7 @@ interface Playlist {
   index_order: number;
 }
 
-const MusicType = ({ type, musicList }: any) => {
+const MusicType = ({ type, musicList, id_type }: any) => {
   const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
   const [favoriteMusic, setFavoriteMusic] = useState<Set<number>>(new Set());
   const [menuVisible, setMenuVisible] = useState<number | null>(null);
@@ -59,7 +59,7 @@ const MusicType = ({ type, musicList }: any) => {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      console.log("Added to history:", newHistory);
+      //   console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }
@@ -127,7 +127,7 @@ const MusicType = ({ type, musicList }: any) => {
         index_order,
       });
       alert(`Bài hát đã được thêm vào playlist!`);
-      console.log("dữ liệu đc thêm:", id_music, id_playlist, index_order);
+      //   console.log("dữ liệu đc thêm:", id_music, id_playlist, index_order);
     } catch (error) {
       console.error("Error adding to playlist:", error);
       alert(`Lỗi khi thêm bài hát vào playlist.`);
@@ -158,9 +158,17 @@ const MusicType = ({ type, musicList }: any) => {
     }
   };
 
+  useEffect(() => {
+    if (state?.favoriteMusic.length > 0)
+      setFavoriteMusic(new Set(state?.favoriteMusic.map((i) => i.id_music)));
+    // console.log("FM: ", state.favoriteMusic);
+  }, [state?.favoriteMusic]);
+
   return (
     <div>
-      <h2 className="home__heading px-[40px]">Nhạc {type}</h2>
+      <Link href={"/type/" + id_type} className="home__heading px-[40px] block">
+        Nhạc {type}
+      </Link>
       <div className={clsx(style.albumList, "")}>
         {albums
           ?.sort((a, b) => b.view - a.view)

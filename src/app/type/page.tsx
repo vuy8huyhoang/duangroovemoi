@@ -18,12 +18,12 @@ const TypePage = () => {
   const [typeList, setTypeList] = useState<Type[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [showAll, setShowAll] = useState<boolean>(false);
+  const [showAll, setShowAll] = useState<boolean>(true);
 
   const fetchTypeList = async () => {
     try {
       const response: any = await axios.get("/type");
-      console.log(response.result);
+      // console.log(response.result);
       setTypeList(response.result.data || []);
     } catch (err) {
       console.error("Error fetching type list:", err);
@@ -69,11 +69,11 @@ const TypePage = () => {
             <li className={style.typeItem}>Không có thể loại nào.</li>
           )}
         </ul>
-        {!showAll && (
+        {/* {!showAll && (
           <button onClick={handleShowAll} className={style.showAllButton}>
             Tất cả
           </button>
-        )}
+        )} */}
         <ListMusicType />
         <ListMusicTop />
         <ListAlbum />

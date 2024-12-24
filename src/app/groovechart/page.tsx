@@ -12,6 +12,7 @@ import AlbumHot from "../component/home/albumhot";
 import { addMusicToTheFirst } from "../component/musicplayer";
 import { AppContext } from "../layout";
 import Link from "next/link";
+import { Img } from "react-image";
 
 interface MusicHistory {
   id_music: string;
@@ -54,7 +55,7 @@ export default function GrooveChartPage() {
     const fetchMusicData = async () => {
       try {
         axios.get("music").then((res: any) => {
-          console.log(res);
+          // console.log(res);
           setMusicData(res.result.data);
         });
       } catch (error) {
@@ -87,7 +88,7 @@ export default function GrooveChartPage() {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      console.log("Added to history:", newHistory);
+      // console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }
@@ -110,10 +111,27 @@ export default function GrooveChartPage() {
             >
               <span className={styles.index}>{index + 1}.</span>
               <div className={styles.image}>
-                <img
+                {/* <img
                   src={music.url_cover}
                   alt={music.name}
                   className={styles.musicCover}
+                /> */}
+                <Img
+                  src={music.url_cover} // URL ảnh từ album
+                  alt={music.name}
+                  // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                  className={styles.musicCover}
+                  unloader={
+                    <img
+                      className={styles.musicCover}
+                      src="/default.png"
+                      alt="default"
+                      // className={clsx(
+                      //   style.albumCover,
+                      //   style.albumCover__default
+                      // )}
+                    />
+                  } // Thay thế ảnh khi lỗi
                 />
                 <div className={styles.overlay}>
                   <button

@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import style from "./type.module.scss";
-import ListMusicTop from "../home/listmusictop";
-import ListMusicType from "../listmusicType";
-import ListAlbum from "../home/listalbum";
-import MusicPartner from "../home/musicpartner";
+import ListMusicTop from "../../component/home/listmusictop";
+import ListMusicType from "../../component/listmusicType";
+import ListAlbum from "../../component/home/listalbum";
+import MusicPartner from "../../component/home/musicpartner";
 import clsx from "clsx";
 interface Type {
   id_type: string;
@@ -22,7 +22,7 @@ const TypePage = () => {
   const fetchTypeList = async () => {
     try {
       const response = await axios.get("https://api-groove.vercel.app/type");
-      console.log(response.data);
+      // console.log(response.data);
       setTypeList(response.data.data || []);
     } catch (err) {
       console.error("Error fetching type list:", err);
@@ -74,7 +74,7 @@ const TypePage = () => {
         )}
         <ListMusicType />
         <ListMusicTop />
-        <ListAlbum />
+        {/* <ListAlbum /> */}
         <MusicPartner />
       </div>
     </>

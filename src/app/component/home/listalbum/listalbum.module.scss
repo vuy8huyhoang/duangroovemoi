@@ -133,5 +133,8 @@
   // fill: none ;
 }
 .activeHeart {
-  fill: #ffffff !important;
+  path {
+    fill: red !important;
+    stroke: red !important;
+  }
 }

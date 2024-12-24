@@ -83,7 +83,7 @@ export default function AddComposer() {
     const slug = removeVietnameseTones(composer.name);
     const composerData = { ...composer, slug };
 
-    console.log("Composer data to submit:", composerData);
+    // console.log("Composer data to submit:", composerData);
 
     try {
       const response = await axios.post("/composer", composerData, {

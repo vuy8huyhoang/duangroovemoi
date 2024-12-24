@@ -74,6 +74,12 @@ const ListMusic: React.FC = () => {
       .catch((error: any) => console.error("Error fetching playlists:", error));
   }, []);
 
+  useEffect(() => {
+    if (state?.favoriteMusic.length > 0)
+      setFavoriteMusic(new Set(state?.favoriteMusic.map((i) => i.id_music)));
+    // console.log("FM: ", state.favoriteMusic);
+  }, [state?.favoriteMusic]);
+
   const addMusicToHistory = async (id_music: string, play_duration: number) => {
     try {
       const response: any = await axios.post("/music-history/me", {
@@ -82,7 +88,7 @@ const ListMusic: React.FC = () => {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      console.log("Added to history:", newHistory);
+      // console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }
@@ -150,7 +156,7 @@ const ListMusic: React.FC = () => {
         index_order,
       });
       alert(`Bài hát đã được thêm vào playlist!`);
-      console.log("dữ liệu đc thêm:", id_music, id_playlist, index_order);
+      // console.log("dữ liệu đc thêm:", id_music, id_playlist, index_order);
     } catch (error) {
       console.error("Error adding to playlist:", error);
       alert(`Lỗi khi thêm bài hát vào playlist.`);
@@ -183,7 +189,9 @@ const ListMusic: React.FC = () => {
 
   return (
     <div>
-      <h2 className="home__heading px-[40px]">Top bài hát nổi bật</h2>
+      <Link href="/groovechart" className="home__heading px-[40px]">
+        Top bài hát nổi bật
+      </Link>
       <div className={clsx(style.albumList, "")}>
         {albums
           .sort((a, b) => b.view - a.view)

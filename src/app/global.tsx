@@ -6,7 +6,10 @@ export type Action = {
     | "SHOW_LOGIN"
     | "SHOW_RIGHT_SIDEBAR"
     | "PROFILE"
-    | "SHOW_VIP";
+    | "SHOW_VIP"
+    | "PLAYLIST"
+    | "FAVORITE_ALBUM"
+    | "FAVORITE_MUSIC";
   payload: any;
 };
 let initialState;
@@ -19,6 +22,9 @@ if (typeof window !== "undefined") {
     showRightSidebar: false,
     showVIP: false,
     profile: null,
+    playlist: [],
+    favoriteAlbum: [],
+    favoriteMusic: [],
   };
 }
 
@@ -59,6 +65,21 @@ export const reducer = (state: typeof initialState, action: Action) => {
       return {
         ...state,
         profile: action.payload,
+      };
+    case "PLAYLIST":
+      return {
+        ...state,
+        playlist: action.payload,
+      };
+    case "FAVORITE_ALBUM":
+      return {
+        ...state,
+        favoriteAlbum: action.payload,
+      };
+    case "FAVORITE_MUSIC":
+      return {
+        ...state,
+        favoriteMusic: action.payload,
       };
     default:
       return state;

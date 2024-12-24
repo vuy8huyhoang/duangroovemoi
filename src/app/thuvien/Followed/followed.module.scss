@@ -1,0 +1,63 @@
+.contentwrapper {
+  // padding: 20px;
+  margin-top: 20px;
+}
+
+.followed {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: first baseline;
+}
+
+.contentwrapper h2 {
+  font-size: 24px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.artistItem {
+  display: flex;
+  // margin: 30px;
+  transition: transform 0.2s;
+  width: 100%;
+}
+.artistItem:hover {
+  transform: scale(1.05);
+}
+
+.artistFollow {
+  width: 100%;
+}
+
+.artistFollow img {
+  // width: 100%;
+  border-radius: 50%;
+  // height: 65%;
+  position: relative;
+  width: 100%;
+}
+
+.artistItem p {
+  font-size: 16px;
+  color: #fefcfc;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.button {
+  margin-left: 30%;
+  margin-top: 20px; /* Space above the button */
+  padding: 10px 15px; /* Padding for the button */
+  background-color: #0070f3; /* Button background color */
+  color: white; /* Button text color */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners for the button */
+  cursor: pointer; /* Change cursor to pointer on hover */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.button:hover {
+  background-color: #005bb5; /* Darker shade on hover */
+}

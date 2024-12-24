@@ -1,10 +1,12 @@
 "use client"; // Thêm dòng này để đánh dấu là Client Component
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import style from "./playlist.module.scss";
 import { ReactSVG } from "react-svg";
 import { useRouter } from "next/navigation";
+import { AppContext } from "@/app/layout";
+import clsx from "clsx";
 
 interface Playlist {
   id_playlist: string;
@@ -25,10 +27,9 @@ interface Music {
 const PlaylistPage = () => {
   const router = useRouter();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
-
+  const { state, dispatch } = useContext(AppContext);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [newPlaylistName, setNewPlaylistName] = useState("");
   // const [newPlaylistIndex, setNewPlaylistIndex] = useState<number | null>(null);
   const [creating, setCreating] = useState(false);
@@ -39,7 +40,7 @@ const PlaylistPage = () => {
     try {
       const response: any = await axios.get("/playlist/me");
       const data = response.result;
-      console.log("toàn bộ dữ liệu:", response);
+      // console.log("toàn bộ dữ liệu:", response);
 
       if (data && data.data) {
         setPlaylists(data.data);
@@ -71,12 +72,12 @@ const PlaylistPage = () => {
         });
 
         // Kiểm tra và log phản hồi
-        console.log("API Response:", response);
+        // console.log("API Response:", response);
 
         if (response && response.result && response.result.newID) {
           const { message } = response.result;
           const status = response.status;
-          console.log("test success:", status);
+          // console.log("test success:", status);
 
           if (status === 201) {
             // Nếu thành công, reset các trường và fetch lại playlist
@@ -124,6 +125,7 @@ const PlaylistPage = () => {
       alert("Đã xảy ra lỗi khi xóa playlist!");
     }
   };
+
   const toggleMenu = (id: string) => {
     setShowMenuId(showMenuId === id ? null : id);
   };
@@ -136,17 +138,27 @@ const PlaylistPage = () => {
 
   return (
     <div className={style.playlistPage}>
-      <h1 className={style.title}>Playlist</h1>
+      <h1 className="home__heading">Playlist</h1>
 
-      <div className={style.playlistGrid}>
+      <div className="grid grid-cols-12 gap-4 flex-wrap">
         {/* Nút để mở modal tạo playlist */}
-        <div
-          className={style.playlistItem}
-          onClick={() => setIsModalOpen(true)}
+        <button
+          className={clsx(
+            style.playlistItem,
+            style.playlistItem__center,
+            "col-span-2"
+          )}
+          onClick={() => {
+            if (state?.profile?.is_vip !== 1) {
+              dispatch({ type: "SHOW_VIP", payload: true });
+            } else {
+              setIsModalOpen(true);
+            }
+          }}
         >
           <ReactSVG className={style.csvg} src="/Group 282.svg" />
           <p>Tạo playlist mới</p>
-        </div>
+        </button>
 
         {/* Modal để nhập tên playlist */}
         {isModalOpen && (
@@ -178,15 +190,17 @@ const PlaylistPage = () => {
         {playlists
           .sort((a, b) => b.playlist_index - a.playlist_index)
           .map((playlist) => (
-            <div
+            <button
               key={playlist.id_playlist}
-              className={style.playlistItem}
-              onClick={() => router.push(`/playlist/${playlist.id_playlist}`)}
+              className={clsx(style.playlistItem, "col-span-2")}
+              onClick={() =>
+                router.push(`/thuvien/playlist/${playlist.id_playlist}`)
+              }
             >
               <img src="/playlist.png" alt="Playlist cover" />
-
-              <p>{playlist.name}</p>
-
+              <p className="text-[14px] font-medium mt-[10px]">
+                {playlist.name}
+              </p>
               {/* Dấu ba chấm */}
               <div className={style.menuWrapper}>
                 <button
@@ -210,7 +224,7 @@ const PlaylistPage = () => {
                   </div>
                 )}
               </div>
-            </div>
+            </button>
           ))}
       </div>
     </div>

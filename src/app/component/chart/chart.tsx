@@ -48,7 +48,7 @@ export default function Chart() {
     axios
       .get("/chart")
       .then((response: any) => {
-        console.log("dữ liệu của chart", response);
+        // console.log("dữ liệu của chart", response);
 
         if (response?.result?.data) {
           setCharts(response.result.data);
@@ -67,7 +67,7 @@ export default function Chart() {
     axios
       .get("/ranking?duration=month&limit=10")
       .then((response: any) => {
-        console.log("Dữ liệu của ranking", response);
+        // console.log("Dữ liệu của ranking", response);
 
         if (response?.result?.data) {
           setRankingData(response.result.data);

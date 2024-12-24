@@ -1,5 +1,5 @@
 .playlistPage {
-  padding: 20px;
+  // padding: 0 20px;
   color: white;
 }
 
@@ -52,17 +52,21 @@
 }
 
 .playlistItem {
-  width: 150px;
-  height: 200px;
+  width: 100%;
+  // height: 200px;
   background-color: #333;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   color: white;
   text-align: center;
   position: relative;
+
+  &__center {
+    justify-content: center;
+  }
 }
 
 .playlistItem img {
@@ -88,7 +92,6 @@
   background-color: #666; /* Thay đổi màu khi disabled */
   cursor: not-allowed;
 }
-
 
 .playlistCard {
   background-color: rgba(255, 255, 255, 0.1);
@@ -182,8 +185,8 @@
 
 .menuWrapper {
   position: absolute;
-  bottom: 12px; /* Căn dưới */
-  right: -1px; /* Đưa sang phải */
+  bottom: 0; /* Căn dưới */
+  right: 0;
 }
 
 .menuButton {
@@ -192,7 +195,8 @@
   color: white;
   font-size: 18px;
   cursor: pointer;
-  margin-top: 5px;
+  padding: 0 10px;
+  // margin-top: 5px;
 }
 
 .menu {

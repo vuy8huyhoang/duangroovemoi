@@ -1,6 +1,6 @@
 // pages/payment.js
-"use client"
-import { useState } from 'react';
+"use client";
+import { useState } from "react";
 import axios from "@/lib/axios";
 
 const PaymentPage = () => {
@@ -8,9 +8,9 @@ const PaymentPage = () => {
   const [data, setData] = useState(0);
 
   const handlePayment = async () => {
-    await axios.post("payment/create-payment", {amount}).then ((res:any)=> {
-        setData(res.result.data)
-        console.log(res);
+    await axios.post("payment/create-payment", { amount }).then((res: any) => {
+      setData(res.result.data);
+      // console.log(res);
     });
   };
 

@@ -105,158 +105,153 @@
 // }
 
 .profileContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px;
-    background: linear-gradient(135deg, #3e79b4, #111e2d);
-    border-radius: 12px;
-    box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.15);
-    margin: 40px auto;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    transition: transform 0.3s ease;
-    max-width: 600px;
-    width: 100%;
+  padding: 20px;
+  //   background: linear-gradient(135deg, #3e79b4, #111e2d);
+  border-radius: 12px;
+  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.15);
+  //   margin: 40px auto;
+  transition: transform 0.3s ease;
+  //   max-width: 600px;
+  width: calc(100% - 80px);
+  margin: auto;
+  margin-bottom: 40px;
 
-    &:hover {
-        transform: translateY(-5px);
+  .header {
+    h1 {
+      margin-bottom: 10px;
+
+      span {
+        color: #0070f3;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .profileDetails {
+    // display: flex;
+    // flex-direction: column;
+    // align-items: center;
+    margin-top: 20px;
+
+    .avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 5px solid #0070f3;
+      margin-bottom: 20px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+      object-fit: cover;
     }
 
-    .header {
-        h1 {
-            font-size: 2.5rem;
-            color: #333;
-            font-weight: bold;
-            margin-bottom: 10px;
-            span {
-                color: #0070f3;
-                font-weight: 600;
-            }
-        }
-    }
+    .info {
+      //   background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      //   margin-top: 20px;
 
-    .profileDetails {
+      .infoItem {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        margin-top: 20px;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-bottom: 1px solid #3e3e3e;
+        color: gray;
 
-        .avatar {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 5px solid #0070f3;
-            margin-bottom: 20px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-            object-fit: cover;
+        input,
+        select {
+          background-color: transparent;
+          border: unset;
+          color: #666;
         }
 
-        .info {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            width: 450px;
-            margin-top: 20px;
-
-            .infoItem {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin-bottom: 15px;
-                padding-bottom: 10px;
-                border-bottom: 1px solid #e0e0e0;
-
-                &:last-child {
-                    border-bottom: none;
-                }
-
-                p {
-                    font-size: 1rem;
-                    color: #333;
-                    margin: 0;
-
-                    strong {
-                        color: #0070f3;
-                        font-weight: 600;
-                    }
-                }
-            }
+        &:last-child {
+          border-bottom: none;
         }
+
+        p {
+          font-size: 1rem;
+          color: #666;
+          margin: 0;
+
+          strong {
+            color: gray;
+            font-weight: 600;
+            display: block;
+          }
+        }
+      }
     }
+  }
 }
 
-.loading, .notFound {
-    font-size: 1.3rem;
-    color: #0070f3;
-    text-align: center;
-    margin-top: 20px;
-    font-weight: 500;
+.loading,
+.notFound {
+  font-size: 1.3rem;
+  color: #0070f3;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: 500;
 }
 
 .editButton {
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease-in-out;
+  -webkit-transition: background-color 0.3s ease-in-out;
+  -moz-transition: background-color 0.3s ease-in-out;
+  -ms-transition: background-color 0.3s ease-in-out;
+  -o-transition: background-color 0.3s ease-in-out;
+}
+
+.profileimg {
+  //   display: flex;
+  //   justify-content: center;
+  //   flex-direction: column;
+  margin-bottom: 20px; // Controls spacing below the profile image container
+
+  img {
+    align-items: center;
+    width: 120px; // Adjust the size as needed
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    // Space between the image and the button-message row
+    margin-left: 30px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .buttonMessageContainer {
+    display: flex;
+    align-items: center; // Vertically aligns button and message
+    gap: 10px; // Horizontal space between the button and the message
+  }
+
+  button {
+    margin-left: 55px;
+    padding: 8px 12px;
     background-color: #0070f3;
     color: white;
     border: none;
-    padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 0.9rem;
     transition: background-color 0.3s ease;
 
     &:hover {
-        background-color: #005bb5;
+      background-color: #005bb5;
     }
+  }
+
+  .message {
+    color: #ff0000;
+    font-size: 0.9rem;
+  }
 }
-
-.profileimg {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    margin-bottom: 20px; // Controls spacing below the profile image container
-
-    img {
-        align-items: center;
-        width: 120px; // Adjust the size as needed
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-bottom: 10px;
-         // Space between the image and the button-message row
-         margin-left: 30px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .buttonMessageContainer {
-        display: flex;
-        align-items: center; // Vertically aligns button and message
-        gap: 10px; // Horizontal space between the button and the message
-    }
-
-    button {
-        margin-left: 55px   ;
-        padding: 8px 12px;
-        background-color: #0070f3;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        transition: background-color 0.3s ease;
-
-        &:hover {
-            background-color: #005bb5;
-        }
-    }
-
-    .message {
-        color: #FF0000;
-        font-size: 0.9rem;
-    }
-}
-
-
-
-
-

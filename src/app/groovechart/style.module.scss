@@ -1,195 +1,191 @@
 .contentwrapper {
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem;
-    color: #ffffff;
-    border-radius: 10px;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 2rem;
+  color: #ffffff;
+  border-radius: 10px;
 }
 
 .title {
-    font-size: 2.5rem;
-    color: transparent;
-    /* Đặt màu chữ thành trong suốt */
-    margin-bottom: 1rem;
-    font-weight: bold;
-    text-align: left;
-    width: 100%;
-    padding-left: 45px;
-    background: linear-gradient(150deg, #dfd5e4, #e4e2d6);
-    background-clip: text;
-
+  font-size: 2.5rem;
+  color: transparent;
+  /* Đặt màu chữ thành trong suốt */
+  margin-bottom: 1rem;
+  font-weight: bold;
+  text-align: left;
+  width: 100%;
+  padding-left: 45px;
+  background: linear-gradient(150deg, #dfd5e4, #e4e2d6);
+  background-clip: text;
 }
 
 .musicViews {
-    color: #b3b3b3;
+  color: #b3b3b3;
 }
 
 .musicList {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding-top: 20px;
-    padding-left: 90px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 20px;
+  padding-left: 90px;
 }
 
 .songCard {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 10px;
-    border-radius: 10px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
-    &:hover {
-        background-color: #333333;
-        transform: scale(1.02);
-    }
+  &:hover {
+    background-color: #333333;
+    transform: scale(1.02);
+  }
 }
 
 .image {
-    position: relative;
-    width: 90px;
-    height: 90px;
+  position: relative;
+  width: 90px;
+  height: 90px;
 }
 
 .musicCover {
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
 }
 
 .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 
-    .playButton {
-        background-color: #ffffff;
-        border: none;
-        border-radius: 50%;
-        padding: 10px;
-        font-size: 14px;
-        color: #333;
-        cursor: pointer;
-        transition: transform 0.3s ease;
+  .playButton {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: transform 0.3s ease;
 
-        &:hover {
-            transform: scale(1.1);
-        }
+    &:hover {
+      transform: scale(1.1);
     }
+  }
 }
 
 .songCard:hover .overlay {
-    opacity: 1;
+  opacity: 1;
 }
 
 .Titles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* Chia thành 2 cột: một cho tên bài hát, một cho tên nhạc sĩ */
+  gap: 10px;
+  align-items: center;
+  width: 100%;
 
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    /* Chia thành 2 cột: một cho tên bài hát, một cho tên nhạc sĩ */
-    gap: 10px;
-    align-items: center;
-    width: 100%;
-
-    a {
-        text-decoration: none;
-    }
+  a {
+    text-decoration: none;
+  }
 }
 
 .title {
-    font-family: 'Arial', sans-serif;
-    /* Thay đổi font-family nếu cần */
-    font-weight: bold;
-    /* Đậm */
-    font-size: 48px;
-    /* Kích thước chữ lớn */
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
-    /* Đổ bóng để tạo hiệu ứng nổi */
-    margin: 20px 0;
+  font-family: "Arial", sans-serif;
+  /* Thay đổi font-family nếu cần */
+  font-weight: bold;
+  /* Đậm */
+  font-size: 48px;
+  /* Kích thước chữ lớn */
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+  /* Đổ bóng để tạo hiệu ứng nổi */
+  margin: 20px 0;
 
-    /* Khoảng cách trên và dưới */
-
+  /* Khoảng cách trên và dưới */
 }
 
 .musicName {
-    text-decoration: none;
-    font-size: 1rem;
-    font-weight: bold;
-    color: #f5f5f5;
-    margin: 0;
-    text-align: left;
-    /* Canh trái */
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #f5f5f5;
+  margin: 0;
+  text-align: left;
+  /* Canh trái */
 }
 
 .musicArtist {
-    font-size: 0.9rem;
-    color: #b3b3b3;
-    margin: 0;
-    text-align: left;
-    /* Canh trái */
+  font-size: 0.9rem;
+  color: #b3b3b3;
+  margin: 0;
+  text-align: left;
+  /* Canh trái */
 }
-
 
 .songControls {
-    display: flex;
-    position: absolute;
-    top: 53px;
-    right: 50px;
-    gap: 10px;
-    font-size: 1rem;
-    color: #f4eaea;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  display: flex;
+  position: absolute;
+  top: 53px;
+  right: 50px;
+  gap: 10px;
+  font-size: 1rem;
+  color: #f4eaea;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 
-    i {
-        cursor: pointer;
-        transition: color 0.3s ease;
-
-        &:hover {
-            color: #ffffff;
-        }
-    }
-}
-
-.songCard:hover .songControls {
-    opacity: 1;
-}
-
-.moreOptions {
-    margin-left: auto;
-    color: #999999;
-    font-size: 1.2rem;
+  i {
     cursor: pointer;
     transition: color 0.3s ease;
 
     &:hover {
-        color: #ffffff;
+      color: #ffffff;
     }
+  }
+}
+
+.songCard:hover .songControls {
+  opacity: 1;
+}
+
+.moreOptions {
+  margin-left: auto;
+  color: #999999;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #ffffff;
+  }
 }
 
 .index {
-    width: 60px;
-    min-width: 38px;
-    -webkit-text-stroke: 1.5px #fff;
-    opacity: 0.7;
-    font-size: 32px;
-    font-weight: 900;
-    line-height: 1;
-    text-align: center;
-    color: rgba(74, 144, 226, 0);
-    font-family: "Roboto", sans-serif;
-    white-space: nowrap;
+  width: 60px;
+  min-width: 38px;
+  -webkit-text-stroke: 1.5px #fff;
+  opacity: 0.7;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+  color: rgba(74, 144, 226, 0);
+  font-family: "Roboto", sans-serif;
+  white-space: nowrap;
 }

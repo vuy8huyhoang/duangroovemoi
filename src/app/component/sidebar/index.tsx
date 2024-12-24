@@ -44,12 +44,12 @@ export default function Sidebar() {
       });
 
       // Kiểm tra và log phản hồi
-      console.log("API Response:", response);
+      // console.log("API Response:", response);
 
       if (response && response.result && response.result.newID) {
         const { message } = response.result;
         const status = response.status;
-        console.log("test success:", status);
+        // console.log("test success:", status);
 
         if (status === 201) {
           // Nếu thành công, reset các trường và fetch lại playlist
@@ -130,15 +130,38 @@ export default function Sidebar() {
               [styles.active]: pathname === "/historymusic",
             })}
           >
-            <ReactSVG className={styles.csvg} src="/Frame 10.svg" />
+            <ReactSVG className={styles.csvg} src="/history.svg" />
             <span>Nghe gần đây</span>
           </Link>
         </li>
-        <li>
+        {state?.profile?.is_vip != 1 && (
+          <button
+            className="px-[20px] mt-[20px]"
+            onClick={() => {
+              if (!state?.profile)
+                dispatch({ type: "SHOW_LOGIN", payload: true });
+              if (state?.profile) dispatch({ type: "SHOW_VIP", payload: true });
+            }}
+          >
+            <div className={styles.updateBox}>
+              <div
+                className={clsx(
+                  "flex justify-center items-center",
+                  styles.content
+                )}
+              >
+                <span>Tải về các bài hát yêu thích, tạo playlist cá nhân</span>
+                {/* <ReactSVG src="/crown.svg"></ReactSVG> */}
+              </div>
+              <div className={styles.btn}>Nâng cấp tài khoản</div>
+            </div>
+          </button>
+        )}
+        {/* <li>
           <Link
-            href="/favorites"
+            href="/thuvien/favorites"
             className={clsx(styles.menuItem, {
-              [styles.active]: pathname === "/favorites",
+              [styles.active]: pathname === "/thuvien/favorites",
             })}
           >
             <ReactSVG className={styles.csvg} src="/Frame 10 (1).svg" />
@@ -147,9 +170,9 @@ export default function Sidebar() {
         </li>
         <li>
           <Link
-            href="/playlist"
+            href="/thuvien/playlist"
             className={clsx(styles.menuItem, {
-              [styles.active]: pathname === "/playlist",
+              [styles.active]: pathname === "/thuvien/playlist",
             })}
           >
             <ReactSVG className={styles.csvg} src="/Frame 10 (2).svg" />
@@ -158,15 +181,15 @@ export default function Sidebar() {
         </li>
         <li>
           <Link
-            href="/album"
+            href="/thuvien/album"
             className={clsx(styles.menuItem, {
-              [styles.active]: pathname === "/album",
+              [styles.active]: pathname === "/thuvien/album",
             })}
           >
             <ReactSVG className={styles.csvg} src="/Frame 10 (3).svg" />
             <span>Album</span>
           </Link>
-        </li>
+        </li> */}
       </ul>
       <div className={styles.createPlaylist}>
         <button

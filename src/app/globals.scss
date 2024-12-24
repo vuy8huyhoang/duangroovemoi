@@ -112,4 +112,19 @@ body {
   margin-top: 50px !important;
   margin-bottom: 10px !important;
   text-transform: capitalize !important;
+
+  &__noMargin {
+    margin-top: unset !important;
+    margin-bottom: unset !important;
+  }
+}
+
+button:hover,
+a:hover {
+  opacity: 0.8;
+  transition: 0.3s ease-in-out;
+  -webkit-transition: 0.3s ease-in-out;
+  -moz-transition: 0.3s ease-in-out;
+  -ms-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
 }

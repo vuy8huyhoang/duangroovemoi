@@ -28,7 +28,7 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
         const response: any = await axios.get(`/comment`, {
           params: { id_music },
         });
-        console.log("Response Data:", response.result.data);
+        // console.log("Response Data:", response.result.data);
         setComments(response.result.data || []);
       } catch (err) {
         setError("Failed to load comments");
@@ -50,7 +50,7 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
         text: newComment,
       });
 
-      console.log("Posted Comment Response:", response.result.data);
+      // console.log("Posted Comment Response:", response.result.data);
 
       if (response.status === 201) {
         const updatedComments: any = await axios.get(`/comment`, {

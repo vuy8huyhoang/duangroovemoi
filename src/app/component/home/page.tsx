@@ -10,12 +10,14 @@ import MusicPartner from "./musicpartner";
 import MusicModel from "@/models/MusicModel";
 import AlbumModel from "@/models/AlbumModel";
 import Link from "next/link";
+import clsx from "clsx";
 
 export default function Home() {
   const [albumData, setAlbumData] = useState<AlbumModel[]>([]);
   const [musicData, setMusicData] = useState<MusicModel[]>([]);
   const [typeData, setTypeData] = useState<any>([]);
   const [randomList, setRandomList] = useState([]);
+  const [range, setRange] = useState({ 0: [0, 4], 1: [0, 6] });
 
   function generateRandomArray(start, end, count) {
     const range = Array.from({ length: end - start + 1 }, (_, i) => start + i);
@@ -40,7 +42,7 @@ export default function Home() {
     axios
       .get("/album")
       .then((response: any) => {
-        console.log("Full API response:", response);
+        // console.log("Full API response:", response);
         if (response && response.result && response.result.data) {
           setAlbumData(response.result.data);
         } else {
@@ -57,7 +59,7 @@ export default function Home() {
     axios
       .get("/music")
       .then((response: any) => {
-        console.log("Full API response:", response);
+        // console.log("Full API response:", response);
         if (response && response.result && response.result.data) {
           setMusicData(response.result.data);
         } else {
@@ -73,7 +75,7 @@ export default function Home() {
     axios
       .get("/type")
       .then((response: any) => {
-        console.log("Full API response:", response);
+        // console.log("Full API response:", response);
         if (response && response.result && response.result.data) {
           setTypeData(response.result.data);
           setRandomList(
@@ -94,7 +96,7 @@ export default function Home() {
     <>
       {/* Album random */}
       <div className="flex flex-row mx-auto px-[40px] mb-[50px]">
-        <div className="grid grid-cols-12 gap-4 w-full">
+        <div className="grid grid-cols-12 gap-4 w-full relative">
           {[...albumData]
             .sort(() => Math.random() - 0.5)
             .slice(0, 4)
@@ -122,6 +124,67 @@ export default function Home() {
                 </div>
               </Link>
             ))}
+          {/* <div
+            onClick={() => {
+              setRange((prev: any) => {
+                // Kiểm tra số lượng phần tử trong albumData
+                const maxIndex = albumData.length;
+
+                // Tính toán giá trị mới
+                const newStart = prev[0][0] + 4;
+                const newEnd = prev[0][1] + 4;
+
+                // Nếu vượt quá maxIndex, gán giá trị trong khoảng gần nhất
+                if (newEnd > maxIndex) {
+                  return {
+                    ...prev,
+                    0: [maxIndex - 3, maxIndex], // Gán giá trị từ maxIndex - 3 đến maxIndex
+                  };
+                }
+
+                // Nếu không vượt quá, cập nhật bình thường
+                return {
+                  ...prev,
+                  0: [newStart, newEnd],
+                };
+              });
+            }}
+            className={clsx(
+              "absolute left-0 top-1/2 -translate-y-1/2 cursor-pointer rounded-full overflow-hidden transform hover:scale-125 bg-gray-300 transition duration-300",
+              { ["disable"]: range[0][0] <= 0 }
+            )}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 19.5 8.25 12l7.5-7.5"
+              />
+            </svg>
+          </div> */}
+          {/* <div className="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer rounded-full overflow-hidden transform hover:scale-110 bg-gray-300 transition duration-300">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m8.25 4.5 7.5 7.5-7.5 7.5"
+              />
+            </svg>
+          </div> */}
         </div>
       </div>
 
@@ -130,7 +193,7 @@ export default function Home() {
       <ListAlbum />
       <ListType />
       {randomList.map((number) => {
-        console.log(number);
+        // console.log(number);
 
         return (
           musicData
@@ -143,7 +206,9 @@ export default function Home() {
             )
             .slice(0, 6).length > 0 && (
             <MusicType
+              key={number}
               type={typeData[number].name}
+              id_type={typeData[number].id_type}
               musicList={musicData
                 .filter((music) =>
                   music.types.some(

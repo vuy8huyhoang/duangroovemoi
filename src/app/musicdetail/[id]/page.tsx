@@ -75,7 +75,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
         response.result.data.musics.map((musicData) => {
           const audio = new Audio(musicData.url_path);
           audio.onloadedmetadata = () => {
-            console.log(`Thời lượng: ${audio.duration} giây`);
+            // console.log(`Thời lượng: ${audio.duration} giây`);
             setTime((prev) => {
               return [...prev, audio.duration];
             });
@@ -114,7 +114,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
       axios
         .delete(`favorite-music/me?id_music=${id_music}`)
         .then((response: any) => {
-          console.log("Album unliked successfully", response);
+          // console.log("Album unliked successfully", response);
           setHeart(false);
         })
         .catch((error: any) => {
@@ -124,7 +124,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
       axios
         .post(`favorite-music/me`, { id_music })
         .then((response: any) => {
-          console.log("Album liked successfully", response);
+          // console.log("Album liked successfully", response);
           setHeart(true);
         })
         .catch((error: any) => {
@@ -140,7 +140,7 @@ const SongDetailPage: React.FC = ({ params }: any) => {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      console.log("Added to history:", newHistory);
+      // console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }

@@ -75,7 +75,7 @@ export default function AlbumDetail({ params }) {
         response.result.data.musics.map((music) => {
           const audio = new Audio(music.url_path);
           audio.onloadedmetadata = () => {
-            console.log(`Thời lượng: ${audio.duration} giây`);
+            // console.log(`Thời lượng: ${audio.duration} giây`);
             setTime((prev) => {
               return [...prev, audio.duration];
             });
@@ -93,12 +93,12 @@ export default function AlbumDetail({ params }) {
   }, [id]);
   useEffect(() => {
     axios.get("follow/me").then((response: any) => {
-      console.log(response.result.data, albumDetail, "chuhcuhcuh");
-      console.log(
-        response.result.data
-          .map((i) => i.id_artist)
-          .includes(albumDetail?.artist?.id_artist)
-      );
+      //   console.log(response.result.data, albumDetail, "chuhcuhcuh");
+      //   console.log(
+      //     response.result.data
+      //       .map((i) => i.id_artist)
+      //       .includes(albumDetail?.artist?.id_artist)
+      //   );
 
       if (response && response.result.data) {
         if (
@@ -150,7 +150,7 @@ export default function AlbumDetail({ params }) {
     axios
       .post(`/follow/me`, { id_artist })
       .then((response: any) => {
-        console.log("Album followed successfully", response);
+        // console.log("Album followed successfully", response);
         setIsFollowed(true);
       })
       .catch((error: any) => {
@@ -161,7 +161,7 @@ export default function AlbumDetail({ params }) {
     axios
       .delete(`/follow/me?id_artist=${id_artist}`)
       .then((response: any) => {
-        console.log("Album unfollowed successfully", response);
+        // console.log("Album unfollowed successfully", response);
         setIsFollowed(false);
       })
       .catch((error: any) => {
@@ -174,7 +174,7 @@ export default function AlbumDetail({ params }) {
       axios
         .delete(`favorite-album/me?id_album=${id_album}`)
         .then((response: any) => {
-          console.log("Album unliked successfully", response);
+          //   console.log("Album unliked successfully", response);
           setHeart(false);
         })
         .catch((error: any) => {
@@ -184,7 +184,7 @@ export default function AlbumDetail({ params }) {
       axios
         .post(`favorite-album/me`, { id_album })
         .then((response: any) => {
-          console.log("Album liked successfully", response);
+          //   console.log("Album liked successfully", response);
           setHeart(true);
         })
         .catch((error: any) => {
@@ -254,7 +254,7 @@ export default function AlbumDetail({ params }) {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      console.log("Added to history:", newHistory);
+      //   console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }
@@ -290,7 +290,7 @@ export default function AlbumDetail({ params }) {
             <button
               className={style.playButton}
               onClick={() => {
-                console.log(albumDetail, "chúchsuchscschswkfwhbflwf");
+                // console.log(albumDetail, "chúchsuchscschswkfwhbflwf");
                 let musicList = [];
                 albumDetail.musics.map((music) => {
                   musicList.push({

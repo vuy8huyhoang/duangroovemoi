@@ -1,21 +1,21 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import axios from "@/lib/axios"; // Thay đường dẫn phù hợp với file cấu hình axios của bạn
 
 const UploadForm = () => {
   const [file, setFile] = useState(null); // Lưu trữ file người dùng chọn
   const [message, setMessage] = useState(""); // Thông báo kết quả
-  const [name, setName] = useState("")
+  const [name, setName] = useState("");
 
   // Xử lý sự kiện khi người dùng chọn file
-  const handleFileChange = (event:any) => {
+  const handleFileChange = (event: any) => {
     setFile(event.target.files[0]);
   };
 
   // Xử lý sự kiện submit form
-  const handleSubmit = async (event:any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    
+
     if (!file) {
       setMessage("Vui lòng chọn một file.");
       return;
@@ -31,13 +31,13 @@ const UploadForm = () => {
         },
       });
       setMessage("Tải lên thành công: " + response);
-      console.log(response);
+      // console.log(response);
 
       const artistResponse: any = await axios.post("/artist", {
-            name, url_cover: response.result.url
-      })
-      
-    } catch (error:any) {
+        name,
+        url_cover: response.result.url,
+      });
+    } catch (error: any) {
       setMessage("Tải lên thất bại: " + error);
     }
   };
@@ -48,7 +48,11 @@ const UploadForm = () => {
       <form onSubmit={handleSubmit}>
         <input type="file" onChange={handleFileChange} />
         <button type="submit">Upload</button>
-        <input type="text" value={name} onChange={(e)=>setName(e.target.value)} />
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </form>
       {message && <p>{message}</p>}
     </div>

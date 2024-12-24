@@ -5,7 +5,7 @@ import { AppContext } from "@/app/layout";
 import clsx from "clsx";
 import { ReactSVG } from "react-svg";
 import { useRouter } from "next/navigation";
-import axios from '@/lib/axios';
+import axios from "@/lib/axios";
 interface Music {
   id_music: string;
   name: string;
@@ -57,7 +57,7 @@ export const addMusicToTheEnd = (
 ) => {
   if (typeof window !== "undefined") {
     localStorage.removeItem("currentPlaylist");
-    console.log(state?.currentPlaylist);
+    // console.log(state?.currentPlaylist);
   }
   dispatch({ type: "IS_PLAYING", payload: true });
   dispatch({
@@ -110,7 +110,7 @@ const MusicPlayer: React.FC = () => {
   const currentPlaylist = state?.currentPlaylist;
   const volume = state?.volume;
   const isPlaying = state?.isPlaying;
-  const [heart, setHeart]= useState(false);
+  const [heart, setHeart] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -351,14 +351,16 @@ const MusicPlayer: React.FC = () => {
               <ReactSVG src="/heart.svg"></ReactSVG>
             </div> */}
             <div className={classes.tool__playingWrapper}>
-            <span
-              className={clsx(classes.heartIcon, {
-                [classes.heartIcon_active]: heart,
-              })}
-              onClick={() => handleHeartClick(state.currentPlaylist[0].id_music)}
-            >
-              ♥
-            </span>
+              <span
+                className={clsx(classes.heartIcon, {
+                  [classes.heartIcon_active]: heart,
+                })}
+                onClick={() =>
+                  handleHeartClick(state.currentPlaylist[0].id_music)
+                }
+              >
+                ♥
+              </span>
               <div
                 className={clsx(classes.icon, classes.movingBtn)}
                 onClick={() => {

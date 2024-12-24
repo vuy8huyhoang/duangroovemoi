@@ -19,7 +19,7 @@ export default function EditComposer({ params }: { params: { id: string } }) {
       axios
         .get(`/composer/${params.id}`)
         .then((response: any) => {
-          console.log("Full API response for composer:", response);
+          // console.log("Full API response for composer:", response);
           if (response?.result?.data) {
             setComposer(response.result.data);
           } else {

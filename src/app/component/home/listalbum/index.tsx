@@ -6,6 +6,7 @@ import Link from "next/link";
 import { addListMusicToTheFirst } from "../../musicplayer";
 import { AppContext } from "@/app/layout";
 import { log } from "console";
+import clsx from "clsx";
 
 interface Album {
   id_album: string;
@@ -30,7 +31,7 @@ interface Album {
 
 export default function ListAlbum() {
   const [albumData, setAlbumData] = useState<Album[]>([]);
-  const [favoriteAlbum, setFavoriteAlbum] = useState<Set<number>>(new Set());
+  const [favoriteAlbum, setFavoriteAlbum] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -44,7 +45,7 @@ export default function ListAlbum() {
         if (response && response.result && response.result.data) {
           const albumObj = response.result.data;
           setAlbumData(albumObj);
-          console.log(albumObj);
+          //   console.log(albumObj);
         } else {
           console.error("Response result.data is undefined or null", response);
         }
@@ -56,6 +57,10 @@ export default function ListAlbum() {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    setFavoriteAlbum(new Set(state?.favoriteAlbum.map((i) => i.id_album)));
+  }, [state?.favoriteAlbum]);
 
   const handlePlayRandomClick = () => {
     if (isPlaying) {
@@ -79,10 +84,10 @@ export default function ListAlbum() {
         audioRef.current.play(); // Play the song
         setIsPlaying(true);
       } else {
-        console.log("No songs available to play.");
+        // console.log("No songs available to play.");
       }
     } else {
-      console.log("No albums available to play.");
+      //   console.log("No albums available to play.");
     }
   };
 
@@ -96,8 +101,10 @@ export default function ListAlbum() {
       const updated = new Set(prev);
       if (isFavorite) {
         updated.delete(id_album);
+        // alert("Yêu thích album thành công");
       } else {
         updated.add(id_album);
+        // alert("Xóa yêu thích album thành công");
       }
       return updated;
     });
@@ -120,9 +127,9 @@ export default function ListAlbum() {
     }
 
     try {
-      console.log(
-        isFavorite ? "Xóa album khỏi yêu thích" : "Thêm album vào yêu thích"
-      );
+      //   console.log(
+      //     isFavorite ? "Xóa album khỏi yêu thích" : "Thêm album vào yêu thích"
+      //   );
       if (isFavorite) {
         await axios.delete(`/favorite-album/me?id_album=${id_album}`);
       } else {
@@ -173,17 +180,21 @@ export default function ListAlbum() {
                     >
                       <ReactSVG
                         src={
-                          favoriteAlbum.has(Number(album.id_album))
+                          favoriteAlbum.has(album.id_album)
                             ? "/heart_active.svg"
                             : "/heart.svg"
                         }
-                        className={style.activeHeart}
+                        className={clsx({
+                          [style.activeHeart]: favoriteAlbum.has(
+                            album.id_album
+                          ),
+                        })}
                       />
                     </button>
                     <button
                       className={style.playButton}
                       onClick={() => {
-                        console.log(album, "chúchsuchscschswkfwhbflwf");
+                        // console.log(album, "chúchsuchscschswkfwhbflwf");
                         let musicList = [];
                         album.musics.map((music) => {
                           musicList.push({

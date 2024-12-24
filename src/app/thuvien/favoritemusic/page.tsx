@@ -4,7 +4,9 @@ import React, { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import style from "./FavoriteMusic.module.scss";
 import Link from "next/link";
-import FavoritePage from '../page';
+import FavoritePage from "../favorites/page";
+import clsx from "clsx";
+import { Img } from "react-image";
 
 interface FavoriteMusic {
   id_music: string;
@@ -19,8 +21,8 @@ const FavoriteMusicPage = () => {
   useEffect(() => {
     const fetchFavoriteMusic = async () => {
       try {
-        const response:any = await axios.get("/favorite-music/me");
-        console.log('Favorite Music Data:', response.result); 
+        const response: any = await axios.get("/favorite-music/me");
+        // console.log('Favorite Music Data:', response.result);
         setFavoriteMusic(response.result.data);
       } catch (error) {
         console.error("Failed to fetch favorite music", error);
@@ -31,25 +33,27 @@ const FavoriteMusicPage = () => {
     fetchFavoriteMusic();
   }, []);
   if (loading) return <p>Loading...</p>;
-  
 
   return (
     <div className={style.favoritePage}>
-      
-      <div className={style.musicGrid}>
+      <div className="grid grid-cols-12 gap-4 flex-wrap">
         {favoriteMusic.map((music) => (
-          <div key={music.id_music} className={style.musicItem}>
-            <img
-              src={music.url_cover || "/default-cover.png"}
+          <Link
+            href={"/musicdetail/" + music.id_music}
+            key={music.id_music}
+            className={clsx(style.musicItem, "col-span-6")}
+          >
+            <Img
+              src={music.url_cover} // URL ảnh từ album
               alt={music.name}
+              // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+              unloader={<img src="/default.png" alt="default" />} // Thay thế ảnh khi lỗi
             />
-            <Link href={`/musicdetail/${music.id_music}`}>
-              {music.name}
-            </Link>
-         
-            
+            <Link href={`/musicdetail/${music.id_music}`}>{music.name}</Link>
+            {/* <Link href={`/musicdetail/${music.id_music}`}>{music.}</Link> */}
+
             {/* <p>Lượt xem: {viewCounts[history.id_music] || 0}</p> */}
-          </div>
+          </Link>
         ))}
       </div>
     </div>

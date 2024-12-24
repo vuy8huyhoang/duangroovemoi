@@ -38,14 +38,20 @@ export default function AdminMusic() {
     (song) =>
       song.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       song.artists.some((artistWrapper) =>
-        artistWrapper.artist.name.toLowerCase().includes(searchTerm.toLowerCase())
+        artistWrapper.artist.name
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
       )
   );
   const sortedSongs = filteredSongs.sort((a, b) => {
     if (sortOption === "latest") {
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      return (
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
     } else if (sortOption === "oldest") {
-      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      return (
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
     } else if (sortOption === "nameAsc") {
       return a.name.localeCompare(b.name);
     } else if (sortOption === "nameDesc") {
@@ -58,7 +64,7 @@ export default function AdminMusic() {
     axios
       .get("/music")
       .then((response: any) => {
-        console.log("Full API response:", response);
+        // console.log("Full API response:", response);
         if (response && response.result && response.result.data) {
           setSongs(response.result.data);
         } else {
@@ -90,10 +96,10 @@ export default function AdminMusic() {
   const indexOfFirstSong = indexOfLastSong - songsPerPage;
   const currentSongs = filteredSongs.slice(indexOfFirstSong, indexOfLastSong);
   const totalPages = Math.ceil(songs.length / songsPerPage);
-  
+
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
   useEffect(() => {
-    setCurrentPage(1); 
+    setCurrentPage(1);
   }, [searchTerm]);
 
   return (
@@ -128,7 +134,6 @@ export default function AdminMusic() {
             <option value={45}>45</option>
             <option value={50}>50</option>
             <option value={100}>100</option>
-
           </select>
         </div>
         <div className={styles.sortContainer}>
