@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useContext } from "react";
 import axios from "@/lib/axios";
-import emailjs from "emailjs-com";
 import styles from "./login.module.scss";
 import { ReactSVG } from "react-svg";
 import Link from "next/link";
@@ -151,32 +150,6 @@ const Login = () => {
     return isValid;
   };
 
-  const sendOtpEmail = async (
-    email: string,
-    fullname: string
-  ): Promise<string> => {
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    const emailParams = {
-      fullname: fullname,
-      email: email,
-      otp: otp,
-    };
-
-    try {
-      await emailjs.send(
-        "service_83tf7pd", // Dịch vụ email của bạn
-        "template_f2p2rez", // ID template của bạn
-        emailParams,
-        "6LZQc95vA7RoyLanq" // ID người dùng của bạn từ EmailJS
-      );
-      return otp; // Trả về OTP
-    } catch (error) {
-      console.error("Lỗi khi gửi email OTP:", error);
-      throw new Error("Lỗi khi gửi OTP qua email.");
-    }
-  };
-
   const handleLogin = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
@@ -224,12 +197,10 @@ const Login = () => {
             window.location.href = "/";
           }
         } else {
-          console.error("Phản hồi không như mong đợi:", profileResponse);
-          alert("Đăng nhập không thành công: Phản hồi không như mong đợi.");
+          alert("Đăng nhập không thành công");
         }
       } else {
-        console.error("Phản hồi không như mong đợi:", data);
-        alert("Đăng nhập không thành công: Phản hồi không như mong đợi.");
+        alert("Đăng nhập không thành công");
       }
     } catch (error: any) {
       console.error("Lỗi khi đăng nhập:", error);
@@ -264,24 +235,41 @@ const Login = () => {
     if (!validateRegisterForm()) return;
 
     setLoading(true);
-    try {
-      const response = await axios.post("/register", user, {
-        headers: { "Content-Type": "application/json" },
-      });
-      const otp = await sendOtpEmail(user.email, user.fullname);
-      // Lưu OTP vào localStorage hoặc cơ sở dữ liệu
-      if (response.status === 200 || response.status === 201) {
-        localStorage.setItem("otp", otp);
-        alert("Đăng ký thành công! Mã OTP đã được gửi đến email của bạn.");
-        setIsOtpSent(true); // Hiển thị form OTP
+    // Gửi otp, đặt otp vào local
+    console.log(user);
+    if (!isOtpSent) {
+      axios
+        .post("verify-email", { email: user.email })
+        .then((res: any) => {
+          if (res.result.code) {
+            alert("Đăng ký thành công! Mã OTP đã được gửi đến email của bạn.");
+            setIsOtpSent(true);
+            localStorage.setItem("otp", res.result.code);
+          } else {
+            alert("Đã xảy ra lỗi khi gửi OTP.");
+          }
+        })
+        .catch((error: any) => {
+          if (error.response && error.response.status === 409) {
+            setErrors((prev) => {
+              return { ...prev, email: "Email đã được sử dụng" };
+            });
+          } else {
+            console.error("Đã xảy ra lỗi:", error);
+            alert("Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.");
+          }
+        });
+    } else {
+      if (localStorage.getItem("otp") === user.otp) {
+        axios.post("/register", user);
+        alert("Đăng ký tài khoản thành công");
+        setIsForgotPassword(false);
+        setIsLogin(true);
       } else {
-        alert("Đăng ký không thành công.");
+        alert("Otp không khớp");
       }
-    } catch (error) {
-      alert("Đã xảy ra lỗi khi gửi OTP.");
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleVerifyOtp = async (e: React.FormEvent): Promise<void> => {
@@ -424,52 +412,52 @@ const Login = () => {
                 </>
               ) : isOtpSent ? (
                 <>
-                  <form onSubmit={handleVerifyOtp}>
-                    <div className={styles.formGroup}>
-                      {/* <label htmlFor="otp">Mã OTP</label> */}
-                      <input
-                        type="text"
-                        id="otp"
-                        name="otp"
-                        placeholder="Nhập mã OTP..."
-                        value={user.otp}
-                        onChange={handleChange}
-                      />
-                      {errors.otp && (
-                        <p className={styles.errorText}>{errors.otp}</p>
-                      )}
+                  {/* <form onSubmit={handleVerifyOtp}> */}
+                  <div className={styles.formGroup}>
+                    {/* <label htmlFor="otp">Mã OTP</label> */}
+                    <input
+                      type="text"
+                      id="otp"
+                      name="otp"
+                      placeholder="Nhập mã OTP..."
+                      value={user.otp}
+                      onChange={handleChange}
+                    />
+                    {errors.otp && (
+                      <p className={styles.errorText}>{errors.otp}</p>
+                    )}
+                  </div>
+                  <div className={clsx("flex justify-between")}>
+                    <div
+                      onClick={handleForgotPassword}
+                      className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
+                    >
+                      Quên mật khẩu?
                     </div>
-                    <div className={clsx("flex justify-between")}>
+                    {isLogin ? (
                       <div
-                        onClick={handleForgotPassword}
+                        onClick={toggleForm}
                         className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
                       >
-                        Quên mật khẩu?
+                        Bạn chưa có tài khoản?
                       </div>
-                      {isLogin ? (
-                        <div
-                          onClick={toggleForm}
-                          className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
-                        >
-                          Bạn chưa có tài khoản?
-                        </div>
-                      ) : (
-                        <div
-                          onClick={toggleForm}
-                          className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
-                        >
-                          Bạn đã có tài khoản?
-                        </div>
-                      )}
-                    </div>
-                    <button
-                      type="submit"
-                      className={styles.loginBtn}
-                      disabled={loading}
-                    >
-                      {loading ? "Đang xác thực..." : "Xác thực OTP"}
-                    </button>
-                  </form>
+                    ) : (
+                      <div
+                        onClick={toggleForm}
+                        className="p-[4px] text-[12px] font-[300] text-[#ffffff4d] cursor-pointer"
+                      >
+                        Bạn đã có tài khoản?
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    type="submit"
+                    className={styles.loginBtn}
+                    disabled={loading}
+                  >
+                    {loading ? "Đang xác thực..." : "Xác thực OTP"}
+                  </button>
+                  {/* </form> */}
                 </>
               ) : (
                 <>

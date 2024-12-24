@@ -66,27 +66,31 @@ const MusicType = ({ type, musicList, id_type }: any) => {
   };
 
   const toggleFavorite = async (id_music: number) => {
-    const isFavorite = favoriteMusic.has(id_music);
-    setFavoriteMusic((prev) => {
-      const updated = new Set(prev);
-      if (isFavorite) {
-        updated.delete(id_music);
-      } else {
-        updated.add(id_music);
-      }
-      return updated;
-    });
+    if (state?.profile) {
+      const isFavorite = favoriteMusic.has(id_music);
+      setFavoriteMusic((prev) => {
+        const updated = new Set(prev);
+        if (isFavorite) {
+          updated.delete(id_music);
+        } else {
+          updated.add(id_music);
+        }
+        return updated;
+      });
 
-    try {
-      if (isFavorite) {
-        await axios.delete(`/favorite-music/me?id_music=${id_music}`);
-        alert("Xóa bài hát yêu thích thành công");
-      } else {
-        await axios.post("/favorite-music/me", { id_music });
-        alert("Thêm bài hát yêu thích thành công");
+      try {
+        if (isFavorite) {
+          await axios.delete(`/favorite-music/me?id_music=${id_music}`);
+          alert("Xóa bài hát yêu thích thành công");
+        } else {
+          await axios.post("/favorite-music/me", { id_music });
+          alert("Thêm bài hát yêu thích thành công");
+        }
+      } catch (error) {
+        console.error("Error updating favorite music:", error);
       }
-    } catch (error) {
-      console.error("Error updating favorite music:", error);
+    } else {
+      dispatch({ type: "SHOW_LOGIN", payload: true });
     }
   };
 

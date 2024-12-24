@@ -36,6 +36,7 @@ axios.interceptors.response.use(
     return {
       result: response.data,
       newID: response.data?.newID,
+      code: response.data?.code,
       status: response.status,
     };
   },
