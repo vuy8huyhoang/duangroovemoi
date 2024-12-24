@@ -154,15 +154,16 @@ export default function GrooveChartPage() {
 
                       // Dừng nhạc nếu đang phát và chọn lại nhạc
                       if (
-                        music.id_music === state.currentPlaylist[0]?.id_music &&
-                        state.isPlaying
+                        music.id_music ===
+                          state?.currentPlaylist[0]?.id_music &&
+                        state?.isPlaying
                       ) {
                         dispatch({ type: "IS_PLAYING", payload: false });
                       }
                     }}
                   >
-                    {music.id_music === state.currentPlaylist[0]?.id_music &&
-                    state.isPlaying ? (
+                    {music.id_music === state?.currentPlaylist[0]?.id_music &&
+                    state?.isPlaying ? (
                       <i className="fas fa-pause"></i>
                     ) : (
                       <i className="fas fa-play"></i>

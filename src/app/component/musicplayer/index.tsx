@@ -88,7 +88,7 @@ export const addListMusicToTheFirst = (state, dispatch, list) => {
   // Tạo playlist mới không trùng lặp
   const updatedPlaylist = [
     ...list,
-    ...state.currentPlaylist.filter(
+    ...state?.currentPlaylist.filter(
       (song) => !list.some((music) => music.id_music === song.id_music)
     ),
   ];
@@ -356,7 +356,7 @@ const MusicPlayer: React.FC = () => {
                   [classes.heartIcon_active]: heart,
                 })}
                 onClick={() =>
-                  handleHeartClick(state.currentPlaylist[0].id_music)
+                  handleHeartClick(state?.currentPlaylist[0].id_music)
                 }
               >
                 ♥

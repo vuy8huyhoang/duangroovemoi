@@ -31,13 +31,13 @@ export default function RightSidebar() {
   const deleteMusic = (index: number) => {
     dispatch({
       type: "CURRENT_PLAYLIST",
-      payload: state.currentPlaylist.filter((_, idx) => idx !== index),
+      payload: state?.currentPlaylist.filter((_, idx) => idx !== index),
     });
     closeDropdown();
   };
 
   const swapMusic = (currentIndex: number, newIndex: number) => {
-    const currentList = [...state.currentPlaylist]; // Tạo một bản sao của danh sách hiện tại để tránh thay đổi trực tiếp mảng ban đầu
+    const currentList = [...state?.currentPlaylist]; // Tạo một bản sao của danh sách hiện tại để tránh thay đổi trực tiếp mảng ban đầu
     const temp = currentList[currentIndex];
     currentList[currentIndex] = currentList[newIndex];
     currentList[newIndex] = temp;
@@ -155,7 +155,7 @@ export default function RightSidebar() {
                   });
                 }}
               >
-                {state.isPlaying ? (
+                {state?.isPlaying ? (
                   <i className="fas fa-pause"></i>
                 ) : (
                   <i className="fas fa-play"></i>
@@ -210,15 +210,15 @@ export default function RightSidebar() {
 
                       // Dừng nhạc nếu đang phát và chọn lại nhạc
                       if (
-                        song.id_music === state.currentPlaylist[0]?.id_music &&
-                        state.isPlaying
+                        song.id_music === state?.currentPlaylist[0]?.id_music &&
+                        state?.isPlaying
                       ) {
                         dispatch({ type: "IS_PLAYING", payload: false });
                       }
                     }}
                   >
-                    {song.id_music === state.currentPlaylist[0]?.id_music &&
-                    state.isPlaying ? (
+                    {song.id_music === state?.currentPlaylist[0]?.id_music &&
+                    state?.isPlaying ? (
                       <i className="fas fa-pause"></i>
                     ) : (
                       <i className="fas fa-play"></i>

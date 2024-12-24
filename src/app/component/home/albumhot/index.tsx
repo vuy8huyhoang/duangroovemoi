@@ -209,15 +209,16 @@ const MusicType = ({ type, musicList, id_type }: any) => {
                       addMusicToHistory(album.id_music.toString(), 100);
 
                       if (
-                        album.id_music === state.currentPlaylist[0]?.id_music &&
-                        state.isPlaying
+                        album.id_music ===
+                          state?.currentPlaylist[0]?.id_music &&
+                        state?.isPlaying
                       ) {
                         dispatch({ type: "IS_PLAYING", payload: false });
                       }
                     }}
                   >
-                    {album.id_music === state.currentPlaylist[0]?.id_music &&
-                    state.isPlaying ? (
+                    {album.id_music === state?.currentPlaylist[0]?.id_music &&
+                    state?.isPlaying ? (
                       <i className="fas fa-pause"></i>
                     ) : (
                       <i className="fas fa-play"></i>

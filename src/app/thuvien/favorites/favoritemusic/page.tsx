@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import style from "./FavoriteMusic.module.scss";
 import Link from "next/link";
-import FavoritePage from "../favorites/page";
 import clsx from "clsx";
 import { Img } from "react-image";
 

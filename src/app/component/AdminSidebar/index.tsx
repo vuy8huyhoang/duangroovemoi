@@ -40,7 +40,7 @@ const AdminSidebar: React.FC = () => {
         console.error("Error fetching profile details", error);
       })
       .finally(() => {
-        setLoading(false);
+        // setLoading(false);
       });
   }, []);
   return (

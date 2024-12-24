@@ -156,15 +156,15 @@ const ListMusic: React.FC = () => {
 
                     // Dừng nhạc nếu đang phát và chọn lại nhạc
                     if (
-                      album.id_music === state.currentPlaylist[0]?.id_music &&
-                      state.isPlaying
+                      album.id_music === state?.currentPlaylist[0]?.id_music &&
+                      state?.isPlaying
                     ) {
                       dispatch({ type: "IS_PLAYING", payload: false });
                     }
                   }}
                 >
-                  {album.id_music === state.currentPlaylist[0]?.id_music &&
-                  state.isPlaying ? (
+                  {album.id_music === state?.currentPlaylist[0]?.id_music &&
+                  state?.isPlaying ? (
                     <i className="fas fa-pause"></i>
                   ) : (
                     <i className="fas fa-play"></i>

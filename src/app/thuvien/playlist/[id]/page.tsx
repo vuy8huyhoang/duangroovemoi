@@ -66,7 +66,7 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
   // }, [currentSong]);
 
   const handlePlaySong = (music: Music) => {
-    dispatch({ type: "IS_PLAYLING", payload: state.isPlaying });
+    dispatch({ type: "IS_PLAYLING", payload: state?.isPlaying });
   };
   const toggleMenu = (id_music: string) => {
     setMenuVisible(menuVisible === id_music ? null : id_music); // Đóng mở menu
@@ -247,7 +247,7 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
                     addMusicToHistory(music.id_music.toString(), 100);
 
                     if (
-                      music.id_music === state.currentPlaylist[0]?.id_music &&
+                      music.id_music === state?.currentPlaylist[0]?.id_music &&
                       state.isPlaying
                     ) {
                       dispatch({ type: "IS_PLAYING", payload: false });

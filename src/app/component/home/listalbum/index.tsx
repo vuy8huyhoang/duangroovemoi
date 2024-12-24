@@ -220,8 +220,8 @@ export default function ListAlbum() {
 
                         if (
                           album.musics[0]?.id_music ===
-                            state.currentPlaylist[0]?.id_music &&
-                          state.isPlaying
+                            state?.currentPlaylist[0]?.id_music &&
+                          state?.isPlaying
                         ) {
                           dispatch({
                             type: "IS_PLAYING",

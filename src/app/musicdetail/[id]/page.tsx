@@ -209,8 +209,9 @@ const SongDetailPage: React.FC = ({ params }: any) => {
 
                 // Dừng nhạc nếu đang phát và chọn lại nhạc
                 if (
-                  musicdetail.id_music === state.currentPlaylist[0]?.id_music &&
-                  state.isPlaying
+                  musicdetail.id_music ===
+                    state?.currentPlaylist[0]?.id_music &&
+                  state?.isPlaying
                 ) {
                   dispatch({ type: "IS_PLAYING", payload: false });
                 }
@@ -272,15 +273,15 @@ const SongDetailPage: React.FC = ({ params }: any) => {
                     // Dừng nhạc nếu đang phát và chọn lại nhạc
                     if (
                       musicdetail.id_music ===
-                        state.currentPlaylist[0]?.id_music &&
-                      state.isPlaying
+                        state?.currentPlaylist[0]?.id_music &&
+                      state?.isPlaying
                     ) {
                       dispatch({ type: "IS_PLAYING", payload: false });
                     }
                   }}
                 >
                   {musicdetail.id_music ===
-                    state.currentPlaylist[0]?.id_music && state.isPlaying ? (
+                    state?.currentPlaylist[0]?.id_music && state?.isPlaying ? (
                     <i className="fas fa-pause"></i>
                   ) : (
                     <i className="fas fa-play"></i>
