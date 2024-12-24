@@ -41,7 +41,8 @@ const FavoriteAlbumPage = () => {
           favoriteAlbums.map((album) => {
             // console.log("Rendering album:", album); // Kiểm tra từng album trước khi render
             return (
-              <div
+              <Link
+                href={"/albumdetail/" + album.id_album}
                 key={album.id_album}
                 className={clsx(style.albumItem, "col-span-6")}
               >
@@ -53,7 +54,7 @@ const FavoriteAlbumPage = () => {
                   unloader={<img src="/default.png" alt="default" />} // Thay thế ảnh khi lỗi
                 />
                 <p>{album.name}</p>
-              </div>
+              </Link>
             );
           })
         )}
