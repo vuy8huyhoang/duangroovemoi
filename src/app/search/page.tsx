@@ -5,6 +5,7 @@ import axios from "axios";
 import styles from "./search.module.scss";
 import Link from "next/link";
 import MusicPartner from "../component/home/musicpartner";
+import { Img } from "react-image";
 
 const SearchResultsPage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -82,10 +83,18 @@ const SearchResultsPage: React.FC = () => {
                 href={`/musicdetail/${music.id_music}`}
                 className={styles.musicItem}
               >
-                <img
-                  src={music.url_cover}
+                <Img
+                  src={music.url_cover} // URL ảnh từ album
                   alt={music.name}
                   className={styles.musicImage}
+                  // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                  unloader={
+                    <img
+                      src="/default.png"
+                      alt="default"
+                      className={styles.musicImage}
+                    />
+                  } // Thay thế ảnh khi lỗi
                 />
                 <div className={styles.musicInfo}>
                   <p className={styles.musicName}>{music.name}</p>
@@ -124,10 +133,18 @@ const SearchResultsPage: React.FC = () => {
                 href={`/albumdetail/${album.id_album}`}
                 className={styles.albumCard}
               >
-                <img
-                  src={album.url_cover}
+                <Img
+                  src={album.url_cover} // URL ảnh từ album
                   alt={album.name}
                   className={styles.albumCover}
+                  // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                  unloader={
+                    <img
+                      src="/default.png"
+                      alt="default"
+                      className={styles.albumCover}
+                    />
+                  } // Thay thế ảnh khi lỗi
                 />
                 <p className={styles.albumTitle}>{album.name}</p>
                 <p className={styles.artistName}>{album.artist?.name}</p>
@@ -165,10 +182,18 @@ const SearchResultsPage: React.FC = () => {
                 href={`/artistdetail/${artist.id_artist}`}
                 className={styles.artistItem}
               >
-                <img
-                  src={artist.url_cover}
+                <Img
+                  src={artist.url_cover} // URL ảnh từ album
                   alt={artist.name}
                   className={styles.artistImage}
+                  // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                  unloader={
+                    <img
+                      src="/default.png"
+                      alt="default"
+                      className={styles.artistImage}
+                    />
+                  } // Thay thế ảnh khi lỗi
                 />
                 <p className={styles.artistName}>{artist.name}</p>
               </Link>

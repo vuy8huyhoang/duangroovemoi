@@ -88,7 +88,7 @@ export default function GrooveChartPage() {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      // console.log("Added to history:", newHistory);
+      console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }

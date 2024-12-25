@@ -6,6 +6,8 @@ import clsx from "clsx";
 import { ReactSVG } from "react-svg";
 import { useRouter } from "next/navigation";
 import axios from "@/lib/axios";
+import { Img } from "react-image";
+
 interface Music {
   id_music: string;
   name: string;
@@ -193,29 +195,49 @@ const MusicPlayer: React.FC = () => {
 
     return () => clearInterval(interval);
   }, [currentPlaylist]);
+
   const handleHeartClick = (id_music) => {
-    if (heart == true) {
-      axios
-        .delete(`favorite-music/me?id_music=${id_music}`)
-        .then((response: any) => {
-          console.log("thành công", response);
-          setHeart(false);
-        })
-        .catch((error: any) => {
-          console.error("Error unliking album", error);
-        });
+    if (state?.profile) {
+      if (heart === true) {
+        axios
+          .delete(`favorite-music/me?id_music=${id_music}`)
+          .then((response: any) => {
+            console.log("Xóa bài hát yêu thích thành công", response);
+            setHeart(false);
+
+            // Cập nhật state bằng cách loại bỏ id_music khỏi mảng
+            dispatch({
+              type: "FAVORITE_MUSIC",
+              payload: state.favoriteMusic.filter(
+                (music) => music.id_music !== id_music
+              ),
+            });
+          })
+          .catch((error: any) => {
+            console.error("Error unliking album", error);
+          });
+      } else {
+        axios
+          .post(`favorite-music/me`, { id_music })
+          .then((response: any) => {
+            console.log("Thêm bài hát yêu thích thành công", response);
+            setHeart(true);
+
+            // Cập nhật state bằng cách thêm { id_music } vào mảng
+            dispatch({
+              type: "FAVORITE_MUSIC",
+              payload: [...state.favoriteMusic, { id_music }],
+            });
+          })
+          .catch((error: any) => {
+            console.error("Error liking album", error);
+          });
+      }
     } else {
-      axios
-        .post(`favorite-music/me`, { id_music })
-        .then((response: any) => {
-          console.log("Album liked successfully", response);
-          setHeart(true);
-        })
-        .catch((error: any) => {
-          console.error("Error liking album", error);
-        });
+      dispatch({ type: "SHOW_LOGIN", payload: true });
     }
   };
+
   useEffect(() => {
     if (isPlaying) {
       const interval = setInterval(() => {
@@ -329,10 +351,19 @@ const MusicPlayer: React.FC = () => {
             onLoadedData={() => setDuration(audioRef.current.duration)}
           ></audio>
           <div className={classes.infor}>
-            <img
+            <Img
+              src={music?.url_cover} // URL ảnh từ albu              alt={"name"}
               className={classes.avatar}
               style={{ "--background-url": music?.url_cover || "" } as any}
-              src={music?.url_cover}
+              // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+              unloader={
+                <img
+                  src="/default.png"
+                  alt="default"
+                  className={clsx(classes.avatar)}
+                  style={{ "--background-url": music?.url_cover || "" } as any}
+                />
+              } // Thay thế ảnh khi lỗi
             />
             <div className={classes.nameWrapper}>
               <div
@@ -351,16 +382,24 @@ const MusicPlayer: React.FC = () => {
               <ReactSVG src="/heart.svg"></ReactSVG>
             </div> */}
             <div className={classes.tool__playingWrapper}>
-              <span
+              <button
                 className={clsx(classes.heartIcon, {
-                  [classes.heartIcon_active]: heart,
+                  [classes.heartIcon_active]:
+                    heart ||
+                    state?.favoriteMusic
+                      ?.map((i) => i.id_music)
+                      .includes(state?.currentPlaylist[0].id_music),
                 })}
-                onClick={() =>
-                  handleHeartClick(state?.currentPlaylist[0].id_music)
-                }
+                onClick={() => {
+                  if (state?.profile) {
+                    handleHeartClick(state?.currentPlaylist[0].id_music);
+                  } else {
+                    dispatch({ type: "SHOW_LOGIN", payload: true });
+                  }
+                }}
               >
                 ♥
-              </span>
+              </button>
               <div
                 className={clsx(classes.icon, classes.movingBtn)}
                 onClick={() => {

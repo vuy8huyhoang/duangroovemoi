@@ -11,6 +11,7 @@ import { AppContext } from "@/app/layout";
 import clsx from "clsx";
 import { saveAs } from "file-saver";
 import { Img } from "react-image";
+import { convertToHttps } from "@/utils/String";
 
 interface Mussic {
   id_music: number;
@@ -88,7 +89,7 @@ const ListMusic: React.FC = () => {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      // console.log("Added to history:", newHistory);
+      console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }
@@ -97,6 +98,7 @@ const ListMusic: React.FC = () => {
   const toggleFavorite = async (id_music: number) => {
     if (state?.profile) {
       const isFavorite = favoriteMusic.has(id_music);
+
       setFavoriteMusic((prev) => {
         const updated = new Set(prev);
         if (isFavorite) {
@@ -107,13 +109,22 @@ const ListMusic: React.FC = () => {
         return updated;
       });
 
+      const updatedFavoriteMusic = isFavorite
+        ? state.favoriteMusic.filter((music) => music.id_music !== id_music)
+        : [...state.favoriteMusic, { id_music }];
+
+      dispatch({
+        type: "FAVORITE_MUSIC",
+        payload: updatedFavoriteMusic,
+      });
+
       try {
         if (isFavorite) {
           await axios.delete(`/favorite-music/me?id_music=${id_music}`);
-          alert("Xóa bài hát yêu thích thành công");
+          // alert("Xóa bài hát yêu thích thành công");
         } else {
           await axios.post("/favorite-music/me", { id_music });
-          alert("Thêm bài hát yêu thích thành công");
+          // alert("Thêm bài hát yêu thích thành công");
         }
       } catch (error) {
         console.error("Error updating favorite music:", error);
@@ -169,6 +180,7 @@ const ListMusic: React.FC = () => {
   };
 
   const downloadMusic = (url: string) => {
+    url = convertToHttps(url);
     if (!state?.profile) {
       dispatch({ type: "SHOW_LOGIN", payload: true });
     } else if (state?.profile?.is_vip !== 1) {

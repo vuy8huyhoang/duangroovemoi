@@ -7,6 +7,7 @@ import { addListMusicToTheFirst } from "../../musicplayer";
 import { AppContext } from "@/app/layout";
 import { log } from "console";
 import clsx from "clsx";
+import { Img } from "react-image";
 
 interface Album {
   id_album: string;
@@ -110,6 +111,17 @@ export default function ListAlbum() {
         return updated;
       });
 
+      const updatedFavoriteAlbum = isFavorite
+        ? state.favoriteAlbum.filter(
+            (id_album) => id_album.id_id_album !== id_album
+          )
+        : [...state.favoriteAlbum, { id_album }];
+
+      dispatch({
+        type: "FAVORITE_MUSIC",
+        payload: updatedFavoriteAlbum,
+      });
+
       try {
         //   console.log(
         //     isFavorite ? "Xóa album khỏi yêu thích" : "Thêm album vào yêu thích"
@@ -155,10 +167,18 @@ export default function ListAlbum() {
             .map((album) => (
               <div key={album.id_album} className={style.albumCard}>
                 <div className={style.albumWrapper}>
-                  <img
-                    src={album.url_cover}
+                  <Img
+                    src={album.url_cover} // URL ảnh từ album
                     alt={album.name}
                     className={style.albumCover}
+                    // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                    unloader={
+                      <img
+                        src="/default.png"
+                        alt="default"
+                        className={style.albumCover}
+                      />
+                    } // Thay thế ảnh khi lỗi
                   />
                   <div className={style.overlay}>
                     <button

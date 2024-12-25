@@ -6,6 +6,7 @@ import style from "./playlistDetail.module.scss";
 import Link from "next/link";
 import { addMusicToTheFirst } from "../../../component/musicplayer";
 import { AppContext } from "@/app/layout";
+import { Img } from "react-image";
 
 interface Playlist {
   id_playlist: string;
@@ -114,7 +115,7 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      // console.log("Added to history:", newHistory);
+      console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }
@@ -169,10 +170,18 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
         <div className={style.modalContentRight}>
           <div className={style.imageContainer1}>
             {playlistDetail.musics.slice(0).map((music) => (
-              <img
-                src={music.url_cover}
+              <Img
+                src={music.url_cover} // URL ảnh từ album
                 alt={music.name}
                 className={style.coverImage}
+                // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                unloader={
+                  <img
+                    src="/default.png"
+                    alt="default"
+                    className={style.coverImage}
+                  />
+                } // Thay thế ảnh khi lỗi
               />
             ))}
           </div>
@@ -225,11 +234,20 @@ const PlaylistDetailPage: React.FC = ({ params }: any) => {
               onClick={() => handlePlaySong(music)}
             >
               <div className={style.imageContainer}>
-                <img
-                  src={music.url_cover}
+                <Img
+                  src={music.url_cover} // URL ảnh từ album
                   alt={music.name}
                   className={style.coverImage}
+                  // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                  unloader={
+                    <img
+                      src="/default.png"
+                      alt="default"
+                      className={style.coverImage}
+                    />
+                  } // Thay thế ảnh khi lỗi
                 />
+                v
                 <button
                   className={style.playButton}
                   onClick={async () => {

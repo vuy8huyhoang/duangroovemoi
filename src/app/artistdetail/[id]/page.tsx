@@ -4,6 +4,7 @@ import axios from "@/lib/axios";
 import style from "./songdetail.module.scss";
 import { addMusicToTheFirst } from "@/app/component/musicplayer";
 import { AppContext } from "@/app/layout";
+import { Img } from "react-image";
 
 interface Artist {
   id_artist: string;
@@ -156,7 +157,7 @@ export default function ArtistDetail({ params }) {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      //   console.log("Added to history:", newHistory);
+      console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }
@@ -166,7 +167,12 @@ export default function ArtistDetail({ params }) {
     <div className={style.contentwrapper}>
       <div className={style.containerHeroBody}>
         <div className={style.left}>
-          <img src={artist.url_cover} alt={artist.name} />
+          <Img
+            src={artist.url_cover} // URL ảnh từ album
+            alt={artist.name}
+            // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+            unloader={<img src="/default.png" alt="default" />} // Thay thế ảnh khi lỗi
+          />
         </div>
         <div className={style.infomation}>
           <div className={style.top}>{artist.name}</div>
@@ -214,10 +220,18 @@ export default function ArtistDetail({ params }) {
                   onMouseLeave={() => setHoveredSong(null)}
                 >
                   <div className={style.image}>
-                    <img
-                      src={music.url_cover}
+                    <Img
+                      src={music.url_cover} // URL ảnh từ album
                       alt={music.name}
                       className={style.musicCover}
+                      // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                      unloader={
+                        <img
+                          src="/default.png"
+                          alt="default"
+                          className={style.musicCover}
+                        />
+                      } // Thay thế ảnh khi lỗi
                     />
                     <div className={style.overlay}>
                       {/* <button

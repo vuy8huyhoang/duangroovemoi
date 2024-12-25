@@ -3,6 +3,8 @@ export const getVariableName = (varObj: any) => {
 };
 export function formatTimeFromNow(dateString: string): string {
   // Lấy thời gian hiện tại và chuyển thành UTC
+  console.log(dateString);
+
   const currentDate = new Date();
   const currentDateTime = currentDate.getTime();
 
@@ -17,10 +19,13 @@ export function formatTimeFromNow(dateString: string): string {
   const timeDiff = currentDateTime - adjustedInputDateTime; // difference in milliseconds
 
   const seconds = Math.floor(timeDiff / 1000); // Convert milliseconds to seconds
-  console.log("Seconds:", seconds); // Log the seconds to check the value
+  // console.log("Seconds:", seconds); // Log the seconds to check the value
 
   if (seconds < 0) {
-    return "Thời gian trong tương lai";
+    const day = inputDate.getDate().toString().padStart(2, "0");
+    const month = (inputDate.getMonth() + 1).toString().padStart(2, "0");
+    const year = inputDate.getFullYear();
+    return `${day}/${month}/${year}`;
   }
 
   const minutes = Math.floor(seconds / 60); // Convert seconds to minutes
@@ -48,4 +53,11 @@ export function formatTimeFromNow(dateString: string): string {
   const month = (inputDate.getMonth() + 1).toString().padStart(2, "0");
   const year = inputDate.getFullYear();
   return `${day}/${month}/${year}`;
+}
+
+export function convertToHttps(url) {
+  if (typeof url !== "string" || !url.startsWith("http://")) {
+    return url; // Trả về URL gốc nếu nó đã là HTTPS hoặc không hợp lệ
+  }
+  return url.replace("http://", "https://");
 }

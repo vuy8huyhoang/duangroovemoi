@@ -11,6 +11,7 @@ import MusicModel from "@/models/MusicModel";
 import AlbumModel from "@/models/AlbumModel";
 import Link from "next/link";
 import clsx from "clsx";
+import { Img } from "react-image";
 
 export default function Home() {
   const [albumData, setAlbumData] = useState<AlbumModel[]>([]);
@@ -107,10 +108,18 @@ export default function Home() {
                 className="col-span-3 h-0 pb-[56.25%] relative overflow-hidden rounded-lg bg-gray-200 group"
               >
                 {/* Ảnh album */}
-                <img
-                  src={album.url_cover}
+                <Img
+                  src={album.url_cover} // URL ảnh từ album
                   alt={album.name}
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                  unloader={
+                    <img
+                      src="/default.png"
+                      alt="default"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+                  } // Thay thế ảnh khi lỗi
                 />
 
                 {/* Overlay hiển thị tên album và ca sĩ */}

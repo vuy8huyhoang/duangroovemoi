@@ -63,12 +63,15 @@ export default function ListType() {
         <Link href="/type" className="home__heading block px-[40px]">
           Âm nhạc theo thể loại
         </Link>
-        <div className={style.albumGrid}>
+        <div className={clsx(style.albumGrid, "!grid grid-cols-12 gap-4")}>
           {loading ? (
             <p>Đang tải album...</p>
           ) : (
             albumData.map((album, index) => (
-              <div key={album.id_type || index} className={style.albumCard}>
+              <div
+                key={album.id_type || index}
+                className={clsx(style.albumCard, "col-span-2")}
+              >
                 <Link
                   href={`/type/${album.id_type}`}
                   className={style.typeLink}

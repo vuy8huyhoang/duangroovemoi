@@ -12,6 +12,7 @@ import {
 } from "@/app/component/musicplayer";
 import { AppContext } from "@/app/layout";
 import Link from "next/link";
+import { Img } from "react-image";
 
 interface Artist {
   id_artist: string;
@@ -256,7 +257,7 @@ export default function AlbumDetail({ params }) {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      //   console.log("Added to history:", newHistory);
+      console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }
@@ -275,10 +276,18 @@ export default function AlbumDetail({ params }) {
               "col-span-3 flex flex-col items-center"
             )}
           >
-            <img
-              src={albumDetail.url_cover}
+            <Img
+              src={albumDetail.url_cover} // URL ảnh từ album
               alt={albumDetail.name}
               className={style.albumCover}
+              // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+              unloader={
+                <img
+                  src="/default.png"
+                  alt="default"
+                  className={style.albumCover}
+                />
+              } // Thay thế ảnh khi lỗi
             />
             <h1 className="text-gray-200">{albumDetail.name}</h1>
             <p className="text-gray-500 flex gap-[10px] w-100 items-center justify-start">
@@ -435,11 +444,20 @@ export default function AlbumDetail({ params }) {
                           onMouseLeave={() => setHoveredSong(null)}
                         >
                           <div className={style.image}>
-                            <img
-                              src={track.url_cover}
+                            <Img
+                              src={track.url_cover} // URL ảnh từ album
                               alt={albumDetail.name}
                               className={style.musicCover}
+                              // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                              unloader={
+                                <img
+                                  src="/default.png"
+                                  alt="default"
+                                  className={clsx(style.musicCover)}
+                                />
+                              } // Thay thế ảnh khi lỗi
                             />
+
                             <div className={style.overlay}>
                               {/* <button
                                                     className={style.playButton1}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import style from "./bxh.module.scss";
 import { ReactSVG } from "react-svg";
+import { Img } from "react-image";
 
 interface Music {
   id_music: string;
@@ -56,10 +57,18 @@ export default function Bxh() {
           musicData.map((music) => (
             <div key={music.id_music} className={style.albumCard}>
               <div className={style.albumWrapper}>
-                <img
-                  src={music.url_cover}
+                <Img
+                  src={music.url_cover} // URL ảnh từ album
                   alt={music.name}
                   className={style.musicCover}
+                  // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                  unloader={
+                    <img
+                      src="/default.png"
+                      alt="default"
+                      className={style.musicCover}
+                    />
+                  } // Thay thế ảnh khi lỗi
                 />
                 <div className={style.overlay}>
                   <button className={style.likeButton}>

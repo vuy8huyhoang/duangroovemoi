@@ -5,6 +5,7 @@ import style from "./historymusic.module.scss";
 import Link from "next/link";
 import { Img } from "react-image";
 import clsx from "clsx";
+import { formatTimeFromNow } from "@/utils/String";
 
 interface MusicHistory {
   id_music_history: string;
@@ -24,6 +25,7 @@ interface AggregatedHistory {
   url_cover: string;
   total_play_duration: number;
   view_count: number;
+  created_at: string;
   last_played: string;
 }
 
@@ -47,6 +49,7 @@ const HistoryMusicPage = () => {
             aggregated[id] = {
               id_music: history.music.id_music,
               name: history.music.name,
+              created_at: history.created_at,
               url_cover: history.music.url_cover || "/default-cover.png",
               total_play_duration: 0,
               view_count: 0,
@@ -86,35 +89,39 @@ const HistoryMusicPage = () => {
       <div
         className={clsx(style.musicGrid, "grid grid-cols-12 gap-4 flex-wrap")}
       >
-        {aggregatedHistory.map((history) => (
-          <Link
-            key={history.id_music}
-            href={`/musicdetail/${history.id_music}`}
-            className="col-span-6"
-            passHref
-          >
-            <div className={style.musicItem}>
-              <Img
-                src={history.url_cover} // URL ảnh từ album
-                alt={history.name}
-                className={style.albumCover}
-                // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
-                unloader={<img src="/default.png" alt="default" />} // Thay thế ảnh khi lỗi
-              />
-              <div>
-                <p className="text-14">{history.name}</p>
-                <p className="text-[#717171] text-[14px] font-normal">
-                  {/* Lần cuối nghe:{" "} */}
-                  {new Date(
-                    new Date(history.last_played).getTime() +
-                      -7 * 60 * 60 * 1000
-                  ).toLocaleString("vi-VN")}
-                </p>
+        {aggregatedHistory
+          // .filter((history) => (new Date(history.last_played) + -7 * 60 * 60 * 1000) <= new Date())
+          .filter(
+            (history) =>
+              new Date(history.last_played).getTime() + -7 * 60 * 60 * 1000 <=
+              Date.now()
+          )
+
+          .map((history) => (
+            <Link
+              key={history.id_music}
+              href={`/musicdetail/${history.id_music}`}
+              className="col-span-6"
+              passHref
+            >
+              <div className={style.musicItem}>
+                <Img
+                  src={history.url_cover} // URL ảnh từ album
+                  alt={history.name}
+                  className={style.albumCover}
+                  // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                  unloader={<img src="/default.png" alt="default" />} // Thay thế ảnh khi lỗi
+                />
+                <div>
+                  <p className="text-14">{history.name}</p>
+                  <p className="text-[#717171] text-[14px] font-normal">
+                    {formatTimeFromNow(history.last_played)}
+                  </p>
+                </div>
+                {/* <p>Lượt xem: {history.view_count}</p> */}
               </div>
-              {/* <p>Lượt xem: {history.view_count}</p> */}
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
       </div>
     </div>
   );

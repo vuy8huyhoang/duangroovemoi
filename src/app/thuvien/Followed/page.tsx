@@ -5,6 +5,7 @@ import axios from "@/lib/axios";
 import style from "./followed.module.scss";
 import Link from "next/link";
 import clsx from "clsx";
+import { Img } from "react-image";
 
 interface FollowedArtist {
   id_artist: string;
@@ -35,7 +36,7 @@ const FollowedPage = () => {
       <h2 className="home__heading home__heading__noMargin">Đang theo dõi</h2>
       <div className="grid grid-cols-12 gap-[16px] flex-wrap">
         {followedArtist.length === 0 ? (
-          <p>Không có album yêu thích.</p>
+          <p className="col-span-12 text-gray-500">Chưa theo dõi nghệ sĩ</p>
         ) : (
           (showAll ? followedArtist : followedArtist.slice(0, 4)).map(
             (artist) => {
@@ -47,10 +48,18 @@ const FollowedPage = () => {
                 >
                   <div className={style.artistFollow}>
                     <Link href={`/artistdetail/${artist.id_artist}`}>
-                      <img
-                        src={artist.url_cover}
+                      <Img
+                        src={artist.url_cover} // URL ảnh từ album
                         alt={artist.name}
-                        className="object-cover aspect-square"
+                        className={"object-cover aspect-square"}
+                        // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                        unloader={
+                          <img
+                            src="/default.png"
+                            alt="default"
+                            className={"object-cover aspect-square"}
+                          />
+                        } // Thay thế ảnh khi lỗi
                       />
                     </Link>
                     <p>{artist.name}</p>

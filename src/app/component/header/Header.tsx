@@ -8,6 +8,7 @@ import { AppContext } from "@/app/layout";
 import clsx from "clsx";
 import { ReactSVG } from "react-svg";
 import { formatTimeFromNow } from "@/utils/String";
+import { useRouter } from "next/navigation";
 
 interface Profile {
   birthday: string;
@@ -22,7 +23,7 @@ interface Profile {
   url_avatar: string;
   is_vip: number;
 }
-const Header: React.FC = () => {
+const Header = () => {
   const { state, dispatch } = useContext(AppContext);
   const [showLogin, setShowLogin] = useState(state?.showLogin);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -31,6 +32,7 @@ const Header: React.FC = () => {
   const [isOpenNotify, setIsOpenNotify] = useState(false);
   const [loading, setLoading] = useState(true);
   const [notifyData, setNotifyData] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     if (state?.showLogin !== showLogin) {
@@ -68,6 +70,7 @@ const Header: React.FC = () => {
     setProfileData(null);
     dispatch({ type: "PROFILE", payload: null });
     setIsOpenNotify(false);
+    router.push("/");
   };
 
   useEffect(() => {

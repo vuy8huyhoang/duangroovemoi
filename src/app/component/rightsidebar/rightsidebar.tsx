@@ -6,6 +6,7 @@ import { addMusicToTheFirst } from "../musicplayer";
 import Link from "next/link";
 import axios from "@/lib/axios";
 import { Img } from "react-image";
+import clsx from "clsx";
 
 interface MusicHistory {
   id_music: string;
@@ -24,10 +25,12 @@ export default function RightSidebar() {
   const closeDropdown = () => {
     setIsDropdownOpen(false);
   };
+
   const deletePlaylist = () => {
     dispatch({ type: "CURRENT_PLAYLIST", payload: [] });
     // closeDropdown();
   };
+
   const deleteMusic = (index: number) => {
     dispatch({
       type: "CURRENT_PLAYLIST",
@@ -48,6 +51,43 @@ export default function RightSidebar() {
     });
 
     closeDropdown();
+  };
+
+  const toggleFavorite = async (id_music: number) => {
+    if (state?.profile) {
+      // Kiểm tra xem id_music có trong danh sách yêu thích hay không
+      const isAlreadyFavorite = state.favoriteMusic.some(
+        (music) => music.id_music === id_music
+      );
+
+      // Cập nhật mảng favoriteMusic
+      const updatedFavoriteMusic = isAlreadyFavorite
+        ? state.favoriteMusic.filter((music) => music.id_music !== id_music)
+        : [...state.favoriteMusic, { id_music }];
+
+      // Dispatch mảng mới
+      dispatch({
+        type: "FAVORITE_MUSIC",
+        payload: updatedFavoriteMusic,
+      });
+
+      try {
+        if (isAlreadyFavorite) {
+          // Nếu đã có trong danh sách, thực hiện xóa
+          await axios.delete(`/favorite-music/me?id_music=${id_music}`);
+          // alert("Xóa bài hát yêu thích thành công");
+        } else {
+          // Nếu chưa có trong danh sách, thực hiện thêm
+          await axios.post("/favorite-music/me", { id_music });
+          // alert("Thêm bài hát yêu thích thành công");
+        }
+      } catch (error) {
+        console.error("Error updating favorite music:", error);
+      }
+    } else {
+      // Nếu người dùng chưa đăng nhập, yêu cầu đăng nhập
+      dispatch({ type: "SHOW_LOGIN", payload: true });
+    }
   };
 
   useEffect(() => {
@@ -80,45 +120,25 @@ export default function RightSidebar() {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      // console.log("Added to history:", newHistory);
+      console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }
   };
+  console.log(state?.favoriteMusic);
 
   return (
     <div className={styles.rightSidebar}>
-      <div className={styles.all_header}>
-        <div className={styles.header}>
-          <button className={styles.active}>Danh sách phát</button>
-          <Link href={`/historymusic`}>
-            <button>Nghe gần đây</button>
-          </Link>
-        </div>
-        <div className={styles.header}>
-          <button
-            className={styles.moreBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleDropdown();
-            }}
-          >
-            ...
-          </button>
-          {isDropdownOpen && (
-            <div className={styles.dropdown}>
-              <div
-                className={styles.dropdownItem}
-                onClick={(e) => {
-                  deletePlaylist();
-                }}
-              >
-                Xóa danh sách phát
-              </div>
-              <div className={styles.dropdownItem}>Thêm vào playlist</div>
-            </div>
-          )}
-        </div>
+      <div className="flex justify-between mb-4">
+        <button className="font-semibold text-[16px] uppercase text-gray-200">
+          Đang phát
+        </button>
+        <button
+          className="text-red-700 font-medium text-[12px]"
+          onClick={deletePlaylist}
+        >
+          Xóa tất cả
+        </button>
       </div>
       {playlist?.length > 0 && (
         <>
@@ -174,21 +194,42 @@ export default function RightSidebar() {
                 className={styles.audio}
               ></audio>
             </div>
-            <div className={styles.songControls}>
+            <button
+              className={clsx(styles.songControls, {
+                [styles.active]: state?.favoriteMusic
+                  .map((i) => i.id_music)
+                  .includes(playlist?.[0].id_music),
+              })}
+              onClick={() => toggleFavorite(playlist?.[0].id_music)}
+            >
               <i className="fas fa-heart"></i>
-            </div>
-            <div className={styles.moreOptions}>...</div>
+            </button>
+            {/* <div className={styles.moreOptions}>...</div> */}
           </div>
 
           <div className={styles.list}>
-            <div className={styles.titleSection}>Tiếp theo</div>
+            <div className="font-medium text-[14px] uppercase text-gray-500 mt-4">
+              Tiếp theo
+            </div>
             {playlist.slice(1).map((song, index) => (
               <div key={song.id_music} className={styles.song}>
                 <div className={styles.thumbnail}>
-                  <img
+                  <Img
+                    src={song.url_cover} // URL ảnh từ album
+                    alt=""
+                    // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
                     className={styles.hinh}
-                    src={song.url_cover}
-                    alt={song.name}
+                    unloader={
+                      <img
+                        className={clsx(styles.hinh, "rounded-full")}
+                        src="/default.png"
+                        alt="default"
+                        // className={clsx(
+                        //   style.albumCover,
+                        //   style.albumCover__default
+                        // )}
+                      />
+                    } // Thay thế ảnh khi lỗi
                   />
                   <button
                     className={styles.playButton}
@@ -237,12 +278,19 @@ export default function RightSidebar() {
                     className={styles.audio}
                   ></audio>
                 </div>
-                <div className={styles.songControls}>
+                <button
+                  className={clsx(styles.songControls, {
+                    [styles.active]: state?.favoriteMusic
+                      .map((i) => i.id_music)
+                      .includes(song.id_music),
+                  })}
+                  onClick={() => toggleFavorite(song.id_music)}
+                >
                   <i className="fas fa-heart"></i>
-                </div>
-                <div className={styles.moreOptions} onClick={(e) => {}}>
+                </button>
+                {/* <div className={styles.moreOptions} onClick={(e) => {}}>
                   ...
-                </div>
+                </div> */}
               </div>
             ))}
           </div>
