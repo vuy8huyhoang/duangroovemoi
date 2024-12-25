@@ -1,0 +1,214 @@
+.all {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.title {
+  text-align: left;
+  margin-bottom: 2.5%;
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: bold;
+  padding-left: 40px;
+  padding-right: 40px;
+ 
+}
+.textloi {
+    text-align: left;
+    margin-bottom: 2.5%;
+    color: #ffee00;
+    padding-left: 40px;
+    padding-right: 40px;
+   
+  }
+.viewAllButton {
+    color: #89858F;
+    font-size: 16px;
+    text-decoration: none;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    transition: color 0.3s ease;
+}
+
+.viewAllButton:hover {
+    color: #6c63ff;
+}
+
+.csvg {
+    fill: #ffffff;
+    transition: fill 0.3s ease;
+}
+
+.csvg:hover {
+    fill: #6c63ff;
+}
+
+.filterBar {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    padding-left: 40px;
+    margin-bottom: 20px;
+}
+
+.filter {
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+}
+
+.filter.active {
+    background-color: #9B4DE0;
+}
+
+.filter:hover {
+    background-color: #555;
+}
+
+.albumList {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 0 40px;
+}
+
+.albumCard,
+.songCard {
+    border-radius: 10px;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    padding: 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.albumCard:hover,
+.songCard:hover {
+    background-color: #2b2b2b;
+}
+
+.albumCoverWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.albumCover {
+    width: 135%;
+    height: 135%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.songInfo {
+    flex-grow: 1;
+    margin-left: 15px;
+}
+
+.songName {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.songName a {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.composerName a {
+    color: #b3b3b3;
+    font-size: 14px;
+    margin-top: 5px;
+    text-decoration: none;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease;
+}
+
+.songCard:hover .overlay {
+    opacity: 1;
+}
+
+.playButton {
+    background-color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.playButton i {
+    color: #000;
+}
+
+.songControls {
+    display: flex;
+    gap: 15px;
+    color: #b3b3b3;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.songCard:hover .songControls {
+    opacity: 1;
+}
+
+.songControls i {
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.songControls i:hover {
+    color: white;
+}
+
+.playing:hover .overlay {
+    opacity: 1;
+}
+
+.playButton i.fa-play {
+    display: inline;
+}
+
+.playButton i.fa-pause {
+    display: none;
+}
+
+.playing .playButton i.fa-play {
+    display: none;
+}
+
+.playing .playButton i.fa-pause {
+    display: inline;
+}

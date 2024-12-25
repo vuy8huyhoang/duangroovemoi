@@ -1,0 +1,275 @@
+/* General layout for the content */
+.contentwrapper {
+  color: #fff; /* White text */
+  padding: 0 40px;
+}
+
+.image img {
+  width: 100%;
+  // max-height: 300px;
+  object-fit: cover; /* Adjust the banner image */
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.albumDetail {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+/* Right section for album info */
+.albumDetailright {
+  // width: 35%;
+}
+
+.albumDetailright h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.albumCover {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  // margin-left: 70px;
+}
+
+.albumDetailright p {
+  font-size: 14px;
+  margin: 5px 0;
+  text-align: start;
+  width: 100%;
+}
+
+/* Left section for the song list */
+.albumDetailleft {
+  // width: 60%;
+}
+
+.albumDetailleft h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Song header (STT, Tên bài hát, Nghệ sĩ, Thời gian) */
+.songHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #333;
+}
+
+.songTitle,
+.songArtist,
+.songDuration {
+  font-size: 14px;
+  color: #888; /* Grey for headers */
+}
+
+.songTitle {
+  width: 45%;
+}
+
+.songArtist {
+  width: 50%;
+}
+
+.songDuration {
+  width: 50%;
+  text-align: right;
+}
+
+/* Song list items */
+.songList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.songItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #333;
+  color: #fff;
+}
+
+.songItem:hover {
+  background-color: #2c26269b; /* Dark highlight on hover */
+}
+
+.songNumber {
+  text-align: center;
+  width: 15%;
+  font-size: 16px;
+  color: #bbb; /* Slight grey for numbers */
+}
+.songIng {
+  width: 18%; // Fixed width for image
+  padding: 10px;
+  img {
+    width: 100%; // Make image responsive
+    height: auto; // Maintain aspect ratio
+    border-radius: 10px; // Optional: add rounded corners
+    margin-left: -10px;
+  }
+}
+
+.songTitle {
+  font-size: 16px;
+}
+.songArtist,
+.songDuration {
+  font-size: 16px;
+  text-align: center;
+}
+
+.songArtist {
+  color: #aaa;
+}
+
+/* Button Group Styling */
+.buttonGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 10px; /* Khoảng cách giữa các nút */
+  margin-top: 20px;
+  // margin-left: 50px;
+}
+
+/* Phát Ngẫu Nhiên Button Styling */
+.playButton {
+  background-color: #5d40dc;
+  padding: 6px 12px;
+  color: white;
+  // padding: 10px 20px;
+  border-radius: 25px; /* Cạnh tròn lớn hơn */
+  font-weight: 400;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.playButton:hover {
+  background-color: #4421e165;
+}
+
+/* Theo Dõi Button Styling */
+.followButton {
+  background: transparent;
+  border: 1x solid white;
+  color: white;
+  padding: 4px 6px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 400;
+  font-size: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.followButton:hover {
+  background-color: #e8dfdd67;
+}
+
+/* Heart Icon Styling */
+.heartIcon {
+  color: #eae0df;
+  font-size: 24px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.heartIcon:hover,
+.heartIcon_active {
+  color: #ff4c3b; /* Highlight màu đỏ khi hoạt động */
+}
+
+// ... existing styles ...
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .albumDetail {
+    flex-direction: column;
+  }
+
+  .albumDetailright,
+  .albumDetailleft {
+    width: 100%;
+  }
+}
+
+.musicList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.songCard {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: #333333;
+    transform: scale(1.02);
+  }
+}
+
+.image {
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+
+.musicCover {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  .playButton1 {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    padding: 5px;
+    font-size: 10px;
+    color: #333;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.songCard:hover .overlay {
+  opacity: 1;
+}

@@ -1,0 +1,30 @@
+.header {
+    height: 50px;
+    background-color: #011E40;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 16px; 
+}
+
+.svgIcon {
+    width: 30px; 
+    height: 30px;
+    fill: #ffffff; 
+    cursor: pointer;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: scale(1.1); 
+    }
+}
+.hoverIcon{
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hoverIcon:hover{
+    background-color: #C3DBFD;
+}

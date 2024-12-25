@@ -1,0 +1,15 @@
+.slideshow {
+    width: calc(100% - 80px);
+    position: relative;
+    margin-left: 40px;
+    
+    padding-bottom: 10px;
+}
+
+.bannerImage {
+    width: 100%;
+    height: auto;
+    transition: opacity 0.5s ease-in-out;
+    opacity: 1;
+    border-radius: 10px;
+}

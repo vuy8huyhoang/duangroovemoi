@@ -1,0 +1,95 @@
+.sidebar {
+    width: 15%;
+    background-color: #011E40;
+    height: 100vh;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+    position: sticky;
+    left: 0;
+    top: 0;
+
+    .user {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+        text-align: center;
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+            border-radius: 50%;
+        }
+
+        .userInfo {
+            .userName {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 5px;
+                color: #ffffff;
+                /* Màu chữ trắng */
+            }
+
+            .userWelcome {
+                font-size: 12px;
+                color: #a1b1c1;
+                /* Màu chữ xám nhạt */
+            }
+        }
+    }
+
+    .menu {
+        list-style: none;
+        padding: 0;
+        width: 100%;
+        margin: 0;
+
+        li {
+            margin-bottom: 10px;
+            .menuItem{
+                display: flex;
+                align-items: center;
+            }
+            a {
+                display: flex;
+                align-items: center;
+                padding: 15px 20px;
+                font-size: 14px;
+                color: white;
+                text-decoration: none;
+                font-weight: 500;
+                transition: background-color 0.3s ease;
+                position: relative;
+border-radius: 10px;
+
+    
+
+    &.active {
+        background-color: #C4DCFE;
+        color: #0a284b;
+        border-radius: 10px;
+        
+    }
+
+                .csvg {
+                    width: 30px;
+                    height: 30px;
+                }
+
+                .menuText {
+                    font-size: 14px;
+                    margin-left:15px ;
+                    letter-spacing: 0.5px;
+                    color: white;
+                }
+                                
+            }
+        }
+    }
+}

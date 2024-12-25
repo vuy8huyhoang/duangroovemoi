@@ -1,0 +1,48 @@
+// favorite.module.scss
+
+.favoritePage {
+  height: 100vh;
+  // padding: 20px;
+  color: #fff;
+}
+
+.tabContainer {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.tabContainer button {
+  padding: 4px 10px;
+  border: none;
+  background-color: transparent;
+  color: #aaa;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.3s, background-color 0.3s;
+  border-radius: 1000px;
+  -webkit-border-radius: 1000px;
+  -moz-border-radius: 1000px;
+  -ms-border-radius: 1000px;
+  -o-border-radius: 1000px;
+}
+
+.tabContainer button:hover {
+  color: #fff;
+  background-color: #444;
+}
+
+.tabContainer .activeTab {
+  color: #fff;
+  background-color: #407dc6;
+  // font-size: ;
+  // font-weight: 500;
+  box-shadow: 0 4px 8px rgba(108, 92, 231, 0.3);
+}
+
+.contentContainer {
+  margin-top: 20px;
+  // padding: 20px;
+  // background-color: #333;
+  border-radius: 8px;
+}
