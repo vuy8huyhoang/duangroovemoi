@@ -101,7 +101,7 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
       <h3 className="font-medium text-[20px] text-gray-300 mb-[30px]">
         Bình luận
       </h3>
-      <form className="mb-4 flex gap-4 items-center">
+      <form className="mb-[30px] flex gap-4 items-center">
         <input
           type="text"
           value={newComment}
@@ -128,7 +128,7 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
               // comments.map((comment) => (
               <div
                 key={comment.id_comment}
-                className="mb-[10px] flex gap-3 relative group"
+                className="mb-[10px] flex gap-4 relative group"
               >
                 <Img
                   src={comment.user_url}
@@ -150,7 +150,7 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
                         Bạn
                       </span>
                     ) : (
-                      <span className="text-[14px] font-medium text-gray-300 block">
+                      <span className="text-[14px] font-medium text-gray-500 block">
                         {comment.user}
                       </span>
                     )}
@@ -158,7 +158,7 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
                       {formatTimeFromNow(comment.created_at)}
                     </span>
                   </div>
-                  <span className="text-[14px] font-normal text-gray-300">
+                  <span className="text-[14px] font-normal text-gray-200 mt-2">
                     {comment.text}
                   </span>
                 </div>

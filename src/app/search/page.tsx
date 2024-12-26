@@ -1,11 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import axios from "axios";
+import axios from "@/lib/axios";
 import styles from "./search.module.scss";
 import Link from "next/link";
 import MusicPartner from "../component/home/musicpartner";
 import { Img } from "react-image";
+import clsx from "clsx";
+import { convertToHttps, formatTimeFromNow } from "@/utils/String";
+import { AppContext } from "../layout";
+import { saveAs } from "file-saver";
+import { addMusicToTheFirst } from "../component/musicplayer";
+import AlbumModel from "@/models/AlbumModel";
 
 const SearchResultsPage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -15,24 +21,24 @@ const SearchResultsPage: React.FC = () => {
   const [artistList, setArtistList] = useState<any[]>([]);
   // const [composerList, setcomposerList] = useState<any[]>([]);
 
-  const [currentMusicPage, setCurrentMusicPage] = useState(1);
-  const [currentArtistPage, setCurrentArtistPage] = useState(1);
-  const [currentAlbumPage, setCurrentAlbumPage] = useState(1);
   // const [currentComposerPage, setCurrentComposerPage] = useState(1);
-  const itemsPerPage = 9;
-  const itemsPerPage0 = 12;
-  const itemsPerPage1 = 5;
+  const [currentType, setCurrentType] = useState("music");
+  const [favoriteMusic, setFavoriteMusic] = useState<Set<number>>(new Set());
+  const [menuVisible, setMenuVisible] = useState<number | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string>("Tất cả");
+  const [submenuVisible, setSubmenuVisible] = useState<number | null>(null);
+  const { state, dispatch } = useContext(AppContext);
+  const [playlists, setPlaylists] = useState([]);
+  const [hoveredSong, setHoveredSong] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSearchResults = async () => {
       if (query) {
         try {
-          const response = await axios.get(
-            `https://api-groove.vercel.app/search?search_text=${encodeURIComponent(
-              query
-            )}`
+          const response: any = await axios.get(
+            `search?search_text=${encodeURIComponent(query)}`
           );
-          const data = response.data.data;
+          const data = response.result.data;
           setMusicList(data.musicList || []);
           setAlbumList(data.albumList || []);
           setArtistList(data.artistList || []);
@@ -46,146 +52,478 @@ const SearchResultsPage: React.FC = () => {
     fetchSearchResults();
   }, [query]);
 
-  const paginatedMusic = musicList.slice(
-    (currentMusicPage - 1) * itemsPerPage,
-    currentMusicPage * itemsPerPage
-  );
-  const totalMusicPages = Math.ceil(musicList.length / itemsPerPage);
-
-  const paginatedArtists = artistList.slice(
-    (currentArtistPage - 1) * itemsPerPage0,
-    currentArtistPage * itemsPerPage0
-  );
-  const totalArtistPages = Math.ceil(artistList.length / itemsPerPage0);
-
-  const paginatedAlbums = albumList.slice(
-    (currentAlbumPage - 1) * itemsPerPage1,
-    currentAlbumPage * itemsPerPage1
-  );
-  const totalAlbumPages = Math.ceil(albumList.length / itemsPerPage1);
-
   // const paginatedComposers = composerList.slice(
   //   (currentComposerPage - 1) * itemsPerPage0,
   //   currentComposerPage * itemsPerPage0
   // );
   // const totalComposerPages = Math.ceil(composerList.length / itemsPerPage0);
 
+  const addMusicToHistory = async (id_music: string, play_duration: number) => {
+    try {
+      const response: any = await axios.post("/music-history/me", {
+        id_music,
+        play_duration,
+      });
+      const newHistory = response.result;
+      console.log("Added to history:", newHistory);
+    } catch (error) {
+      console.error("Error adding to music history:", error);
+    }
+  };
+
+  const toggleFavorite = async (id_music: number) => {
+    if (state?.profile) {
+      const isFavorite = favoriteMusic.has(id_music);
+
+      setFavoriteMusic((prev) => {
+        const updated = new Set(prev);
+        if (isFavorite) {
+          updated.delete(id_music);
+        } else {
+          updated.add(id_music);
+        }
+        return updated;
+      });
+
+      const updatedFavoriteMusic = isFavorite
+        ? state.favoriteMusic.filter((music) => music.id_music !== id_music)
+        : [...state.favoriteMusic, { id_music }];
+
+      dispatch({
+        type: "FAVORITE_MUSIC",
+        payload: updatedFavoriteMusic,
+      });
+
+      try {
+        if (isFavorite) {
+          await axios.delete(`/favorite-music/me?id_music=${id_music}`);
+          // alert("Xóa bài hát yêu thích thành công");
+        } else {
+          await axios.post("/favorite-music/me", { id_music });
+          // alert("Thêm bài hát yêu thích thành công");
+        }
+      } catch (error) {
+        console.error("Error updating favorite music:", error);
+      }
+    } else {
+      dispatch({ type: "SHOW_LOGIN", payload: true });
+    }
+  };
+
+  const toggleMenu = (id: number) => {
+    setMenuVisible((prev) => (prev === id ? null : id));
+  };
+
+  const toggleSubmenu = (id: number) => {
+    if (!state?.profile) {
+      dispatch({ type: "SHOW_LOGIN", payload: true });
+    } else if (state?.profile?.is_vip !== 1) {
+      dispatch({ type: "SHOW_VIP", payload: true });
+    } else {
+      axios.get("playlist/me").then((res: any) => {
+        if (res.result.data.length > 0) {
+          setSubmenuVisible((prev) => (prev === id ? null : id));
+        } else alert("Hiện bạn không có playlist");
+      });
+    }
+  };
+
+  const addToPlaylist = async (
+    id_music,
+    id_playlist: string,
+    index_order: number
+  ) => {
+    try {
+      await axios.post("/playlist/add-music", {
+        id_music,
+        id_playlist,
+        index_order,
+      });
+      alert(`Bài hát đã được thêm vào playlist!`);
+      // console.log("dữ liệu đc thêm:", id_music, id_playlist, index_order);
+    } catch (error) {
+      console.error("Error adding to playlist:", error);
+      alert(`Lỗi khi thêm bài hát vào playlist.`);
+      console.error("Error updating favorite music:", error);
+    }
+  };
+
+  const downloadMusic = (url: string) => {
+    url = convertToHttps(url);
+    if (!state?.profile) {
+      dispatch({ type: "SHOW_LOGIN", payload: true });
+    } else if (state?.profile?.is_vip !== 1) {
+      dispatch({ type: "SHOW_VIP", payload: true });
+    } else {
+      fetch(url)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("File không tồn tại hoặc không thể tải.");
+          }
+          return response.blob(); // Chuyển dữ liệu thành Blob
+        })
+        .then((blob) => {
+          const fileName = url.split("/").pop(); // Lấy tên file từ URL
+          saveAs(blob, fileName); // Tải file xuống với tên lấy từ URL
+        })
+        .catch((error) => {
+          console.error("Có lỗi xảy ra khi tải file:", error);
+        });
+    }
+  };
+  //
+
   return (
     <div className={styles.searchResultsContainer}>
       <h1>Kết quả tìm kiếm: {query}</h1>
-      {musicList.length > 0 && (
-        <section>
-          <h2>Bài hát</h2>
-          <div className={styles.musicList}>
-            {paginatedMusic.map((music) => (
-              <Link
-                key={music.id_music}
-                href={`/musicdetail/${music.id_music}`}
-                className={styles.musicItem}
-              >
-                <Img
-                  src={music.url_cover} // URL ảnh từ album
-                  alt={music.name}
-                  className={styles.musicImage}
-                  // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
-                  unloader={
-                    <img
-                      src="/default.png"
-                      alt="default"
-                      className={styles.musicImage}
-                    />
-                  } // Thay thế ảnh khi lỗi
-                />
-                <div className={styles.musicInfo}>
-                  <p className={styles.musicName}>{music.name}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className={styles.pagination}>
-            <button
-              disabled={currentMusicPage === 1}
-              onClick={() => setCurrentMusicPage(currentMusicPage - 1)}
-            >
-              Trước
-            </button>
-            <span>
-              Trang {currentMusicPage} / {totalMusicPages}
-            </span>
-            <button
-              disabled={currentMusicPage === totalMusicPages}
-              onClick={() => setCurrentMusicPage(currentMusicPage + 1)}
-            >
-              Sau
-            </button>
-          </div>
-        </section>
-      )}
-
-      {albumList.length > 0 && (
-        <section>
-          <h2>Album</h2>
-          <div className={styles.albumGrid}>
-            {paginatedAlbums.map((album) => (
-              <Link
-                key={album.id_album}
-                href={`/albumdetail/${album.id_album}`}
-                className={styles.albumCard}
-              >
-                <Img
-                  src={album.url_cover} // URL ảnh từ album
-                  alt={album.name}
-                  className={styles.albumCover}
-                  // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
-                  unloader={
-                    <img
-                      src="/default.png"
-                      alt="default"
+      <div className="flex gap-3 mb-4">
+        <button
+          className={clsx(
+            "px-[12px] py-[6px] rounded-[100px] border border-gray-500 text-[14px] text-gray-500 font-normal",
+            { [styles?.activeBtn]: currentType === "music" }
+          )}
+          onClick={() => setCurrentType("music")}
+        >
+          Bài hát
+        </button>
+        <button
+          className={clsx(
+            "px-[12px] py-[6px] rounded-[100px] border border-gray-500 text-[14px] text-gray-500 font-normal",
+            { [styles?.activeBtn]: currentType === "album" }
+          )}
+          onClick={() => setCurrentType("album")}
+        >
+          Album
+        </button>
+        <button
+          className={clsx(
+            "px-[12px] py-[6px] rounded-[100px] border border-gray-500 text-[14px] text-gray-500 font-normal",
+            { [styles?.activeBtn]: currentType === "artist" }
+          )}
+          onClick={() => setCurrentType("artist")}
+        >
+          Nghệ sĩ
+        </button>
+      </div>
+      {currentType === "music" && musicList.length > 0 && (
+        <section className="mx-[-10px]">
+          {/* <h2 className="home__heading home__heading__noMargin">Bài hát có chứa son tung</h2> */}
+          <div className={clsx(styles.albumList, "")}>
+            {musicList
+              .sort((a, b) => b.view - a.view)
+              .slice(0, 6)
+              .map((music) => (
+                <div key={music.id_music} className={styles.songCard}>
+                  <div className={styles.albumCoverWrapper}>
+                    <Img
+                      src={music.url_cover} // URL ảnh từ album
+                      alt={music.name}
                       className={styles.albumCover}
+                      // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                      unloader={
+                        <img
+                          src="/default.png"
+                          alt="default"
+                          className={clsx(
+                            styles.albumCover,
+                            styles.albumCover__default
+                          )}
+                        />
+                      } // Thay thế ảnh khi lỗi
                     />
-                  } // Thay thế ảnh khi lỗi
-                />
-                <p className={styles.albumTitle}>{album.name}</p>
-                <p className={styles.artistName}>{album.artist?.name}</p>
-              </Link>
-            ))}
-          </div>
+                    <div className={styles.overlay}>
+                      <button
+                        className={styles.playButton}
+                        onClick={async () => {
+                          addMusicToTheFirst(
+                            state,
+                            dispatch,
+                            music.id_music.toString(),
+                            music.name,
+                            music.url_path,
+                            music.url_cover,
+                            music.composer,
+                            music.artists.map((artist) => artist.artist)
+                          );
+                          addMusicToHistory(music.id_music.toString(), 100);
 
-          <div className={styles.pagination}>
-            <button
-              disabled={currentAlbumPage === 1}
-              onClick={() => setCurrentAlbumPage(currentAlbumPage - 1)}
-            >
-              Trước
-            </button>
-            <span>
-              Trang {currentAlbumPage} / {totalAlbumPages}
-            </span>
-            <button
-              disabled={currentAlbumPage === totalAlbumPages}
-              onClick={() => setCurrentAlbumPage(currentAlbumPage + 1)}
-            >
-              Sau
-            </button>
+                          if (
+                            music.id_music ===
+                              state?.currentPlaylist[0]?.id_music &&
+                            state?.isPlaying
+                          ) {
+                            dispatch({ type: "IS_PLAYING", payload: false });
+                          }
+                        }}
+                      >
+                        {music.id_music ===
+                          state?.currentPlaylist[0]?.id_music &&
+                        state?.isPlaying ? (
+                          <i className="fas fa-pause"></i>
+                        ) : (
+                          <i className="fas fa-play"></i>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                  <div className={styles.songInfo}>
+                    <div className={clsx(styles.songName)}>
+                      <Link href={`/musicdetail/${music.id_music}`}>
+                        {music.name}
+                      </Link>
+                    </div>
+                    <div className={styles.composerName}>
+                      <Link href={`/musicdetail/${music.id_music}`}>
+                        {music?.artists.map((i) => i?.name)}
+                      </Link>
+                    </div>
+                    <div className={styles.view}>
+                      <Link href={"#"}>
+                        {/* {formatTimeFromNow(music.created_at)} */}
+                        {music?.id_composer?.name &&
+                          "Sáng tác: " + music?.id_composer?.name}
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className={styles.songControls}>
+                    <i
+                      className={`fas fa-heart ${
+                        favoriteMusic.has(music.id_music)
+                          ? styles.activeHeart
+                          : ""
+                      }`}
+                      onClick={() => toggleFavorite(music.id_music)}
+                    ></i>
+                    <button
+                      className="relative"
+                      onClick={() => toggleMenu(music.id_music)}
+                    >
+                      <i className="fas fa-ellipsis-h"></i>
+
+                      {menuVisible === music.id_music && (
+                        <div
+                          className={clsx(
+                            styles.menu,
+                            "absolute top-[50%] w-[150px]"
+                          )}
+                          style={{
+                            right: "calc(100% + 10px)",
+                            transform: "translateY(-50%)",
+                          }}
+                        >
+                          <button onClick={() => toggleSubmenu(music.id_music)}>
+                            Thêm vào playlist
+                          </button>
+                          {submenuVisible === music.id_music && (
+                            <div className={styles.submenu}>
+                              {playlists.map((playlist, index) => (
+                                <button
+                                  key={playlist.id_playlist}
+                                  onClick={() =>
+                                    addToPlaylist(
+                                      music.id_music,
+                                      playlist.id_playlist,
+                                      (playlist.index_order = index)
+                                    )
+                                  }
+                                >
+                                  {playlist.name}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                          <button onClick={() => downloadMusic(music.url_path)}>
+                            Tải về
+                          </button>
+                        </div>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              ))}
           </div>
         </section>
       )}
 
-      {artistList.length > 0 && (
+      {currentType === "album" && albumList.length > 0 && (
         <section>
-          <h2>Nghệ sĩ</h2>
-          <div className={styles.artistList}>
-            {paginatedArtists.map((artist) => (
+          {/* <h2>Album</h2> */}
+          <ul className="grid grid-cols-12 gap-4">
+            {albumList.map((album: AlbumModel) => (
+              <li
+                key={album.id_album}
+                className={clsx(styles.songItem, "col-span-2 mb-4")}
+              >
+                <div
+                  key={album.id_album}
+                  className={`${clsx("flex-col")} ${
+                    hoveredSong === album.id_album ? styles.hovered : ""
+                  }`}
+                  onMouseEnter={() => setHoveredSong(album.id_album)}
+                  onMouseLeave={() => setHoveredSong(null)}
+                >
+                  <div key={album.id_album} className={clsx("flex-col")}>
+                    <div
+                      className={clsx(
+                        styles.musicCoverWrapper,
+                        "!w-full aspect-square"
+                      )}
+                    >
+                      <Img
+                        src={album.url_cover} // URL ảnh từ music
+                        alt={album.name}
+                        className="rounded-[10px]"
+                        // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
+                        unloader={
+                          <img
+                            src="/default.png"
+                            alt="default"
+                            className={styles.musicCover}
+                          />
+                        } // Thay thế ảnh khi lỗi
+                      />
+                      {/* <div className={styles.overlay}>
+                        <button
+                          className={styles.playButton}
+                          onClick={async () => {
+                            addMusicToTheFirst(
+                              state,
+                              dispatch,
+                              album.album.toString(),
+                              album.name,
+                              album.url_path,
+                              album.url_cover,
+                              album.composer,
+                              album.artists.map((artist) => artist.artist)
+                            );
+                            addMusicToHistory(album.album.toString(), 100);
+
+                            if (
+                              album.id_music ===
+                                state?.currentPlaylist[0]?.id_music &&
+                              state?.isPlaying
+                            ) {
+                              dispatch({ type: "IS_PLAYING", payload: false });
+                            }
+                          }}
+                        >
+                          {album.id_music ===
+                            state?.currentPlaylist[0]?.id_music &&
+                          state?.isPlaying ? (
+                            <i className="fas fa-pause"></i>
+                          ) : (
+                            <i className="fas fa-play"></i>
+                          )}
+                        </button>
+                      </div> */}
+                    </div>
+                    <div
+                      className={clsx(
+                        styles.songInfo,
+                        "!ml-0 w-full flex items-center justify-center flex-col mt-3"
+                      )}
+                    >
+                      <div className={clsx(styles.songName, "text-center")}>
+                        <Link href={`/albumdetail/${album.id_album}`}>
+                          {album.name}
+                        </Link>
+                      </div>
+                      <div className={styles.view}>
+                        <Link href={"#"}>
+                          {formatTimeFromNow(album.created_at)}
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* <div className={styles.songControls}>
+                      <i
+                        className={`fas fa-heart ${
+                          album.has(album.id_music as any)
+                            ? styles.activeHeart
+                            : ""
+                        }`}
+                        onClick={() => toggleFavorite(album.id_music as any)}
+                      ></i>
+                      <button
+                        className="relative"
+                        onClick={() => toggleMenu(album.id_music as any)}
+                      >
+                        <i className="fas fa-ellipsis-h"></i>
+
+                        {menuVisible === (album.id_music as any) && (
+                          <div
+                            className={clsx(
+                              styles.menu,
+                              "absolute top-[50%] w-[150px]"
+                            )}
+                            style={{
+                              right: "calc(100% + 10px)",
+                              transform: "translateY(-50%)",
+                            }}
+                          >
+                            <button
+                              onClick={() =>
+                                toggleSubmenu(album.id_music as any)
+                              }
+                            >
+                              Thêm vào playlist
+                            </button>
+                            {submenuVisible === (album.id_music as any) && (
+                              <div className={styles.submenu}>
+                                {playlists.map((playlist, index) => (
+                                  <button
+                                    key={playlist.id_playlist}
+                                    onClick={() =>
+                                      addToPlaylist(
+                                        album.id_music,
+                                        playlist.id_playlist,
+                                        (playlist.index_order = index)
+                                      )
+                                    }
+                                  >
+                                    {playlist.name}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                            <button
+                              onClick={() => downloadMusic(album.url_path)}
+                            >
+                              Tải về
+                            </button>
+                          </div>
+                        )}
+                      </button>
+                    </div> */}
+                  </div>
+                </div>
+                {/* <span className={styles.songTitle}>
+                  {music.name ? music.name : "Chưa có tên bài hát"}
+                </span> */}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {currentType === "artist" && artistList.length > 0 && (
+        <section>
+          {/* <h2>Nghệ sĩ</h2> */}
+          <div className="grid grid-cols-12 gap-4">
+            {artistList.map((artist) => (
               <Link
                 key={artist.id_artist}
                 href={`/artistdetail/${artist.id_artist}`}
-                className={styles.artistItem}
+                className={clsx(
+                  styles.artistItem,
+                  "col-span-2 mb-4 flex flex-col"
+                )}
               >
                 <Img
                   src={artist.url_cover} // URL ảnh từ album
                   alt={artist.name}
-                  className={styles.artistImage}
+                  className={"w-full aspect-square rounded-full object-cover"}
                   // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
                   unloader={
                     <img
@@ -195,27 +533,11 @@ const SearchResultsPage: React.FC = () => {
                     />
                   } // Thay thế ảnh khi lỗi
                 />
-                <p className={styles.artistName}>{artist.name}</p>
+                <p className="text-[14px] text-gray-200 font-medium">
+                  {artist.name}
+                </p>
               </Link>
             ))}
-          </div>
-
-          <div className={styles.pagination}>
-            <button
-              disabled={currentArtistPage === 1}
-              onClick={() => setCurrentArtistPage(currentArtistPage - 1)}
-            >
-              Trước
-            </button>
-            <span>
-              Trang {currentArtistPage} / {totalArtistPages}
-            </span>
-            <button
-              disabled={currentArtistPage === totalArtistPages}
-              onClick={() => setCurrentArtistPage(currentArtistPage + 1)}
-            >
-              Sau
-            </button>
           </div>
         </section>
       )}
@@ -257,7 +579,7 @@ const SearchResultsPage: React.FC = () => {
         </section>
       )} */}
 
-      <MusicPartner />
+      {/* <MusicPartner /> */}
     </div>
   );
 };

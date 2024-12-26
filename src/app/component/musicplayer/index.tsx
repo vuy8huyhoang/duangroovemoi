@@ -395,7 +395,9 @@ const MusicPlayer: React.FC = () => {
               </div>
               <div className={classes.artist}>
                 {music?.artists &&
-                  music.artists.map((artist) => artist.artist.name).join(", ")}
+                  music.artists
+                    .map((artist) => artist?.artist?.name)
+                    .join(", ")}
               </div>
             </div>
             {/* <div className={classes.heart}>

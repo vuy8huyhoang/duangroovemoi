@@ -215,7 +215,7 @@ export default function ListAlbum() {
                                   return {
                                     artist: {
                                       id_artist: artist.artist.id_artist,
-                                      name: artist.artist.name,
+                                      name: artist?.artist?.name,
                                     },
                                   };
                                 })
