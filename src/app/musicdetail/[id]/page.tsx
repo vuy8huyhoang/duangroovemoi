@@ -51,7 +51,7 @@ const SongDetailPage = ({ params }: any) => {
   // const [currentSong, setCurrentSong] = useState<Music | null>(null);
   // const [hoveredSong, setHoveredSong] = useState<number | null>(null);
   const [time, setTime] = useState([]);
-  const [heart, setHeart] = useState(false);
+  // const [heart, setHeart] = useState(false);
   const { state, dispatch } = useContext(AppContext);
   const [musicHistory, setMusicHistory] = useState<MusicHistory[]>([]);
   const containerRef = useRef(null);
@@ -124,26 +124,38 @@ const SongDetailPage = ({ params }: any) => {
   }, [state?.currentDuration]);
 
   const handleHeartClick = (id_music) => {
-    if (heart == true) {
-      axios
-        .delete(`favorite-music/me?id_music=${id_music}`)
-        .then((response: any) => {
-          // console.log("Album unliked successfully", response);
-          setHeart(false);
-        })
-        .catch((error: any) => {
-          console.error("Error unliking album", error);
-        });
+    if (state?.profile) {
+      if (state?.favoriteMusic.map((i) => i.id_music).includes(id_music)) {
+        axios
+          .delete(`favorite-music/me?id_music=${id_music}`)
+          .then((response: any) => {
+            console.log("Album unliked successfully", response);
+            dispatch({
+              type: "FAVORITE_MUSIC",
+              payload: [
+                ...state.favoriteMusic.filter((i) => i.id_music !== id_music),
+              ],
+            });
+          })
+          .catch((error: any) => {
+            console.error("Error unliking album", error);
+          });
+      } else {
+        axios
+          .post(`favorite-music/me`, { id_music })
+          .then((response: any) => {
+            console.log("Album liked successfully", response);
+            dispatch({
+              type: "FAVORITE_MUSIC",
+              payload: [...state.favoriteMusic, { id_music }],
+            });
+          })
+          .catch((error: any) => {
+            console.error("Error liking album", error);
+          });
+      }
     } else {
-      axios
-        .post(`favorite-music/me`, { id_music })
-        .then((response: any) => {
-          // console.log("Album liked successfully", response);
-          setHeart(true);
-        })
-        .catch((error: any) => {
-          console.error("Error liking album", error);
-        });
+      dispatch({ type: "SHOW_LOGIN", payload: true });
     }
   };
 
@@ -318,7 +330,9 @@ const SongDetailPage = ({ params }: any) => {
 
               <span
                 className={clsx(style.heartIcon, {
-                  [style.heartIcon_active]: heart,
+                  [style.heartIcon_active]: state?.favoriteMusic
+                    .map((i) => i.id_music)
+                    .includes(id),
                 })}
                 onClick={() => handleHeartClick(musicdetail.id_music)}
               >

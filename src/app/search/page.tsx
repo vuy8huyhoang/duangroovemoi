@@ -23,7 +23,6 @@ const SearchResultsPage: React.FC = () => {
 
   // const [currentComposerPage, setCurrentComposerPage] = useState(1);
   const [currentType, setCurrentType] = useState("music");
-  const [favoriteMusic, setFavoriteMusic] = useState<Set<number>>(new Set());
   const [menuVisible, setMenuVisible] = useState<number | null>(null);
   const [activeFilter, setActiveFilter] = useState<string>("Tất cả");
   const [submenuVisible, setSubmenuVisible] = useState<number | null>(null);
@@ -71,39 +70,36 @@ const SearchResultsPage: React.FC = () => {
     }
   };
 
-  const toggleFavorite = async (id_music: number) => {
+  const handleHeartClick = (id_music) => {
     if (state?.profile) {
-      const isFavorite = favoriteMusic.has(id_music);
-
-      setFavoriteMusic((prev) => {
-        const updated = new Set(prev);
-        if (isFavorite) {
-          updated.delete(id_music);
-        } else {
-          updated.add(id_music);
-        }
-        return updated;
-      });
-
-      const updatedFavoriteMusic = isFavorite
-        ? state.favoriteMusic.filter((music) => music.id_music !== id_music)
-        : [...state.favoriteMusic, { id_music }];
-
-      dispatch({
-        type: "FAVORITE_MUSIC",
-        payload: updatedFavoriteMusic,
-      });
-
-      try {
-        if (isFavorite) {
-          await axios.delete(`/favorite-music/me?id_music=${id_music}`);
-          // alert("Xóa bài hát yêu thích thành công");
-        } else {
-          await axios.post("/favorite-music/me", { id_music });
-          // alert("Thêm bài hát yêu thích thành công");
-        }
-      } catch (error) {
-        console.error("Error updating favorite music:", error);
+      if (state?.favoriteMusic.map((i) => i.id_music).includes(id_music)) {
+        axios
+          .delete(`favorite-music/me?id_music=${id_music}`)
+          .then((response: any) => {
+            console.log("Album unliked successfully", response);
+            dispatch({
+              type: "FAVORITE_MUSIC",
+              payload: [
+                ...state.favoriteMusic.filter((i) => i.id_music !== id_music),
+              ],
+            });
+          })
+          .catch((error: any) => {
+            console.error("Error unliking album", error);
+          });
+      } else {
+        axios
+          .post(`favorite-music/me`, { id_music })
+          .then((response: any) => {
+            console.log("Album liked successfully", response);
+            dispatch({
+              type: "FAVORITE_MUSIC",
+              payload: [...state.favoriteMusic, { id_music }],
+            });
+          })
+          .catch((error: any) => {
+            console.error("Error liking album", error);
+          });
       }
     } else {
       dispatch({ type: "SHOW_LOGIN", payload: true });
@@ -242,7 +238,7 @@ const SearchResultsPage: React.FC = () => {
                             music.name,
                             music.url_path,
                             music.url_cover,
-                            music.composer,
+                            music.id_composer.name,
                             music.artists.map((artist) => artist.artist)
                           );
                           addMusicToHistory(music.id_music.toString(), 100);
@@ -259,9 +255,9 @@ const SearchResultsPage: React.FC = () => {
                         {music.id_music ===
                           state?.currentPlaylist[0]?.id_music &&
                         state?.isPlaying ? (
-                          <i className="fas fa-pause"></i>
+                          <i className="fas fa-pause text-white"></i>
                         ) : (
-                          <i className="fas fa-play"></i>
+                          <i className="fas fa-play text-white"></i>
                         )}
                       </button>
                     </div>
@@ -289,11 +285,13 @@ const SearchResultsPage: React.FC = () => {
                   <div className={styles.songControls}>
                     <i
                       className={`fas fa-heart ${
-                        favoriteMusic.has(music.id_music)
+                        state?.favoriteMusic
+                          .map((i) => i.id_music)
+                          .includes(music.id_music)
                           ? styles.activeHeart
                           : ""
                       }`}
-                      onClick={() => toggleFavorite(music.id_music)}
+                      onClick={() => handleHeartClick(music.id_music)}
                     ></i>
                     <button
                       className="relative"
