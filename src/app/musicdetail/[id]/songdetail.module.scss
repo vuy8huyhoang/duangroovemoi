@@ -130,6 +130,11 @@
   &:hover {
     background-color: #4421e165;
   }
+
+  &.noHover {
+    background-color: #5d40dc !important;
+    opacity: 1 !important;
+  }
 }
 
 // ... existing styles ...

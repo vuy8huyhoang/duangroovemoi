@@ -36,7 +36,7 @@ const FavoriteAlbumPage = () => {
     <div className={style.favoritePage}>
       <div className="grid grid-cols-12 gap-4 flex-wrap">
         {favoriteAlbums.length === 0 ? (
-          <p>Không có album yêu thích.</p>
+          <p className="col-span-12">Không có album yêu thích.</p>
         ) : (
           favoriteAlbums.map((album) => {
             // console.log("Rendering album:", album); // Kiểm tra từng album trước khi render

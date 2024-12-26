@@ -236,53 +236,85 @@ const SongDetailPage = ({ params }: any) => {
                 "flex items-center justify-center mb-4"
               )}
             >
-              <button
-                className={clsx(
-                  style.playButton,
-                  "border border-gray-500 flex items-center gap-1"
-                )}
-                onClick={async () => {
-                  // Thêm nhạc vào playlist và phát nhạc
-                  addMusicToTheFirst(
-                    state,
-                    dispatch,
-                    musicdetail.id_music.toString(),
-                    musicdetail.name,
-                    musicdetail.url_path,
-                    musicdetail.url_cover,
-                    musicdetail.composer,
-                    musicdetail.artists.map((artist) => artist.artist)
-                  );
+              {state?.currentPlaylist?.[0]?.id_music !==
+                musicdetail.id_music && (
+                <button
+                  className={clsx(
+                    style.playButton,
+                    "border border-gray-500  flex items-center gap-1"
+                  )}
+                  onClick={async () => {
+                    // Thêm nhạc vào playlist và phát nhạc
+                    addMusicToTheFirst(
+                      state,
+                      dispatch,
+                      musicdetail.id_music.toString(),
+                      musicdetail.name,
+                      musicdetail.url_path,
+                      musicdetail.url_cover,
+                      musicdetail.composer,
+                      musicdetail.artists.map((artist) => artist.artist)
+                    );
 
-                  // Thêm vào lịch sử nghe nhạc
-                  addMusicToHistory(musicdetail.id_music.toString(), 100);
+                    // Thêm vào lịch sử nghe nhạc
+                    addMusicToHistory(musicdetail.id_music.toString(), 100);
 
-                  // Dừng nhạc nếu đang phát và chọn lại nhạc
-                  // if (
-                  //   musicdetail.id_music ===
-                  //     state?.currentPlaylist[0]?.id_music &&
-                  //   state?.isPlaying
-                  // ) {
-                  //   dispatch({ type: "IS_PLAYING", payload: false });
-                  // }
-                }}
-              >
-                Phát nhạc
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  // fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  fill="currentColor"
-                  className="size-6 w-4"
+                    // Dừng nhạc nếu đang phát và chọn lại nhạc
+                    // if (
+                    //   musicdetail.id_music ===
+                    //     state?.currentPlaylist[0]?.id_music &&
+                    //   state?.isPlaying
+                    // ) {
+                    //   dispatch({ type: "IS_PLAYING", payload: false });
+                    // }
+                  }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
-                  />
-                </svg>
-              </button>
+                  Phát nhạc
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    // fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    fill="currentColor"
+                    className="size-6 w-4"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
+                    />
+                  </svg>
+                </button>
+              )}
+              {!(
+                state?.currentPlaylist?.[0]?.id_music !== musicdetail.id_music
+              ) && (
+                <button
+                  className={clsx(
+                    style.playButton,
+                    "border border-gray-500 flex items-center gap-1"
+                  )}
+                  onClick={() =>
+                    dispatch({ type: "IS_PLAYING", payload: !state?.isPlaying })
+                  }
+                >
+                  Đang phát
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    // fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    fill="currentColor"
+                    className="size-6 w-4"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
+                    />
+                  </svg>
+                </button>
+              )}
 
               <span
                 className={clsx(style.heartIcon, {
@@ -341,9 +373,12 @@ const SongDetailPage = ({ params }: any) => {
             </p>
             <div
               key={musicdetail.id_music}
-              className="max-h-[440px] overflow-auto border-l border-gray-800"
+              className="max-h-[440px] overflow-auto border-l border-r border-gray-800 shadow"
               ref={containerRef} // Gắn ref vào container chính
-              style={{ scrollbarWidth: "none" }}
+              style={{
+                scrollbarWidth: "none",
+                backgroundColor: "rgba(18, 18, 18, .4)",
+              }}
             >
               {musicdetail?.lyrics.map((lyric, index) => {
                 // Kiểm tra nếu currentDuration nằm trong khoảng start_time và end_time
@@ -359,7 +394,7 @@ const SongDetailPage = ({ params }: any) => {
                       className={`p-4 w-full text-left ${
                         isActive
                           ? "text-gray-200 font-medium rounded-full"
-                          : "text-gray-500 bg-transparent"
+                          : "text-gray-500 bg-transparent font-normal"
                       }`}
                     >
                       {lyric.lyrics}
@@ -370,7 +405,7 @@ const SongDetailPage = ({ params }: any) => {
                     <div
                       key={lyric.id_lyrics}
                       ref={(el) => (lyricsRefs.current[index] = el) as any} // Gắn ref vào mỗi lyric
-                      className={`p-4 w-full text-left text-gray-500 bg-transparent`}
+                      className={`p-4 w-full text-left text-gray-500 bg-transparent font-normal`}
                     >
                       {lyric.lyrics}
                     </div>

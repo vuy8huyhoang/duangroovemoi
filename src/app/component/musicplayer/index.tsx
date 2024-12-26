@@ -169,7 +169,7 @@ const MusicPlayer: React.FC = () => {
     const interval = setInterval(() => {
       if (
         audioRef.current &&
-        audioRef.current?.currentTime >= audioRef.current?.duration &&
+        audioRef.current?.currentTime >= audioRef.current?.duration - 1 &&
         currentPlaylist.length > 1
       ) {
         dispatch({
@@ -184,7 +184,7 @@ const MusicPlayer: React.FC = () => {
 
       if (
         audioRef.current &&
-        audioRef.current?.currentTime >= audioRef.current?.duration &&
+        audioRef.current?.currentTime >= audioRef.current?.duration - 1 &&
         currentPlaylist.length === 1
       ) {
         setCurrentTime(0);
@@ -408,11 +408,11 @@ const MusicPlayer: React.FC = () => {
                     heart ||
                     state?.favoriteMusic
                       ?.map((i) => i.id_music)
-                      .includes(state?.currentPlaylist[0].id_music),
+                      .includes(state?.currentPlaylist[0]?.id_music),
                 })}
                 onClick={() => {
                   if (state?.profile) {
-                    handleHeartClick(state?.currentPlaylist[0].id_music);
+                    handleHeartClick(state?.currentPlaylist[0]?.id_music);
                   } else {
                     dispatch({ type: "SHOW_LOGIN", payload: true });
                   }

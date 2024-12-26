@@ -94,10 +94,10 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
   };
 
   // if (loading) return <p>Loading comments...</p>;
-  if (error) return <p>{error}</p>;
+  // if (error) return <p>{error}</p>;
 
   return (
-    <div className="w-[450px] mt-[60px]">
+    <div className="w-[450px] mt-[180px]">
       <h3 className="font-medium text-[20px] text-gray-300 mb-[30px]">
         Bình luận
       </h3>
@@ -207,7 +207,8 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
             )
           )
         ) : (
-          <p>Không có bình luận.</p>
+          // <p>Không có bình luận.</p>
+          <></>
         )}
       </div>
     </div>
