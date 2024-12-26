@@ -30,6 +30,7 @@ const ProtectRoute = () => {
           })
           .catch(() => {
             localStorage.removeItem("accessToken");
+            goBack();
           });
       } else {
         goBack();
