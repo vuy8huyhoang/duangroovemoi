@@ -9,7 +9,7 @@ const FavoritePage: React.FC = () => {
 
   return (
     <div className={style.favoritePage}>
-      <h1 className="home__heading">Trang yêu thích</h1>
+      <h1 className="home__heading">Yêu thích</h1>
       <div className={style.tabContainer}>
         <button
           className={activeTab === "music" ? style.activeTab : ""}

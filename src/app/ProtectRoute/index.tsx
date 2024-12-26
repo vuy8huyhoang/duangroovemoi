@@ -18,15 +18,19 @@ const ProtectRoute = () => {
     // console.log("User middle...");
     if (typeof window !== "undefined") {
       if (localStorage.getItem("accessToken")) {
-        axios("/profile").then((res: any) => {
-          if (res.status !== 200) {
-            // console.log("chưa đăng nhập");
+        axios("/profile")
+          .then((res: any) => {
+            if (res.status !== 200) {
+              // console.log("chưa đăng nhập");
+              localStorage.removeItem("accessToken");
+              goBack();
+            } else {
+              // console.log("Đã đăng nhập");
+            }
+          })
+          .catch(() => {
             localStorage.removeItem("accessToken");
-            goBack();
-          } else {
-            // console.log("Đã đăng nhập");
-          }
-        });
+          });
       } else {
         goBack();
       }

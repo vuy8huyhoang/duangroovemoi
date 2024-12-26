@@ -21,6 +21,8 @@
 
 .musicViews {
   color: #b3b3b3;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .musicList {
@@ -156,6 +158,10 @@
 
     &:hover {
       color: #ffffff;
+    }
+
+    &.active {
+      color: red;
     }
   }
 }

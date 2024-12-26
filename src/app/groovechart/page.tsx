@@ -13,6 +13,7 @@ import { addMusicToTheFirst } from "../component/musicplayer";
 import { AppContext } from "../layout";
 import Link from "next/link";
 import { Img } from "react-image";
+import clsx from "clsx";
 
 interface MusicHistory {
   id_music: string;
@@ -66,6 +67,47 @@ export default function GrooveChartPage() {
     };
     fetchMusicData();
   }, []);
+
+  const handleHeartClick = (id_music) => {
+    if (state?.profile) {
+      if (state?.favoriteMusic.find((item) => item.id === id_music)) {
+        axios
+          .delete(`favorite-music/me?id_music=${id_music}`)
+          .then((response: any) => {
+            console.log("Xóa bài hát yêu thích thành công", response);
+
+            // Cập nhật state bằng cách loại bỏ id_music khỏi mảng
+            dispatch({
+              type: "FAVORITE_MUSIC",
+              payload: state.favoriteMusic.filter(
+                (music) => music.id_music !== id_music
+              ),
+            });
+          })
+          .catch((error: any) => {
+            console.error("Error unliking album", error);
+          });
+      } else {
+        axios
+          .post(`favorite-music/me`, { id_music })
+          .then((response: any) => {
+            console.log("Thêm bài hát yêu thích thành công", response);
+            // setHeart(true);
+
+            // Cập nhật state bằng cách thêm { id_music } vào mảng
+            dispatch({
+              type: "FAVORITE_MUSIC",
+              payload: [...state.favoriteMusic, { id_music }],
+            });
+          })
+          .catch((error: any) => {
+            console.error("Error liking album", error);
+          });
+      }
+    } else {
+      dispatch({ type: "SHOW_LOGIN", payload: true });
+    }
+  };
 
   const playSong = (music: Music) => {
     if (audioRef.current) {
@@ -177,14 +219,30 @@ export default function GrooveChartPage() {
                   <h5 className={styles.musicName}>{music.name}</h5>
                 </Link>
 
-                <p className={styles.musicViews}>Lượt xem: {music.view}</p>
+                <p
+                  className={clsx(
+                    styles.musicViews,
+                    "row-span-2 flex items-center"
+                  )}
+                >
+                  Lượt xem: {music.view}
+                </p>
                 <p className={styles.musicArtist}>{music.composer}</p>
               </div>
 
-              <div className={styles.songControls}>
-                <i className="fas fa-heart"></i>
-              </div>
-              <div className={styles.moreOptions}>...</div>
+              <button
+                className={styles.songControls}
+                onClick={() => handleHeartClick(music.id_music)}
+              >
+                <i
+                  className={clsx("fas fa-heart", {
+                    [styles.active]: state?.favoriteMusic
+                      .map((item) => item.id_music)
+                      .includes(music.id_music),
+                  })}
+                ></i>
+              </button>
+              {/* <div className={styles.moreOptions}>...</div> */}
             </div>
           ))}
       </div>

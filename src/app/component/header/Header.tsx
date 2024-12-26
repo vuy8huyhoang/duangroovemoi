@@ -198,8 +198,8 @@ const Header = () => {
                     className="size-6"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       d="M6 18 18 6M6 6l12 12"
                     />
                   </svg>
@@ -246,7 +246,7 @@ const Header = () => {
                         style={{ transform: "translateY(-50%)" }}
                       >
                         <path
-                          stroke-linecap="round"
+                          strokeLinecap="round"
                           stroke-linejoin="round"
                           d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
                         />

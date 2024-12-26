@@ -276,6 +276,26 @@ const MusicPlayer: React.FC = () => {
     }
   }, [state?.currentPlaylist]);
 
+  useEffect(() => {
+    const audio = audioRef?.current;
+
+    const handleTimeUpdate = () => {
+      dispatch({ type: "CURRENT_DURATION", payload: audio.currentTime });
+    };
+
+    if (audio) {
+      // Lắng nghe sự kiện timeupdate của audio
+      audio.addEventListener("timeupdate", handleTimeUpdate);
+    }
+
+    // Dọn dẹp sự kiện khi component unmount hoặc audioRef thay đổi
+    return () => {
+      if (audio) {
+        audio.removeEventListener("timeupdate", handleTimeUpdate);
+      }
+    };
+  }, [audioRef, dispatch]);
+
   // useEffect(() => {
   //   const audio = audioRef.current;
 

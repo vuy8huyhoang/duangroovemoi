@@ -7,11 +7,13 @@ import Link from "next/link";
 import FavoritePage from "../favorites/page";
 import clsx from "clsx";
 import { Img } from "react-image";
+import { formatTimeFromNow } from "@/utils/String";
 
 interface FavoriteMusic {
   id_music: string;
   name: string;
   url_cover: string;
+  last_update: string;
 }
 
 const FavoriteMusicPage = () => {
@@ -49,10 +51,17 @@ const FavoriteMusicPage = () => {
               // loader={<img src="path/to/loader.gif" alt="loading" />} // Thêm ảnh loading nếu muốn
               unloader={<img src="/default.png" alt="default" />} // Thay thế ảnh khi lỗi
             />
-            <Link href={`/musicdetail/${music.id_music}`}>{music.name}</Link>
-            {/* <Link href={`/musicdetail/${music.id_music}`}>{music.}</Link> */}
+            <div className="flex flex-col gap-1">
+              <Link
+                href={`/musicdetail/${music.id_music}`}
+                className="!text-[16px] !font-medium"
+              >
+                {music.name}
+              </Link>
+              {/* <Link href={`/musicdetail/${music.id_music}`}>{music.}</Link> */}
 
-            {/* <p>Lượt xem: {viewCounts[history.id_music] || 0}</p> */}
+              <p>{formatTimeFromNow(music.last_update)}</p>
+            </div>
           </Link>
         ))}
       </div>

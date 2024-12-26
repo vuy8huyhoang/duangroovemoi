@@ -211,8 +211,8 @@ const ListMusic: React.FC = () => {
             className="size-6"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               d="M15.75 19.5 8.25 12l7.5-7.5"
             />
           </svg>
@@ -233,8 +233,8 @@ const ListMusic: React.FC = () => {
             className="size-6"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               d="m8.25 4.5 7.5 7.5-7.5 7.5"
             />
           </svg>
