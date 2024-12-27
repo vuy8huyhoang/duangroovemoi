@@ -142,6 +142,7 @@ export default function GrooveChartPage() {
       <div className={styles.musicList}>
         {musicData
           .sort((a, b) => b.view - a.view)
+          .slice(0, 50)
           .map((music, index) => (
             <div
               key={music.id_music}
