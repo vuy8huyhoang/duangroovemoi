@@ -143,10 +143,9 @@ const PlaylistPage = () => {
               "col-span-2": activePlaylist === "none",
             })}
             onClick={() => {
-              if (state?.profile?.is_vip !== 1) {
+              if (state?.profile?.is_vip !== 1)
                 dispatch({ type: "SHOW_VIP", payload: true });
-                dispatch({ type: "PLAYLIST_LAYER", payload: "add" });
-              }
+              else dispatch({ type: "PLAYLIST_LAYER", payload: "add" });
             }}
           >
             <ReactSVG className={style.csvg} src="/Group 282.svg" />
