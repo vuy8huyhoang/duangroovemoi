@@ -508,7 +508,7 @@ export default function ArtistDetail({ params }) {
                       </div>
                       <div className={style.composerName}>
                         <Link href={`/musicdetail/${music.id_music}`}>
-                          Sáng tác: {music.composer}
+                          {music.composer && "Sáng tác: " + music.composer}
                         </Link>
                       </div>
                       <div className={style.view}>
@@ -545,29 +545,14 @@ export default function ArtistDetail({ params }) {
                           >
                             <button
                               onClick={() =>
-                                toggleSubmenu(music.id_music as any)
+                                dispatch({
+                                  type: "PLAYLIST_LAYER",
+                                  payload: music?.id_music,
+                                })
                               }
                             >
                               Thêm vào playlist
                             </button>
-                            {submenuVisible === (music.id_music as any) && (
-                              <div className={style.submenu}>
-                                {playlists.map((playlist, index) => (
-                                  <button
-                                    key={playlist.id_playlist}
-                                    onClick={() =>
-                                      addToPlaylist(
-                                        music.id_music,
-                                        playlist.id_playlist,
-                                        (playlist.index_order = index)
-                                      )
-                                    }
-                                  >
-                                    {playlist.name}
-                                  </button>
-                                ))}
-                              </div>
-                            )}
                             <button
                               onClick={() => downloadMusic(music.url_path)}
                             >

@@ -199,7 +199,7 @@ export default function Sidebar() {
             } else if (state?.profile?.is_vip !== 1) {
               dispatch({ type: "SHOW_VIP", payload: true });
             } else {
-              setIsModalOpen(true);
+              dispatch({ type: "PLAYLIST_LAYER", payload: "add" });
             }
           }}
         >
@@ -207,27 +207,6 @@ export default function Sidebar() {
           <span className="text-[14px]">Tạo playlist mới</span>
         </button>
       </div>
-      {isModalOpen && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
-            <h2>Tạo Playlist Mới</h2>
-            <input
-              type="text"
-              value={newPlaylistName}
-              onChange={(e) => setNewPlaylistName(e.target.value)}
-              placeholder="Tên playlist mới"
-            />
-
-            <button
-              onClick={createPlaylist}
-              disabled={creating || !newPlaylistName.trim()}
-            >
-              {creating ? "Creating..." : "Tạo playlist"}
-            </button>
-            <button onClick={() => setIsModalOpen(false)}>Đóng</button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

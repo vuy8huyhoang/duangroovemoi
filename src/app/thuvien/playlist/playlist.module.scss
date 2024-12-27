@@ -224,3 +224,17 @@
 .menu button:hover {
   background-color: #555;
 }
+
+.activePlaylist {
+  // border: 1px solid gray;
+
+  img {
+    border: #fff 4px solid !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  }
+
+  p {
+    color: white !important;
+    font-weight: bold;
+  }
+}

@@ -281,27 +281,16 @@ const MusicType = ({ type, musicList, id_type }: any) => {
                         transform: "translateY(-50%)",
                       }}
                     >
-                      <button onClick={() => toggleSubmenu(album.id_music)}>
+                      <button
+                        onClick={() =>
+                          dispatch({
+                            type: "PLAYLIST_LAYER",
+                            payload: album?.id_music,
+                          })
+                        }
+                      >
                         Thêm vào playlist
                       </button>
-                      {submenuVisible === album.id_music && (
-                        <div className={style.submenu}>
-                          {playlists.map((playlist, index) => (
-                            <button
-                              key={playlist.id_playlist}
-                              onClick={() =>
-                                addToPlaylist(
-                                  album.id_music,
-                                  playlist.id_playlist,
-                                  (playlist.index_order = index)
-                                )
-                              }
-                            >
-                              {playlist.name}
-                            </button>
-                          ))}
-                        </div>
-                      )}
                       <button onClick={() => downloadMusic(album.url_path)}>
                         Tải về
                       </button>

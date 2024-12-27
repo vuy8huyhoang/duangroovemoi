@@ -11,6 +11,7 @@ export type Action = {
     | "FAVORITE_ALBUM"
     | "SHOW_CHANGE_PASSWORD"
     | "CURRENT_DURATION"
+    | "PLAYLIST_LAYER"
     | "FAVORITE_MUSIC";
   payload: any;
 };
@@ -29,6 +30,7 @@ if (typeof window !== "undefined") {
     favoriteMusic: [],
     showChangePassword: false,
     currentDuration: 0,
+    playlistLayer: "",
   };
 }
 
@@ -94,6 +96,11 @@ export const reducer = (state: typeof initialState, action: Action) => {
       return {
         ...state,
         currentDuration: action.payload,
+      };
+    case "PLAYLIST_LAYER":
+      return {
+        ...state,
+        playlistLayer: action.payload,
       };
     default:
       return state;

@@ -310,27 +310,16 @@ const SearchResultsPage: React.FC = () => {
                             transform: "translateY(-50%)",
                           }}
                         >
-                          <button onClick={() => toggleSubmenu(music.id_music)}>
+                          <button
+                            onClick={() =>
+                              dispatch({
+                                type: "PLAYLIST_LAYER",
+                                payload: music?.id_music,
+                              })
+                            }
+                          >
                             Thêm vào playlist
                           </button>
-                          {submenuVisible === music.id_music && (
-                            <div className={styles.submenu}>
-                              {playlists.map((playlist, index) => (
-                                <button
-                                  key={playlist.id_playlist}
-                                  onClick={() =>
-                                    addToPlaylist(
-                                      music.id_music,
-                                      playlist.id_playlist,
-                                      (playlist.index_order = index)
-                                    )
-                                  }
-                                >
-                                  {playlist.name}
-                                </button>
-                              ))}
-                            </div>
-                          )}
                           <button onClick={() => downloadMusic(music.url_path)}>
                             Tải về
                           </button>

@@ -6,13 +6,14 @@ import { usePathname } from "next/navigation";
 import AdminSidebar from "./component/AdminSidebar";
 import AdminHeader from "./component/AdminHeader";
 import MusicPlayer from "./component/musicplayer";
-import { createContext, useReducer } from "react";
+import { createContext, useEffect, useReducer } from "react";
 import { initialState, reducer } from "./global";
 import ProtectRoute from "./ProtectRoute";
 import RightSidebar from "./component/rightsidebar/rightsidebar";
 import VipOverlay from "./VipOverlay";
 import Login from "./component/auth";
 import ChangePasswordPage from "./change-password";
+import PlaylistLayer from "./PlaylistLayer";
 
 export const AppContext = createContext<any>(undefined);
 
@@ -20,11 +21,13 @@ export default function Layout({ children }: any) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
   const [state, dispatch] = useReducer(reducer, initialState);
+
   if (typeof window !== "undefined") {
     if (!localStorage.getItem("currentPlaylist")) {
       localStorage.setItem("currentPlaylist", JSON.stringify([]));
     }
   }
+
   return (
     <html lang="en">
       <head>
@@ -48,7 +51,7 @@ export default function Layout({ children }: any) {
               {state?.showVIP && <VipOverlay />}
               {state?.showChangePassword && <ChangePasswordPage />}
               <MusicPlayer />
-
+              {state?.playlistLayer && <PlaylistLayer />}
               <div className="contain">{children}</div>
               {state?.currentPlaylist && state?.currentPlaylist?.length > 0 && (
                 <RightSidebar />

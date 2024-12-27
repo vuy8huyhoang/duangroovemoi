@@ -4,7 +4,7 @@ import axios from "@/lib/axios";
 import style from "./songdetail.module.scss";
 import AlbumHot from "@/app/component/home/albumhot";
 import MusicPartner from "@/app/component/home/musicpartner";
-import Comment from "./comment";
+import Comment from "../../component/comment";
 import clsx from "clsx";
 import { addMusicToTheFirst } from "@/app/component/musicplayer";
 import { AppContext } from "@/app/layout";
@@ -368,7 +368,7 @@ const SongDetailPage = ({ params }: any) => {
               })}
             </p>
             <p className="font-normal text-[15px] text-gray-500 mb-1">
-              Sáng tác: {musicdetail.composer}
+              {musicdetail.composer && "Sáng tác: " + musicdetail.composer}
             </p>
             <p className="font-normal text-[15px] text-gray-500 mb-1">
               Nhà sản xuất: {musicdetail.producer}
