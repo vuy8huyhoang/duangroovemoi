@@ -1,0 +1,74 @@
+.sidebar {
+  $textWhite: #d1d5db;
+  $textGray: #ccc;
+  transition: width 0.3s ease-in-out;
+  -webkit-transition: width 0.3s ease-in-out;
+  -moz-transition: width 0.3s ease-in-out;
+  -ms-transition: width 0.3s ease-in-out;
+  -o-transition: width 0.3s ease-in-out;
+
+  &Item {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+
+    a {
+      padding-left: 30px;
+      gap: 20px;
+      width: 100%;
+    }
+
+    svg {
+      width: 20px;
+      color: $textGray;
+
+      path {
+        // fill: gray;
+      }
+    }
+
+    & > a > div {
+      color: #999;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+
+    &.active {
+      background-color: #407dc6 !important;
+
+      svg {
+        color: #fff;
+      }
+
+      > a {
+        opacity: 1 !important;
+        > div {
+          color: #fff;
+          font-weight: 600;
+        }
+      }
+    }
+
+    &.expand {
+      a {
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & > div {
+          display: none;
+        }
+      }
+    }
+  }
+}

@@ -3,8 +3,8 @@ import Sidebar from "./component/sidebar";
 import "./globals.scss";
 import Header from "./component/header/Header";
 import { usePathname } from "next/navigation";
-import AdminSidebar from "./component/AdminSidebar";
-import AdminHeader from "./component/AdminHeader";
+import AdminSidebar from "./admin/AdminSidebar";
+import AdminHeader from "./admin/AdminHeader";
 import MusicPlayer from "./component/musicplayer";
 import { createContext, useEffect, useReducer } from "react";
 import { initialState, reducer } from "./global";
@@ -59,11 +59,20 @@ export default function Layout({ children }: any) {
             </div>
           ) : (
             // authguard && (
-            <div className="admin-container">
+            <div className="flex">
               <AdminSidebar />
-              <div className="admin-content">
+              <div
+                className="px-[40px] bg-gray-100"
+                style={{
+                  width: state?.adminSidebar
+                    ? "calc(100% - 240px)"
+                    : "calc(100% - 80px)",
+                }}
+              >
                 <AdminHeader />
-                {children}
+                <div className="mt-[96px] min-h-[clsx(100vh - 96px)]">
+                  {children}
+                </div>
               </div>
             </div>
             // )

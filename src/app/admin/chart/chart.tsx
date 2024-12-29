@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import { Line } from "react-chartjs-2";
 import { Bar } from "react-chartjs-2";
-import styles from "./chart.module.scss";
+import styles from "../chartranking/chart.module.scss";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -154,7 +154,7 @@ export default function Chart() {
 
   return (
     <div className={styles.chartContainer}>
-      <h3 className={styles.title}>Thống kê lượt xem trong 30 ngày</h3>
+      {/* <h3 className={styles.title}>Thống kê lượt xem trong 30 ngày</h3> */}
       <Line data={data} options={options} />
     </div>
   );

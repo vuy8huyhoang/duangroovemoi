@@ -1,0 +1,52 @@
+.chartContainer {
+  margin-top: 50px;
+  padding: 0 20px;
+  border-radius: 8px;
+  // color: #ffffff;
+  margin: 0 auto;
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  /* Container cho dropdown */
+  .dropdownContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .select {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .select:hover {
+    background-color: #45a049;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .label {
+    font-size: 16px;
+    font-weight: bold;
+    // color: #ffffff;
+  }
+
+  .timeFrameContainer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+}

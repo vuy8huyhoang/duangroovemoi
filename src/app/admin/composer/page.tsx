@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import { ReactSVG } from "react-svg";
 import Link from "next/link";
-import styles from "./AdminComposer.module.scss";
+import styles from "../tables.module.scss";
 
 interface Composer {
   id_composer: string;

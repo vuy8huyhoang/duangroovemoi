@@ -12,6 +12,7 @@ export type Action = {
     | "SHOW_CHANGE_PASSWORD"
     | "CURRENT_DURATION"
     | "PLAYLIST_LAYER"
+    | "ADMIN_SIDEBAR"
     | "FAVORITE_MUSIC";
   payload: any;
 };
@@ -31,6 +32,7 @@ if (typeof window !== "undefined") {
     showChangePassword: false,
     currentDuration: 0,
     playlistLayer: "",
+    adminSidebar: false,
   };
 }
 
@@ -101,6 +103,11 @@ export const reducer = (state: typeof initialState, action: Action) => {
       return {
         ...state,
         playlistLayer: action.payload,
+      };
+    case "ADMIN_SIDEBAR":
+      return {
+        ...state,
+        adminSidebar: action.payload,
       };
     default:
       return state;

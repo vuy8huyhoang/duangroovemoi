@@ -163,7 +163,7 @@ export default function ListAlbum() {
                 new Date(b.created_date).getTime()
               );
             })
-            .slice(0, 5)
+            .slice(0, 6)
             .map((album) => (
               <div key={album.id_album} className={style.albumCard}>
                 <div className={style.albumWrapper}>

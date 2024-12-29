@@ -15,7 +15,7 @@ const ProtectRoute = () => {
   };
 
   const userAuth = () => {
-    // console.log("User middle...");
+    console.log("User middle...");
     if (typeof window !== "undefined") {
       if (localStorage.getItem("accessToken")) {
         axios("/profile")
@@ -39,18 +39,23 @@ const ProtectRoute = () => {
   };
 
   const adminAuth = () => {
-    // console.log("Admin middle...");
+    console.log("Admin middle...");
     if (typeof window !== "undefined") {
       if (localStorage.getItem("accessToken")) {
-        axios("/profile").then((res: any) => {
-          if (res.status !== 200) {
+        axios("/profile")
+          .then((res: any) => {
+            if (res.status !== 200) {
+              localStorage.removeItem("accessToken");
+              goBack();
+            }
+            if (res.result.data.role !== "admin") {
+              goBack();
+            }
+          })
+          .catch(() => {
             localStorage.removeItem("accessToken");
             goBack();
-          }
-          if (res.result.data.role !== "admin") {
-            goBack();
-          }
-        });
+          });
       } else {
         goBack();
       }
@@ -60,6 +65,21 @@ const ProtectRoute = () => {
   const protectRoute = () => {
     const relativeUserRoutes = [];
     const relativeAdminRoutes = [];
+
+    axios("/profile")
+      .then((res: any) => {
+        if (res.status !== 200) {
+          localStorage.removeItem("accessToken");
+          goBack();
+        }
+        if (res.result.data.role !== "admin") {
+          goBack();
+        }
+      })
+      .catch(() => {
+        localStorage.removeItem("accessToken");
+        goBack();
+      });
 
     if (
       relativeUserRoutes.includes(pathname) ||

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "@/lib/axios";
-import styles from "./adminAlbum.module.scss";
+import styles from "../tables.module.scss";
 import { ReactSVG } from "react-svg";
 import Link from "next/link";
 

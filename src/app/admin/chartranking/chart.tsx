@@ -12,6 +12,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import clsx from "clsx";
 
 ChartJS.register(
   CategoryScale,
@@ -189,38 +190,63 @@ export default function RankingChart() {
 
   return (
     <div className={styles.chartContainer}>
-      <div className={styles.dropdownContainer}>
-        <label htmlFor="top-limit" className={styles.label}>
-          Chọn số lượng bài hát:{" "}
+      {/* <div className={styles.dropdownContainer}>
+        <label
+          htmlFor="top-limit"
+          className="text-sm font-medium text-gray-700"
+        >
+          Chọn số lượng bài hát:
         </label>
         <select
           id="top-limit"
           value={topLimit}
           onChange={handleTopLimitChange}
-          className={styles.select}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-300 sm:text-sm"
+          aria-label="Chọn số lượng bài hát"
         >
-          <option value={1}>Top 1</option>
-          <option value={2}>Top 2</option>
-          <option value={3}>Top 3</option>
-          <option value={4}>Top 4</option>
-          <option value={5}>Top 5</option>
-          <option value={6}>Top 6</option>
+          {[...Array(6)].map((_, index) => (
+            <option key={index + 1} value={index + 1}>
+              Top {index + 1}
+            </option>
+          ))}
         </select>
+      </div> */}
+
+      <div className="flex space-x-2">
+        {["day", "week", "month"].map((frame) => (
+          <button
+            key={frame}
+            className={clsx(
+              "border border-gray-200 px-4 py-2 rounded-full text-sm font-normal transition-all focus:outline-none",
+              {
+                "text-gray-500 bg-white hover:bg-gray-100 focus:ring-2 focus:ring-blue-300":
+                  timeFrame !== frame,
+                "bg-blue-500 text-white": timeFrame === frame,
+              }
+            )}
+            onClick={() => setTimeFrame(frame)}
+            aria-pressed={timeFrame === frame}
+            aria-label={`Thống kê bài hát theo ${
+              frame === "day" ? "Ngày" : frame === "week" ? "Tuần" : "Tháng"
+            }`}
+          >
+            {frame === "day" ? "Ngày" : frame === "week" ? "Tuần" : "Tháng"}
+          </button>
+        ))}
       </div>
-      <div className={styles.timeFrameContainer}>
-        <button onClick={() => setTimeFrame("day")}>Theo Ngày</button>
-        <button onClick={() => setTimeFrame("week")}>Theo Tuần</button>
-        <button onClick={() => setTimeFrame("month")}>Theo Tháng</button>
-      </div>
-      <h3 className={styles.title}>
+
+      {/* <h3 className="mt-6 text-lg font-semibold text-gray-800">
         Thống kê Top {topLimit} Bài Hát{" "}
         {timeFrame === "month"
           ? "Trong Tháng"
           : timeFrame === "week"
           ? "Trong Tuần"
           : "Trong Ngày"}
-      </h3>
-      <Bar data={data} options={options} />
+      </h3> */}
+
+      <div className="mt-4">
+        <Bar data={data} options={options} />
+      </div>
     </div>
   );
 }
