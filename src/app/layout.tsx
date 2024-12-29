@@ -62,7 +62,7 @@ export default function Layout({ children }: any) {
             <div className="flex">
               <AdminSidebar />
               <div
-                className="px-[40px] bg-gray-100"
+                className="px-[40px] bg-gray-100 min-h-[100vh]"
                 style={{
                   width: state?.adminSidebar
                     ? "calc(100% - 240px)"

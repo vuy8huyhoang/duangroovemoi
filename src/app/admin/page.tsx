@@ -59,6 +59,7 @@ export default function AdminDashboard() {
         if (response && response.result && response.result.data) {
           setUser(response.result.data.length);
           setVipUser(response.result.data.filter((i) => i.is_vip === 0).length);
+          console.log(response.result.data);
         }
       })
       .catch((error: any) => console.error("Error fetching users:", error));
