@@ -8,12 +8,12 @@ import AdminHeader from "./admin/AdminHeader";
 import MusicPlayer from "./component/musicplayer";
 import { createContext, useEffect, useReducer } from "react";
 import { initialState, reducer } from "./global";
-import ProtectRoute from "./ProtectRoute";
+import ProtectRoute from "./(user)/ProtectRoute";
 import RightSidebar from "./component/rightsidebar/rightsidebar";
 import VipOverlay from "./VipOverlay";
 import Login from "./component/auth";
-import ChangePasswordPage from "./change-password";
-import PlaylistLayer from "./PlaylistLayer";
+import ChangePasswordPage from "./(user)/change-password";
+import PlaylistLayer from "./(user)/PlaylistLayer";
 
 export const AppContext = createContext<any>(undefined);
 
@@ -62,7 +62,7 @@ export default function Layout({ children }: any) {
             <div className="flex">
               <AdminSidebar />
               <div
-                className="px-[40px] bg-gray-100 min-h-[100vh]"
+                className="px-[40px] pb-[60px] bg-gray-100 min-h-[100vh]"
                 style={{
                   width: state?.adminSidebar
                     ? "calc(100% - 240px)"

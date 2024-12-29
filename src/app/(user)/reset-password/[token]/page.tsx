@@ -4,7 +4,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams, useRouter } from "next/navigation"; // Sử dụng useParams để lấy token từ URL
 import axios from "@/lib/axios";
 import styles from "../reset-password.module.scss";
-import { AppContext } from "../../layout";
+import { AppContext } from "../../../layout";
 
 const ResetPassword: React.FC = () => {
   const { token } = useParams();

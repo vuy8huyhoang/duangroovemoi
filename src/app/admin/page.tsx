@@ -58,7 +58,7 @@ export default function AdminDashboard() {
       .then((response: any) => {
         if (response && response.result && response.result.data) {
           setUser(response.result.data.length);
-          setVipUser(response.result.data.filter((i) => i.is_vip === 0).length);
+          setVipUser(response.result.data.filter((i) => i.is_vip === 1).length);
           console.log(response.result.data);
         }
       })
@@ -273,7 +273,7 @@ export default function AdminDashboard() {
             </svg>
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">Doanh thu</h3>
+            <h3 className="text-lg font-semibold text-gray-800">DOANH THU</h3>
             <p className="text-gray-600">
               {composer ? `${composer} VNĐ` : "Đang tải..."}
             </p>
@@ -309,8 +309,8 @@ export default function AdminDashboard() {
           </h3>
           <Chart />
         </div>
-        <div className="col-span-6 bg-white shadow-md rounded-md p-4">
-          <h3 className="text-base font-semibold text-gray-800 mb-4">
+        <div className="col-span-6 bg-white shadow-md rounded-md">
+          <h3 className="text-base font-semibold text-gray-800 mb-4 p-4 pb-0">
             Biểu đồ top bài hát nhiều lượt xem nhất
           </h3>
           <ChartRanking />

@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "@/lib/axios";
 import style from "./playlistDetail.module.scss";
 import Link from "next/link";
-import { addMusicToTheFirst } from "../../../component/musicplayer";
+import { addMusicToTheFirst } from "../../../../component/musicplayer";
 import { AppContext } from "@/app/layout";
 import { Img } from "react-image";
 

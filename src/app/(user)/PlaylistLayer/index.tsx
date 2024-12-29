@@ -1,6 +1,6 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
-import { AppContext } from "../layout";
+import { AppContext } from "../../layout";
 import axios from "@/lib/axios";
 
 const PlaylistLayer = () => {

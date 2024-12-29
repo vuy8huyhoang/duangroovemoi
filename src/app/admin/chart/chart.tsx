@@ -14,6 +14,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import clsx from "clsx";
 
 ChartJS.register(
   CategoryScale,
@@ -84,7 +85,11 @@ export default function Chart() {
   }, []);
 
   if (loading)
-    return <p className={styles.loading}>Đang tải dữ liệu biểu đồ...</p>;
+    return (
+      <p className={clsx(styles.loading, "px-4")}>
+        Đang tải dữ liệu biểu đồ...
+      </p>
+    );
 
   const formattedLabels = charts.map((item) => {
     const date = new Date(item.day);

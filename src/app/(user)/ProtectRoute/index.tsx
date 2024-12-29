@@ -2,7 +2,7 @@
 import axios from "@/lib/axios";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
-import { AppContext } from "../layout";
+import { AppContext } from "../../layout";
 
 const ProtectRoute = () => {
   const { state, dispatch } = useContext(AppContext);
@@ -67,18 +67,9 @@ const ProtectRoute = () => {
     const relativeAdminRoutes = [];
 
     axios("/profile")
-      .then((res: any) => {
-        if (res.status !== 200) {
-          localStorage.removeItem("accessToken");
-          goBack();
-        }
-        if (res.result.data.role !== "admin") {
-          goBack();
-        }
-      })
+      .then()
       .catch(() => {
         localStorage.removeItem("accessToken");
-        goBack();
       });
 
     if (

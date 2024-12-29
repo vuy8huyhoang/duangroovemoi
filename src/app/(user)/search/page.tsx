@@ -4,13 +4,13 @@ import { useSearchParams } from "next/navigation";
 import axios from "@/lib/axios";
 import styles from "./search.module.scss";
 import Link from "next/link";
-import MusicPartner from "../component/home/musicpartner";
+import MusicPartner from "../../component/home/musicpartner";
 import { Img } from "react-image";
 import clsx from "clsx";
 import { convertToHttps, formatTimeFromNow } from "@/utils/String";
-import { AppContext } from "../layout";
+import { AppContext } from "../../layout";
 import { saveAs } from "file-saver";
-import { addMusicToTheFirst } from "../component/musicplayer";
+import { addMusicToTheFirst } from "../../component/musicplayer";
 import AlbumModel from "@/models/AlbumModel";
 
 const SearchResultsPage: React.FC = () => {

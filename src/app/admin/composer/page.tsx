@@ -88,57 +88,158 @@ export default function AdminComposer() {
   }, [searchTerm, composersPerPage]);
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h1>Quản lý nhạc sĩ</h1>
-        <div className={styles.searchContainer}>
-          <input
-            type="text"
-            placeholder="Tìm kiếm nhạc sĩ..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={styles.searchInput}
-          />
-        </div>
-        <div className={styles.paginationControl}>
-          <label htmlFor="composersPerPage">Số nhạc sĩ mỗi trang:</label>
-          <select
-            id="composersPerPage"
-            value={composersPerPage}
-            onChange={(e) => setComposersPerPage(Number(e.target.value))}
-            className={styles.paginationSelect}
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={15}>15</option>
-            <option value={20}>20</option>
-            <option value={25}>25</option>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-          </select>
-        </div>
-        <div className={styles.sortContainer}>
-          <select
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value)}
-            className={styles.sortSelect}
-          >
-            <option value="nameAsc">Tên (A-Z)</option>
-            <option value="nameDesc">Tên (Z-A)</option>
-            <option value="dateAsc">Ngày tạo (Cũ nhất)</option>
-            <option value="dateDesc">Ngày tạo (Mới nhất)</option>
-          </select>
-        </div>
-
-        <Link href="/admin/addcomposer" passHref>
-          <button className={styles.addButton}>
-            <ReactSVG className={styles.csvg} src="/plus.svg" />
-            <div className={styles.addText}>Tạo nhạc sĩ mới</div>
-          </button>
-        </Link>
-      </div>
-
       <div className={styles.tableContainer}>
-        <table className={styles.artistTable}>
+        <div className={styles.header}>
+          <div className="flex gap-4 items-center">
+            <h1 className="font-bold text-2xl">Quản lý nhạc sĩ</h1>
+            <div className={styles.searchContainer}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="size-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+
+              <input
+                type="text"
+                placeholder="Tìm kiếm người dùng..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={styles.searchInput}
+              />
+            </div>
+          </div>
+
+          <Link href="/admin/composer/add" passHref>
+            <button className={styles.addButton}>
+              <ReactSVG className={styles.csvg} src="/plus.svg" />
+              <div className={styles.addText}>Tạo nhạc sĩ mới</div>
+            </button>
+          </Link>
+        </div>
+        <div className="flex gap-4 mt-4 justify-between">
+          <div className="flex gap-4">
+            <div className={styles.paginationControl}>
+              <label htmlFor="composersPerPage">Số nhạc sĩ mỗi trang:</label>
+              <select
+                id="composersPerPage"
+                value={composersPerPage}
+                onChange={(e) => setComposersPerPage(Number(e.target.value))}
+                className={styles.paginationSelect}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={15}>15</option>
+                <option value={20}>20</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+            </div>
+            <div className={styles.sortContainer}>
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+                className={styles.sortSelect}
+              >
+                <option value="nameAsc">Tên (A-Z)</option>
+                <option value="nameDesc">Tên (Z-A)</option>
+                <option value="dateAsc">Ngày tạo (Cũ nhất)</option>
+                <option value="dateDesc">Ngày tạo (Mới nhất)</option>
+              </select>
+            </div>
+          </div>
+          <div className="flex items-center justify-center space-x-2">
+            {/* Nút chuyển đến trang trước */}
+            {currentPage > 1 && (
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                className="px-3 py-1 text-sm font-medium text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
+              >
+                &laquo;
+              </button>
+            )}
+
+            {/* Trang đầu tiên */}
+            <button
+              onClick={() => paginate(1)}
+              className={`px-3 py-1 text-sm font-medium rounded ${
+                currentPage === 1
+                  ? "bg-blue-500 text-white"
+                  : "text-gray-700 bg-gray-200 hover:bg-gray-300"
+              }`}
+            >
+              1
+            </button>
+
+            {/* Dấu "..." nếu cần */}
+            {currentPage > 4 && (
+              <span className="px-3 py-1 text-sm text-gray-500">...</span>
+            )}
+
+            {/* Hiển thị các trang xung quanh trang hiện tại */}
+            {[...Array(totalPages)].map((_, index) => {
+              const page = index + 1;
+              if (
+                page !== 1 &&
+                page !== totalPages &&
+                page >= currentPage - 2 &&
+                page <= currentPage + 2
+              ) {
+                return (
+                  <button
+                    key={page}
+                    onClick={() => paginate(page)}
+                    className={`px-3 py-1 text-sm font-medium rounded ${
+                      currentPage === page
+                        ? "bg-blue-500 text-white"
+                        : "text-gray-700 bg-gray-200 hover:bg-gray-300"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                );
+              }
+              return null;
+            })}
+
+            {/* Dấu "..." nếu cần */}
+            {currentPage < totalPages - 3 && (
+              <span className="px-3 py-1 text-sm text-gray-500">...</span>
+            )}
+
+            {/* Trang cuối */}
+            {totalPages > 1 && (
+              <button
+                onClick={() => paginate(totalPages)}
+                className={`px-3 py-1 text-sm font-medium rounded ${
+                  currentPage === totalPages
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700 bg-gray-200 hover:bg-gray-300"
+                }`}
+              >
+                {totalPages}
+              </button>
+            )}
+
+            {/* Nút chuyển đến trang sau */}
+            {currentPage < totalPages && (
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                className="px-3 py-1 text-sm font-medium text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
+              >
+                &raquo;
+              </button>
+            )}
+          </div>
+        </div>
+        <table className={styles.table}>
           <thead>
             <tr>
               <th>
@@ -167,7 +268,7 @@ export default function AdminComposer() {
                   <td>#{composer.id_composer}</td>
                   {/* <td><img src={composer.url_cover} alt={composer.name} /></td> */}
                   <td>{composer.name}</td>
-                  <td>
+                  <td className="text-center">
                     {new Date(composer.created_at).toLocaleString("vi-VN", {
                       year: "numeric",
                       month: "2-digit",
@@ -178,7 +279,7 @@ export default function AdminComposer() {
                   <td className={styles.actions}>
                     <button className={styles.editButton}>
                       <Link
-                        href={`/admin/editcomposer/${composer.id_composer}`}
+                        href={`/admin/composer/edit/${composer.id_composer}`}
                         passHref
                       >
                         <ReactSVG
@@ -202,19 +303,6 @@ export default function AdminComposer() {
             )}
           </tbody>
         </table>
-      </div>
-
-      {/* Phân trang */}
-      <div className={styles.pagination}>
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index}
-            onClick={() => paginate(index + 1)}
-            className={currentPage === index + 1 ? styles.activePage : ""}
-          >
-            {index + 1}
-          </button>
-        ))}
       </div>
     </div>
   );

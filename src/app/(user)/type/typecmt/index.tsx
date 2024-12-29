@@ -1,13 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import axios from "@/lib/axios";
+import axios from "axios";
 import Link from "next/link";
 import style from "./type.module.scss";
-import ListMusicTop from "../component/home/listmusictop";
-import ListMusicType from "../component/listmusicType";
-import ListAlbum from "../component/home/listalbum";
-import MusicPartner from "../component/home/musicpartner";
-import SlideShow from "../component/slideshow";
+import ListMusicTop from "../../../component/home/listmusictop";
+import ListMusicType from "../../../component/listmusicType";
+import ListAlbum from "../../../component/home/listalbum";
+import MusicPartner from "../../../component/home/musicpartner";
 import clsx from "clsx";
 interface Type {
   id_type: string;
@@ -18,13 +17,13 @@ const TypePage = () => {
   const [typeList, setTypeList] = useState<Type[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [showAll, setShowAll] = useState<boolean>(true);
+  const [showAll, setShowAll] = useState<boolean>(false);
 
   const fetchTypeList = async () => {
     try {
-      const response: any = await axios.get("/type");
-      // console.log(response.result);
-      setTypeList(response.result.data || []);
+      const response = await axios.get("https://api-groove.vercel.app/type");
+      // console.log(response.data);
+      setTypeList(response.data.data || []);
     } catch (err) {
       console.error("Error fetching type list:", err);
       setError("Có lỗi xảy ra khi tải danh sách thể loại.");
@@ -51,7 +50,6 @@ const TypePage = () => {
 
   return (
     <>
-      <SlideShow />
       <div className={style.container}>
         <h1 className={clsx(style.title, "home__heading")}>
           Danh Sách Thể Loại
@@ -69,14 +67,14 @@ const TypePage = () => {
             <li className={style.typeItem}>Không có thể loại nào.</li>
           )}
         </ul>
-        {/* {!showAll && (
+        {!showAll && (
           <button onClick={handleShowAll} className={style.showAllButton}>
             Tất cả
           </button>
-        )} */}
+        )}
         <ListMusicType />
         <ListMusicTop />
-        <ListAlbum />
+        {/* <ListAlbum /> */}
         <MusicPartner />
       </div>
     </>

@@ -4,7 +4,7 @@ import axios from "@/lib/axios";
 import style from "./songdetail.module.scss";
 import AlbumHot from "@/app/component/home/albumhot";
 import MusicPartner from "@/app/component/home/musicpartner";
-import Comment from "../../component/comment";
+import Comment from "../../../component/comment";
 import clsx from "clsx";
 import { addMusicToTheFirst } from "@/app/component/musicplayer";
 import { AppContext } from "@/app/layout";

@@ -4,7 +4,7 @@ import axios from "@/lib/axios";
 import styles from "./changepassword.module.scss";
 import clsx from "clsx";
 import { ReactSVG } from "react-svg";
-import { AppContext } from "../layout";
+import { AppContext } from "../../layout";
 
 const errorMessages = {
   "New password and old password are the same":
