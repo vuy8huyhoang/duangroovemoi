@@ -5,6 +5,7 @@ import styles from "../tables.module.scss";
 import { ReactSVG } from "react-svg";
 import Link from "next/link";
 import { Img } from "react-image";
+import { exportToExcel } from "@/utils/files";
 
 interface Artist {
   id_artist: string;
@@ -22,6 +23,7 @@ interface Song {
   url_cover: string;
   url_path: string;
   is_show: number;
+  index: number;
 
   artists: {
     artist: Artist;
@@ -35,6 +37,8 @@ export default function AdminMusic() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("latest");
   const [songsPerPage, setSongsPerPage] = useState<number>(10);
+  const [select, setSelect] = useState([]);
+
   const filteredSongs = songs.filter(
     (song) =>
       song.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -61,13 +65,18 @@ export default function AdminMusic() {
     return 0;
   });
 
-  useEffect(() => {
+  const fetch = () => {
+    setLoading(true);
     axios
       .get("/music")
       .then((response: any) => {
         // console.log("Full API response:", response);
         if (response && response.result && response.result.data) {
-          setSongs(response.result.data);
+          setSongs(
+            response.result.data.map((i, index) => {
+              return { ...i, index };
+            })
+          );
         } else {
           console.error("Response data is undefined or empty:", response);
           setSongs([]);
@@ -80,6 +89,10 @@ export default function AdminMusic() {
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetch();
   }, []);
 
   const handleDeleteSong = async (id_music: string, url: string) => {
@@ -99,6 +112,53 @@ export default function AdminMusic() {
   const totalPages = Math.ceil(songs.length / songsPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  function isArrayComplete(arr, n): boolean {
+    const uniqueSet = new Set(arr); // Loại bỏ trùng lặp
+    if (uniqueSet.size !== n + 1) return false; // Số lượng phải đúng
+    for (let i = 0; i < n; i++) {
+      if (!uniqueSet.has(i)) return false; // Kiểm tra từng số
+    }
+    return true;
+  }
+
+  function createArrayFromZeroToN(n) {
+    return Array.from({ length: n + 1 }, (_, i) => i);
+  }
+
+  const toggleSelectAll = () => {
+    const n = songs.length;
+    if (isArrayComplete(select, n - 1)) {
+      setSelect([]);
+    } else {
+      setSelect(createArrayFromZeroToN(n - 1));
+    }
+  };
+
+  const toggleSelect = (num) => {
+    if (select.includes(num)) {
+      setSelect((prev) => {
+        return prev.filter((i) => {
+          return i !== num;
+        });
+      });
+    } else {
+      setSelect((prev) => {
+        return [...prev, num];
+      });
+    }
+  };
+
+  function getObjectsAtIndices(objects, indices) {
+    return indices.map((index) => objects[index]);
+  }
+
+  const handleExportToXlsx = () => {
+    const data = getObjectsAtIndices(songs, select);
+
+    exportToExcel(data, "Song_List");
+  };
+
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
@@ -314,7 +374,7 @@ export default function AdminMusic() {
                   <td>{song.producer}</td>
                   <td className="text-center">
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                      className={`inline-block px-3 py-1 rounded-full text-sm font-regular ${
                         song.is_show === 0
                           ? "bg-red-200 text-red-600"
                           : "bg-green-200 text-green-600"

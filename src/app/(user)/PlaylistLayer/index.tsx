@@ -7,16 +7,6 @@ const PlaylistLayer = () => {
   const { state, dispatch } = useContext(AppContext);
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [currentPlaylist, setCurrentPlaylist] = useState([]);
-
-  useEffect(() => {
-    if (state?.playlistLayer && state?.playlistLayer !== "add") {
-      axios.get("playlist/me").then((res: any) => {
-        setCurrentPlaylist(res.result.data);
-        console.log(res.result.data);
-      });
-    }
-  }, [state?.playlistLayer]);
 
   const handleSubmitAddForm = (e) => {
     e.preventDefault();
@@ -24,8 +14,11 @@ const PlaylistLayer = () => {
     axios
       .post("playlist/me", { name })
       .then((res: any) => {
-        alert("Thêm playlist thành công");
+        // alert("Thêm playlist thành công");
         dispatch({ type: "PLAYLIST_LAYER", payload: "" });
+        axios.get("playlist/me").then((res: any) => {
+          dispatch({ type: "PLAYLIST", payload: res.result.data });
+        });
         setLoading(false);
       })
       .catch(() => {
@@ -50,8 +43,10 @@ const PlaylistLayer = () => {
         .catch(() => {
           setLoading(false);
         });
-      setCurrentPlaylist((prev) =>
-        prev.map((playlist) =>
+
+      dispatch({
+        type: "PLAYLIST",
+        payload: state?.playlist.map((playlist) =>
           playlist.id_playlist === playlistId
             ? {
                 ...playlist,
@@ -61,8 +56,8 @@ const PlaylistLayer = () => {
                 ],
               }
             : playlist
-        )
-      );
+        ),
+      });
     } else {
       // Remove song from playlist
       axios
@@ -71,8 +66,9 @@ const PlaylistLayer = () => {
         )
         .then(() => {
           setLoading(false);
-          setCurrentPlaylist((prev) =>
-            prev.map((playlist) =>
+          dispatch({
+            type: "PLAYLIST",
+            payload: state?.playlist.map((playlist) =>
               playlist.id_playlist === playlistId
                 ? {
                     ...playlist,
@@ -81,8 +77,8 @@ const PlaylistLayer = () => {
                     ),
                   }
                 : playlist
-            )
-          );
+            ),
+          });
         })
         .catch(() => {
           setLoading(false);
@@ -174,7 +170,12 @@ const PlaylistLayer = () => {
         Thêm bài hát vào...
       </h2>
       <div className="max-h-72 overflow-y-auto flex flex-col gap-3">
-        {currentPlaylist.map((playlist, index) => {
+        {state?.playlist?.length === 0 && (
+          <p className="w-full text-center text-gray-500 text-md font-normal">
+            Chưa có playlist
+          </p>
+        )}
+        {state?.playlist?.map((playlist, index) => {
           const isChecked = playlist.musics
             .map((i) => i.id_music)
             .includes(state?.playlistLayer);
@@ -201,13 +202,13 @@ const PlaylistLayer = () => {
           );
         })}
       </div>
-      <button
+      {/* <button
         type="button"
         className="py-2 px-4 mt-3 rounded-full text-white bg-transparent hover:bg-gray-500 transition-all duration-200 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-50"
         onClick={() => dispatch({ type: "PLAYLIST_LAYER", payload: "add" })}
       >
         Thêm mới playlist
-      </button>
+      </button> */}
     </div>
   );
 };

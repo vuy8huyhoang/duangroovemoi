@@ -350,7 +350,7 @@ export default function AdminArtist() {
                   </td>
                   <td className="text-center">
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                      className={`inline-block px-3 py-1 rounded-full text-sm font-regular ${
                         artist.is_show === 0
                           ? "bg-red-200 text-red-600"
                           : "bg-green-200 text-green-600"

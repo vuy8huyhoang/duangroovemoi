@@ -28,7 +28,7 @@ interface Music {
 
 const PlaylistPage = () => {
   const router = useRouter();
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  // const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const { state, dispatch } = useContext(AppContext);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,22 +41,21 @@ const PlaylistPage = () => {
 
   const fetchPlaylists = async () => {
     if (state?.profile && state?.profile?.is_vip === 1) {
-      try {
-        const response: any = await axios.get("/playlist/me");
-        const data = response.result;
-        // console.log("toàn bộ dữ liệu:", response);
-
-        if (data && data.data) {
-          setPlaylists(data.data);
-        } else {
-          setError("No playlists found");
-        }
-      } catch (error: any) {
-        setError(error.message || "Failed to fetch playlists");
-      } finally {
-        setLoading(false);
-      }
+      // try {
+      //   const response: any = await axios.get("/playlist/me");
+      //   const data = response.result;
+      //   // console.log("toàn bộ dữ liệu:", response);
+      //   if (data && data.data) {
+      //     setPlaylists(data.data);
+      //   } else {
+      //     setError("No playlists found");
+      //   }
+      // } catch (error: any) {
+      //   setError(error.message || "Failed to fetch playlists");
+      // } finally {
+      // }
     }
+    setLoading(false);
   };
 
   const deletePlaylist = async () => {
@@ -64,7 +63,7 @@ const PlaylistPage = () => {
       return; // Người dùng hủy xóa
     }
 
-    const id_playlist = playlists?.[activePlaylist]?.id_playlist;
+    const id_playlist = state?.playlist?.[activePlaylist]?.id_playlist;
 
     try {
       const response: any = await axios.delete(
@@ -73,15 +72,17 @@ const PlaylistPage = () => {
 
       if (response.status === 200) {
         // Xóa thành công
-        setPlaylists((prev) =>
-          prev.filter((playlist) => playlist.id_playlist !== id_playlist)
-        );
+        // setPlaylists((prev) =>
+        //   prev.filter((playlist) => playlist.id_playlist !== id_playlist)
+        // );
+        dispatch({
+          type: "PLAYLIST",
+          payload: state?.playlist.filter((i) => i.id_playlist !== id_playlist),
+        });
         setActivePlaylist("none");
-        alert("Xóa playlist thành công!");
       } else {
         // Thông báo nếu xóa thất bại
         console.error("Error deleting playlist:", response.result.message);
-        alert("Xóa playlist thất bại!");
       }
     } catch (error) {
       console.error("Error deleting playlist:", error);
@@ -102,13 +103,15 @@ const PlaylistPage = () => {
   const handleRemoveMusic = (id_music) => {
     axios
       .delete(
-        `playlist/add-music?id_music=${id_music}&id_playlist=${playlists?.[activePlaylist]?.id_playlist}`
+        `playlist/add-music?id_music=${id_music}&id_playlist=${state?.playlist?.[activePlaylist]?.id_playlist}`
       )
       .then(() => {
         setLoading(false);
-        setPlaylists((prev) =>
-          prev.map((playlist) =>
-            playlist.id_playlist === playlists?.[activePlaylist]?.id_playlist
+        dispatch({
+          type: "PLAYLIST",
+          payload: state?.playlist.map((playlist) =>
+            playlist.id_playlist ===
+            state?.playlist?.[activePlaylist]?.id_playlist
               ? {
                   ...playlist,
                   musics: playlist.musics.filter(
@@ -116,8 +119,8 @@ const PlaylistPage = () => {
                   ),
                 }
               : playlist
-          )
-        );
+          ),
+        });
       })
       .catch(() => {
         setLoading(false);
@@ -128,20 +131,25 @@ const PlaylistPage = () => {
     <div className={style.playlistPage}>
       <h1 className="home__heading">Playlist</h1>
 
-      <div className="grid grid-cols-12 gap-4 flex-wrap min-h-[100px]">
+      <div className="grid grid-cols-12 gap-4 flex-wrap">
         {/* Nút để mở modal tạo playlist */}
 
         <div
-          className={clsx("grid grid-cols-12 gap-4", {
+          className={clsx("grid grid-cols-12 gap-4 items-start", {
             "col-span-8": activePlaylist !== "none",
             "col-span-12": activePlaylist === "none",
           })}
         >
           <button
-            className={clsx(style.playlistItem, style.playlistItem__center, {
-              "col-span-3": activePlaylist !== "none",
-              "col-span-2": activePlaylist === "none",
-            })}
+            className={clsx(
+              style.playlistItem,
+              style.playlistItem__center,
+              "min-h-[150px] mt-4",
+              {
+                "col-span-3": activePlaylist !== "none",
+                "col-span-2": activePlaylist === "none",
+              }
+            )}
             onClick={() => {
               if (state?.profile?.is_vip !== 1)
                 dispatch({ type: "SHOW_VIP", payload: true });
@@ -154,7 +162,7 @@ const PlaylistPage = () => {
             </p>
           </button>
 
-          {playlists
+          {state?.playlist
             .sort((a, b) => b.playlist_index - a.playlist_index)
             .map((playlist, index) => (
               <button
@@ -203,7 +211,7 @@ const PlaylistPage = () => {
           <div className="col-span-4">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold text-white">
-                Bài hát trong "{playlists?.[activePlaylist].name}"
+                Bài hát trong "{state?.playlist?.[activePlaylist].name}"
               </h2>
               <button
                 className="text-red-800 font-normal text-[12px]"
@@ -213,50 +221,52 @@ const PlaylistPage = () => {
               </button>
             </div>
             <div>
-              {playlists?.[activePlaylist].musics.length === 0 ? (
+              {state?.playlist?.[activePlaylist].musics.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8">
                   <p className="text-gray-500 text-sm">Chưa có bài hát nào</p>
                 </div>
               ) : (
                 <div>
-                  {playlists?.[activePlaylist].musics.map((music, index) => (
-                    <div
-                      key={index}
-                      className="grid grid-cols-12 gap-4 items-center p-3 rounded-md hover:bg-gray-800 transition group"
-                    >
-                      <Img
-                        src={music.url_cover}
-                        alt={music.name}
-                        className="col-span-3 w-full h-full aspect-square object-cover rounded"
-                        unloader={
-                          <img
-                            src="/default.png"
-                            alt="default"
-                            className="w-full h-full aspect-square object-cover rounded-full"
-                          />
-                        }
-                      />
-                      <Link
-                        href={"/musicdetail/" + music.id_music}
-                        className="col-span-8"
+                  {state?.playlist?.[activePlaylist].musics.map(
+                    (music, index) => (
+                      <div
+                        key={index}
+                        className="grid grid-cols-12 gap-4 items-center p-3 rounded-md hover:bg-gray-800 transition group"
                       >
-                        <div className="text-white font-medium truncate">
-                          {music.name}
-                        </div>
-                        <p className="text-gray-400 text-sm truncate">
-                          {music.artists
-                            .map((artist) => artist.artist.name)
-                            .join(", ")}
-                        </p>
-                      </Link>
-                      <button
-                        onClick={() => handleRemoveMusic(music.id_music)}
-                        className="col-span-1 text-red-800 font-normal text-[12px] hidden group-hover:block"
-                      >
-                        Xóa
-                      </button>
-                    </div>
-                  ))}
+                        <Img
+                          src={music.url_cover}
+                          alt={music.name}
+                          className="col-span-3 w-full h-full aspect-square object-cover rounded"
+                          unloader={
+                            <img
+                              src="/default.png"
+                              alt="default"
+                              className="w-full h-full aspect-square object-cover rounded-full"
+                            />
+                          }
+                        />
+                        <Link
+                          href={"/musicdetail/" + music.id_music}
+                          className="col-span-8"
+                        >
+                          <div className="text-white font-medium truncate">
+                            {music.name}
+                          </div>
+                          <p className="text-gray-400 text-sm truncate">
+                            {music?.artists
+                              ?.map((artist) => artist.artist.name)
+                              .join(", ")}
+                          </p>
+                        </Link>
+                        <button
+                          onClick={() => handleRemoveMusic(music.id_music)}
+                          className="col-span-1 text-red-800 font-normal text-[12px] hidden group-hover:block"
+                        >
+                          Xóa
+                        </button>
+                      </div>
+                    )
+                  )}
                 </div>
               )}
             </div>

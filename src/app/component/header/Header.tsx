@@ -110,9 +110,11 @@ const Header = () => {
   useEffect(() => {
     if (state?.profile) {
       console.log("FMH: ", localStorage?.getItem("accessToken"));
-      axios.get("playlist/me").then((res: any) => {
-        dispatch({ type: "PLAYLIST", payload: res.result.data });
-      });
+      if (state?.profile?.is_vip === 1) {
+        axios.get("playlist/me").then((res: any) => {
+          dispatch({ type: "PLAYLIST", payload: res.result.data });
+        });
+      }
       axios.get("favorite-music/me").then((res: any) => {
         dispatch({ type: "FAVORITE_MUSIC", payload: res.result.data });
       });
