@@ -59,7 +59,11 @@ export default function RankingChart() {
   }, [timeFrame, topLimit]);
 
   if (loading)
-    return <p className={styles.loading}>Đang tải dữ liệu bảng xếp hạng...</p>;
+    return (
+      <p className={clsx(styles.loading, "pl-4")}>
+        Đang tải dữ liệu bảng xếp hạng...
+      </p>
+    );
 
   const songLabels = rankingData.map((item) => item.name);
   const viewsData = rankingData.map((item) => item.view);

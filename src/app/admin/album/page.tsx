@@ -227,6 +227,7 @@ export default function AdminAlbum() {
               </select>
             </div>
             <div className={styles.sortContainer}>
+              <label htmlFor="sort">Sort: </label>
               <select
                 value={sortOption}
                 onChange={(e) => setSortOption(e.target.value)}
