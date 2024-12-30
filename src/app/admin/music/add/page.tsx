@@ -102,9 +102,13 @@ export default function AddMusic() {
         "Định dạng file không hợp lệ. Chỉ chấp nhận .jpeg, .png, .jpg, .gif, .webp.",
         (value) =>
           value instanceof File &&
-          ["image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp"].includes(
-            value.type
-          )
+          [
+            "image/jpeg",
+            "image/png",
+            "image/jpg",
+            "image/gif",
+            "image/webp",
+          ].includes(value.type)
       ),
 
     audioFile: yup.mixed().required("Tệp âm thanh là bắt buộc."),
@@ -132,8 +136,6 @@ export default function AddMusic() {
       })
       .catch(() => setComposers([]));
   }, []);
-
-
 
   const handleSubmit = async (values: any, { setSubmitting }: any) => {
     try {
@@ -200,7 +202,7 @@ export default function AddMusic() {
 
       if (response.status === 200 || response.status === 201) {
         alert("Bài hát đã được thêm thành công!");
-        router.push("/admin/adminmusic");
+        router.push("/admin/music");
       } else {
         alert("Thêm bài hát không thành công.");
       }
@@ -214,7 +216,6 @@ export default function AddMusic() {
       setSubmitting(false);
     }
   };
-
 
   return (
     <div className={styles.container}>
@@ -262,7 +263,10 @@ export default function AddMusic() {
                 name="artists"
                 multiple
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                  const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value);
+                  const selectedValues = Array.from(
+                    e.target.selectedOptions,
+                    (option) => option.value
+                  );
                   setFieldValue("artists", selectedValues);
                 }}
               >
@@ -287,7 +291,10 @@ export default function AddMusic() {
                 name="types"
                 multiple
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                  const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value);
+                  const selectedValues = Array.from(
+                    e.target.selectedOptions,
+                    (option) => option.value
+                  );
                   setFieldValue("types", selectedValues);
                 }}
               >
@@ -309,7 +316,10 @@ export default function AddMusic() {
               <Field as="select" name="composer">
                 <option value="">Chọn nhạc sĩ</option>
                 {composers.map((composer) => (
-                  <option key={composer.id_composer} value={composer.id_composer}>
+                  <option
+                    key={composer.id_composer}
+                    value={composer.id_composer}
+                  >
                     {composer.name}
                   </option>
                 ))}
@@ -325,45 +335,36 @@ export default function AddMusic() {
               {({ field, form }: any) => (
                 <div className={styles.anhien}>
                   <div className={styles.anhien}>
-
-                    <label>
-                      Hiện
-                    </label>
+                    <label>Hiện</label>
                     <input
                       type="radio"
                       {...field}
                       value="1"
                       checked={form.values.is_show === 1}
                       onChange={() => form.setFieldValue("is_show", 1)}
-
                     />
 
-                    <label>Ẩn
-                    </label>
+                    <label>Ẩn</label>
                     <input
                       type="radio"
                       {...field}
                       value="0"
                       checked={form.values.is_show === 0}
                       onChange={() => form.setFieldValue("is_show", 0)}
-
                     />
-
                   </div>
                 </div>
               )}
             </Field>
 
-
             <div>
-              
               <input
                 id="file-upload"
                 type="file"
                 style={{ display: "none" }}
                 onChange={(e) => {
                   const file = e.target.files ? e.target.files[0] : null;
-                  setFieldValue("file", file); 
+                  setFieldValue("file", file);
                   if (file) {
                     setPreviewImage(URL.createObjectURL(file));
                   }
@@ -377,21 +378,23 @@ export default function AddMusic() {
               <label htmlFor="file-upload" className={styles.customFileUpload}>
                 Chọn ảnh bìa
               </label>
-              <ErrorMessage name="file" component="div" className={styles.error} />
+              <ErrorMessage
+                name="file"
+                component="div"
+                className={styles.error}
+              />
             </div>
 
-
             <div>
-              
               <input
                 id="audio-upload"
                 type="file"
                 style={{ display: "none" }}
                 onChange={(e) => {
                   const file = e.target.files ? e.target.files[0] : null;
-                  setFieldValue("audioFile", file); 
+                  setFieldValue("audioFile", file);
                   if (file) {
-                    setPreviewAudio(URL.createObjectURL(file)); 
+                    setPreviewAudio(URL.createObjectURL(file));
                   }
                 }}
               />
@@ -405,16 +408,17 @@ export default function AddMusic() {
               <label htmlFor="audio-upload" className={styles.customFileUpload}>
                 Chọn tệp âm thanh
               </label>
-              <ErrorMessage name="audioFile" component="div" className={styles.error} />
+              <ErrorMessage
+                name="audioFile"
+                component="div"
+                className={styles.error}
+              />
             </div>
-
-
 
             <button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Đang gửi..." : "Thêm bài hát"}
             </button>
             {message && <div className={styles.error}>{message}</div>}
-
           </Form>
         )}
       </Formik>

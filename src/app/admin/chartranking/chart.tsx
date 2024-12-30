@@ -60,7 +60,7 @@ export default function RankingChart() {
 
   if (loading)
     return (
-      <p className={clsx(styles.loading, "pl-4")}>
+      <p className={clsx(styles.loading, "pl-4 pb-4")}>
         Đang tải dữ liệu bảng xếp hạng...
       </p>
     );

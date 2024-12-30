@@ -113,20 +113,19 @@ export default function AddAlbum() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-  
+
       // Kiểm tra xem tệp có phải là hình ảnh không
       const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
       if (!validImageTypes.includes(selectedFile.type)) {
         alert("Vui lòng tải lên một tệp hình ảnh hợp lệ (JPEG, PNG, GIF).");
         return;
       }
-  
+
       setFile(selectedFile);
       const fileUrl = URL.createObjectURL(selectedFile);
       setPreviewUrl(fileUrl);
     }
   };
-  
 
   const handleVisibilityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
@@ -155,42 +154,42 @@ export default function AddAlbum() {
       alert("Vui lòng tải lên ảnh bìa.");
       return;
     }
-  
+
     setLoading(true);
-  
+
     const slug = album.name.toLowerCase().replace(/\s+/g, "-");
     const albumData: any = { ...album, slug };
-  
+
     try {
       // Tải lên ảnh bìa
       const formData = new FormData();
       formData.append("file", file);
-  
+
       const uploadResponse: any = await axios.post("/upload-image", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-  
+
       if (uploadResponse?.result?.url) {
         albumData.url_cover = uploadResponse.result.url;
       } else {
         alert("Lỗi tải lên ảnh bìa.");
         return;
       }
-  
+
       albumData.musics = albumData.musics.map((music: any) => ({
         id_music: music.id_music,
       }));
       albumData.id_artist = album.artists[0];
       delete albumData.artists;
       delete albumData.id_album;
-  
+
       const response = await axios.post("/album", albumData, {
         headers: { "Content-Type": "application/json" },
       });
-  
+
       if (response.status === 200 || response.status === 201) {
         alert("Album đã được thêm thành công!");
-        window.location.href = "/admin/adminalbum";
+        window.location.href = "/admin/album";
       } else {
         alert("Thêm album không thành công.");
       }
@@ -201,7 +200,7 @@ export default function AddAlbum() {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className={styles.container}>
       <h2>Thêm mới album</h2>
@@ -261,20 +260,17 @@ export default function AddAlbum() {
         </div>
 
         {previewUrl && (
-  <div className={styles.preview}>
-    <img src={previewUrl} alt="Xem trước ảnh bìa" />
-  </div>
-)}
+          <div className={styles.preview}>
+            <img src={previewUrl} alt="Xem trước ảnh bìa" />
+          </div>
+        )}
 
-
-<input
-  id="file-upload"
-  type="file"
-  accept="image/*"
-  onChange={handleFileChange}
-/>
-
-       
+        <input
+          id="file-upload"
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+        />
 
         <button onClick={handleSubmit} disabled={loading}>
           {loading ? "Đang gửi..." : "Thêm album"}

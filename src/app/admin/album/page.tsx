@@ -203,7 +203,7 @@ export default function AdminAlbum() {
           <Link href="/admin/album/add" passHref>
             <button className={styles.addButton}>
               <ReactSVG className={styles.csvg} src="/plus.svg" />
-              <div className={styles.addText}>Tạo album mới</div>
+              <div className={styles.addText}>Thêm mới</div>
             </button>
           </Link>
         </div>

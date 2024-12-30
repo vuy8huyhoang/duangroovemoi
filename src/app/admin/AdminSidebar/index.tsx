@@ -3,7 +3,7 @@ import styles from "./AdminSidebar.module.scss";
 import Link from "next/link";
 import { ReactSVG } from "react-svg";
 import { clsx } from "clsx";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import axios from "@/lib/axios";
 import { AppContext } from "@/app/layout";
 
@@ -23,6 +23,7 @@ const AdminSidebar: React.FC = () => {
   const pathname = usePathname();
   const [profileData, setProfileData] = useState<Profile | null>(null);
   const { state, dispatch } = useContext(AppContext);
+  const router = useRouter();
   // const [loading, setLoading] = useState(true);    console.log(profileData)
 
   useEffect(() => {
@@ -54,7 +55,8 @@ const AdminSidebar: React.FC = () => {
           { "!w-[80px]": !state?.adminSidebar }
         )}
       >
-        <div
+        <Link
+          href="/admin"
           className={clsx(
             "p-[20px] mb-[30px] flex items-center justify-center min-h-[130px] transition duration-400 ease-in-out",
             { "!px-0": !state?.adminSidebar }
@@ -65,7 +67,7 @@ const AdminSidebar: React.FC = () => {
             src={profileData?.url_avatar ? profileData.url_avatar : "/logo.svg"}
             alt="User Avatar"
           />
-        </div>
+        </Link>
 
         <ul className="flex flex-col gap-1">
           <li
@@ -234,6 +236,33 @@ const AdminSidebar: React.FC = () => {
 
               <div>Người dùng</div>
             </Link>
+          </li>
+          <li
+            className={clsx(
+              "absolute bottom-4 left-1/2 -translate-x-1/2 group"
+            )}
+          >
+            <button
+              onClick={() => {
+                router.push("/");
+              }}
+              className="w-full h-full flex items-center justify-center p-2 text-[#cccccc] group-hover:bg-[#cccccc80] group-hover:text-gray-500 rounded-lg"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+                />
+              </svg>
+            </button>
           </li>
         </ul>
       </div>

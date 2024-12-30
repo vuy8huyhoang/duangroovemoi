@@ -86,7 +86,7 @@ export default function Chart() {
 
   if (loading)
     return (
-      <p className={clsx(styles.loading, "px-4")}>
+      <p className={clsx(styles.loading, "px-4 pb-4")}>
         Đang tải dữ liệu biểu đồ...
       </p>
     );

@@ -139,7 +139,7 @@ export default function EditArtist({ params }: { params: { id: string } }) {
 
       if (response.status === 200 || response.status === 204) {
         alert("Nghệ sĩ đã được cập nhật thành công!");
-        window.location.href = "/admin/adminartist";
+        window.location.href = "/admin/artist";
       } else {
         alert("Cập nhật nghệ sĩ không thành công.");
       }

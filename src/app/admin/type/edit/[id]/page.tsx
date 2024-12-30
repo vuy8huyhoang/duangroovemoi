@@ -73,7 +73,7 @@ export default function EditType({ params }: { params: { id: string } }) {
 
       if (response.status === 200 || response.status === 201) {
         alert("Thể loại đã được cập nhật thành công!");
-        window.location.href = "/admin/admintype";
+        window.location.href = "/admin/type";
       } else {
         alert("Cập nhật thể loại không thành công.");
       }

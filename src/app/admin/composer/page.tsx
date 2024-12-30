@@ -176,7 +176,7 @@ export default function AdminComposer() {
           <Link href="/admin/composer/add" passHref>
             <button className={styles.addButton}>
               <ReactSVG className={styles.csvg} src="/plus.svg" />
-              <div className={styles.addText}>Tạo nhạc sĩ mới</div>
+              <div className={styles.addText}>Thêm mới</div>
             </button>
           </Link>
         </div>

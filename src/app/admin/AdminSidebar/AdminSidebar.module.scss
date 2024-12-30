@@ -17,7 +17,8 @@
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
 
-    a {
+    a,
+    button {
       padding-left: 30px;
       gap: 20px;
       width: 100%;
@@ -32,7 +33,8 @@
       }
     }
 
-    & > a > div {
+    & > a > div,
+    & > button {
       color: #999;
       font-size: 14px;
       font-weight: 500;
@@ -49,7 +51,8 @@
         color: #fff;
       }
 
-      > a {
+      > a,
+      > button {
         opacity: 1 !important;
         > div {
           color: #fff;

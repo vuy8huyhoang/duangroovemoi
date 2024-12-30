@@ -95,7 +95,7 @@ export default function AddComposer() {
 
       if (response.status === 200 || response.status === 201) {
         alert("Nhạc sĩ đã được thêm thành công!");
-        window.location.href = "/admin/admincomposer";
+        window.location.href = "/admin/composer";
       } else {
         alert("Thêm nhạc sĩ không thành công.");
       }
@@ -109,7 +109,7 @@ export default function AddComposer() {
 
   return (
     <div className={styles.container}>
-      <h2>Thêm mới nghệ sĩ</h2>
+      <h2>Thêm mới nhạc sĩ</h2>
       <div className={styles.formGroup}>
         <input
           type="text"

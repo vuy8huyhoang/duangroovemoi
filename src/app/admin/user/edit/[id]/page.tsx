@@ -182,7 +182,7 @@ export default function EditUser({ params }: { params: { id: string } }) {
 
       if (response.status === 200 || response.status === 201) {
         alert("Cập nhật người dùng thành công!");
-        window.location.href = "/admin/adminuser";
+        window.location.href = "/admin/user";
       } else {
         alert("User update failed.");
       }

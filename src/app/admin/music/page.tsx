@@ -48,6 +48,7 @@ export default function AdminMusic() {
           .includes(searchTerm.toLowerCase())
       )
   );
+
   const sortedSongs = filteredSongs.sort((a, b) => {
     if (sortOption === "latest") {
       return (
@@ -72,6 +73,8 @@ export default function AdminMusic() {
       .then((response: any) => {
         // console.log("Full API response:", response);
         if (response && response.result && response.result.data) {
+          console.log(response.result.data);
+
           setSongs(
             response.result.data.map((i, index) => {
               return { ...i, index };
@@ -195,7 +198,7 @@ export default function AdminMusic() {
           <Link href="/admin/music/add" passHref>
             <button className={styles.addButton}>
               <ReactSVG className={styles.csvg} src="/plus.svg" />
-              <div className={styles.addText}>Tạo bài hát mới</div>
+              <div className={styles.addText}>Thêm mới</div>
             </button>
           </Link>
         </div>
@@ -424,9 +427,9 @@ export default function AdminMusic() {
                   </td>
                   <td>{song.name}</td>
                   <td>
-                    {song.artists
-                      .slice(0, 3)
-                      .map((artistWrapper) => artistWrapper.artist.name)}
+                    {song.artists.map(
+                      (artistWrapper) => artistWrapper.artist.name
+                    )}
                   </td>
 
                   <td className="text-center">

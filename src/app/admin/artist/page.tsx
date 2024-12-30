@@ -225,10 +225,10 @@ export default function AdminArtist() {
             </div>
           </div>
 
-          <Link href="/admin/addartist" passHref>
+          <Link href="/admin/artist/add" passHref>
             <button className={styles.addButton}>
               <ReactSVG className={styles.csvg} src="/plus.svg" />
-              <div className={styles.addText}>Tạo ca sĩ mới</div>
+              <div className={styles.addText}>Thêm mới</div>
             </button>
           </Link>
         </div>
@@ -486,7 +486,7 @@ export default function AdminArtist() {
                   <td className={styles.actions}>
                     <button className={styles.editButton}>
                       <Link
-                        href={`/admin/editartist/${artist.id_artist}`}
+                        href={`/admin/artist/edit/${artist.id_artist}`}
                         passHref
                       >
                         <ReactSVG
