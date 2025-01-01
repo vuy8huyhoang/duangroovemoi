@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "@/lib/axios";
-import styles from "../EditComposer.module.scss";
+import styles from "../../../form.module.scss";
 
 interface Composer {
   id_composer: string;
@@ -54,13 +54,13 @@ export default function EditComposer({ params }: { params: { id: string } }) {
     const slug = composer.name.toLowerCase().replace(/\s+/g, "-");
 
     const composerData = { ...composer };
-    console.log(composerData);
+    // console.log(composerData);
 
     try {
-      const response = await axios.patch(
-        `/composer/${composer.id_composer}`,
-        composerData
-      );
+      // console.log(`/composer/${params.id}`, { name: composer.name });
+      const response = await axios.patch(`/composer/${params.id}`, {
+        name: composerData.name,
+      });
 
       if (response.status === 200 || response.status === 204) {
         alert("Nhạc sĩ đã được cập nhật thành công!");

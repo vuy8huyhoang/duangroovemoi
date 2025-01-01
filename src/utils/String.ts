@@ -3,7 +3,7 @@ export const getVariableName = (varObj: any) => {
 };
 export function formatTimeFromNow(dateString: string): string {
   // Lấy thời gian hiện tại và chuyển thành UTC
-  console.log(dateString);
+  // console.log(dateString);
 
   const currentDate = new Date();
   const currentDateTime = currentDate.getTime();

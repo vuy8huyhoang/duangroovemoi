@@ -70,8 +70,19 @@ $font-color-muted: #ffffff;
     flex-direction: column;
     width: 100%;
 
+    & > p {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
     .formGroup {
       // margin-bottom: 20px;
+      & > p {
+        color: red;
+        font-size: 12px;
+        margin-top: 5px;
+      }
 
       label {
         display: block;

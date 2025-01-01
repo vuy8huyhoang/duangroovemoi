@@ -120,12 +120,12 @@ export default function RightSidebar() {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      console.log("Added to history:", newHistory);
+      // console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }
   };
-  console.log(state?.favoriteMusic);
+  // console.log(state?.favoriteMusic);
 
   return (
     <div className={styles.rightSidebar}>

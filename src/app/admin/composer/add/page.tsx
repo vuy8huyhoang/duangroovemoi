@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import axios from "@/lib/axios";
-import styles from "./AddComposer.module.scss";
+import styles from "../../form.module.scss";
 import { v4 as uuidv4 } from "uuid";
 
 interface Composer {

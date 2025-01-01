@@ -74,7 +74,7 @@ export default function GrooveChartPage() {
         axios
           .delete(`favorite-music/me?id_music=${id_music}`)
           .then((response: any) => {
-            console.log("Xóa bài hát yêu thích thành công", response);
+            // console.log("Xóa bài hát yêu thích thành công", response);
 
             // Cập nhật state bằng cách loại bỏ id_music khỏi mảng
             dispatch({
@@ -91,7 +91,7 @@ export default function GrooveChartPage() {
         axios
           .post(`favorite-music/me`, { id_music })
           .then((response: any) => {
-            console.log("Thêm bài hát yêu thích thành công", response);
+            // console.log("Thêm bài hát yêu thích thành công", response);
             // setHeart(true);
 
             // Cập nhật state bằng cách thêm { id_music } vào mảng
@@ -130,7 +130,7 @@ export default function GrooveChartPage() {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      console.log("Added to history:", newHistory);
+      // console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "@/lib/axios";
-import styles from "../EditType.module.scss";
+import styles from "../../../form.module.scss";
 
 interface Type {
   id_type: string;
@@ -91,23 +91,25 @@ export default function EditType({ params }: { params: { id: string } }) {
     <div className={styles.container}>
       <h2>Chỉnh sửa thể loại</h2>
       <div className={styles.formGroup}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Tên thể loại"
-          value={type.name}
-          onChange={handleChange}
-          className={styles.input}
-        />
-        {error && <p className={styles.error}>{error}</p>}{" "}
+        <div>
+          <input
+            type="text"
+            name="name"
+            placeholder="Tên thể loại"
+            value={type.name}
+            onChange={handleChange}
+            className={styles.input}
+          />
+          {error && <p className={styles.errorMessage}>{error}</p>}{" "}
+        </div>
         {/* Hiển thị thông báo lỗi */}
-        <input
+        {/* <input
           type="text"
           name="slug"
           placeholder="Slug (tự động tạo nếu để trống)"
           value={type.slug}
           onChange={handleChange}
-        />
+        /> */}
         <select
           name="is_show"
           value={type.is_show}

@@ -4,7 +4,7 @@ import axios from "@/lib/axios";
 import { v4 as uuidv4 } from "uuid";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
-import styles from "./AddArtist.module.scss";
+import styles from "../../form.module.scss";
 
 interface Artist {
   id_artist: string;
@@ -79,10 +79,7 @@ export default function AddArtist() {
           name: values.name,
           slug: removeVietnameseTones(values.name),
           url_cover: imageUrl,
-          created_at: new Date().toISOString(),
-          last_update: new Date().toISOString(),
           is_show: values.is_show,
-          followers: 0,
         };
 
         const artistResponse: any = await axios.post("/artist", artistData);
@@ -128,7 +125,7 @@ export default function AddArtist() {
               <ErrorMessage
                 name="name"
                 component="div"
-                className={styles.error}
+                className={styles.errorMessage}
               />
             </div>
 
@@ -157,27 +154,31 @@ export default function AddArtist() {
               <ErrorMessage
                 name="file"
                 component="div"
-                className={styles.error}
+                className={styles.errorMessage}
               />
             </div>
 
             <div className={styles.visibilityRadioButtons}>
-              <label>Hiện</label>
-              <Field
-                type="radio"
-                name="is_show"
-                value="1"
-                checked={values.is_show === 1}
-                onChange={() => setFieldValue("is_show", 1)}
-              />
-              <label>Ẩn</label>
-              <Field
-                type="radio"
-                name="is_show"
-                value="0"
-                checked={values.is_show === 0}
-                onChange={() => setFieldValue("is_show", 0)}
-              />
+              <div>
+                <label>Hiện</label>
+                <Field
+                  type="radio"
+                  name="is_show"
+                  value="1"
+                  checked={values.is_show === 1}
+                  onChange={() => setFieldValue("is_show", 1)}
+                />
+              </div>
+              <div>
+                <label>Ẩn</label>
+                <Field
+                  type="radio"
+                  name="is_show"
+                  value="0"
+                  checked={values.is_show === 0}
+                  onChange={() => setFieldValue("is_show", 0)}
+                />
+              </div>
             </div>
 
             <button type="submit" disabled={isSubmitting}>

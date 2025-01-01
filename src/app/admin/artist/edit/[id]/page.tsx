@@ -3,17 +3,14 @@ import { useState, useEffect } from "react";
 import axios from "@/lib/axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
-import styles from "../EditArtist.module.scss";
+import styles from "../../../form.module.scss";
 
 interface Artist {
   id_artist: string;
   name: string;
   slug: string | null;
   url_cover: string | null;
-  created_at: string;
-  last_update: string;
   is_show: number;
-  followers: number;
 }
 
 export default function EditArtist({ params }: { params: { id: string } }) {
@@ -122,7 +119,6 @@ export default function EditArtist({ params }: { params: { id: string } }) {
 
       const slug = removeVietnameseTones(values.name);
       const artistData = {
-        ...artist,
         name: values.name,
         slug,
         url_cover: imageUrl,
@@ -179,7 +175,7 @@ export default function EditArtist({ params }: { params: { id: string } }) {
               <ErrorMessage
                 name="name"
                 component="div"
-                className={styles.error}
+                className={styles.errorMessage}
               />
             </div>
 
@@ -210,28 +206,32 @@ export default function EditArtist({ params }: { params: { id: string } }) {
               <ErrorMessage
                 name="file"
                 component="div"
-                className={styles.error}
+                className={styles.errorMessage}
               />
             </div>
 
             <div className={styles.visibilityRadioButtons}>
-              <label>Hiện</label>
-              <Field
-                type="radio"
-                name="is_show"
-                value="1"
-                checked={values.is_show === 1}
-                onChange={() => setFieldValue("is_show", 1)}
-              />
+              <div>
+                <label>Hiện</label>
+                <Field
+                  type="radio"
+                  name="is_show"
+                  value="1"
+                  checked={values.is_show === 1}
+                  onChange={() => setFieldValue("is_show", 1)}
+                />
+              </div>
 
-              <label>Ẩn</label>
-              <Field
-                type="radio"
-                name="is_show"
-                value="0"
-                checked={values.is_show === 0}
-                onChange={() => setFieldValue("is_show", 0)}
-              />
+              <div>
+                <label>Ẩn</label>
+                <Field
+                  type="radio"
+                  name="is_show"
+                  value="0"
+                  checked={values.is_show === 0}
+                  onChange={() => setFieldValue("is_show", 0)}
+                />
+              </div>
             </div>
 
             <button type="submit" disabled={isSubmitting}>

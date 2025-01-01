@@ -94,10 +94,10 @@ const SongDetailPage = ({ params }: any) => {
             ...response.result.data,
             lyrics: adjustLyrics(response.result.data.lyrics),
           });
-          console.log({
-            ...response.result.data,
-            lyrics: adjustLyrics(response.result.data.lyrics),
-          });
+          // console.log({
+          //   ...response.result.data,
+          //   lyrics: adjustLyrics(response.result.data.lyrics),
+          // });
         } else {
           console.error("Response data is undefined or null", response);
         }
@@ -119,17 +119,13 @@ const SongDetailPage = ({ params }: any) => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  useEffect(() => {
-    console.log(state?.currentDuration);
-  }, [state?.currentDuration]);
-
   const handleHeartClick = (id_music) => {
     if (state?.profile) {
       if (state?.favoriteMusic.map((i) => i.id_music).includes(id_music)) {
         axios
           .delete(`favorite-music/me?id_music=${id_music}`)
           .then((response: any) => {
-            console.log("Album unliked successfully", response);
+            // console.log("Album unliked successfully", response);
             dispatch({
               type: "FAVORITE_MUSIC",
               payload: [
@@ -144,7 +140,7 @@ const SongDetailPage = ({ params }: any) => {
         axios
           .post(`favorite-music/me`, { id_music })
           .then((response: any) => {
-            console.log("Album liked successfully", response);
+            // console.log("Album liked successfully", response);
             dispatch({
               type: "FAVORITE_MUSIC",
               payload: [...state.favoriteMusic, { id_music }],
@@ -167,14 +163,13 @@ const SongDetailPage = ({ params }: any) => {
       });
       const newHistory: MusicHistory = response.result;
       setMusicHistory((prevHistory) => [newHistory, ...prevHistory]);
-      console.log("Added to history:", newHistory);
+      // console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }
   };
 
-  useEffect(() => {
-    // Tìm lyric đang active
+  const lyricHandle = () => {
     if (id === state?.currentPlaylist?.[0]?.id_music) {
       const activeIndex = musicdetail?.lyrics.findIndex(
         (lyric) =>
@@ -202,7 +197,16 @@ const SongDetailPage = ({ params }: any) => {
         }
       }
     }
-  }, [state?.currentDuration, musicdetail?.lyrics]);
+  };
+
+  useEffect(() => {
+    // Tìm lyric đang active
+    lyricHandle();
+  }, [
+    state?.currentDuration,
+    state?.currentPlaylist?.[0],
+    musicdetail?.lyrics,
+  ]);
 
   if (loading) {
     return <p>Đang tải chi tiết bài hát...</p>;
@@ -396,6 +400,8 @@ const SongDetailPage = ({ params }: any) => {
             >
               {musicdetail?.lyrics.map((lyric, index) => {
                 // Kiểm tra nếu currentDuration nằm trong khoảng start_time và end_time
+                console.log(lyric, state?.curre);
+
                 const isActive =
                   state?.currentDuration >= lyric.start_time &&
                   state?.currentDuration < lyric.end_time;

@@ -109,7 +109,7 @@ const Header = () => {
 
   useEffect(() => {
     if (state?.profile) {
-      console.log("FMH: ", localStorage?.getItem("accessToken"));
+      // console.log("FMH: ", localStorage?.getItem("accessToken"));
       if (state?.profile?.is_vip === 1) {
         axios.get("playlist/me").then((res: any) => {
           dispatch({ type: "PLAYLIST", payload: res.result.data });
@@ -123,7 +123,7 @@ const Header = () => {
       });
       axios.get("notification").then((res: any) => {
         setNotifyData(res.result.data);
-        console.log(res.result.data);
+        // console.log(res.result.data);
       });
     }
     if (!state?.profile) {
@@ -249,7 +249,7 @@ const Header = () => {
                       >
                         <path
                           strokeLinecap="round"
-                          stroke-linejoin="round"
+                          strokeLinejoin="round"
                           d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
                         />
                       </svg>

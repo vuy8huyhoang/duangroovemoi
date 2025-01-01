@@ -38,7 +38,7 @@ const Comment: React.FC<CommentProps> = ({ id_music }) => {
         });
         // console.log("Response Data:", response.result.data);
         setComments(response.result.data || []);
-        console.log(response.result.data);
+        // console.log(response.result.data);
       } catch (err) {
         setError("Failed to load comments");
       } finally {

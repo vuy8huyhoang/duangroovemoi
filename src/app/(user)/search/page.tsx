@@ -64,7 +64,7 @@ const SearchResultsPage: React.FC = () => {
         play_duration,
       });
       const newHistory = response.result;
-      console.log("Added to history:", newHistory);
+      // console.log("Added to history:", newHistory);
     } catch (error) {
       console.error("Error adding to music history:", error);
     }
@@ -76,7 +76,7 @@ const SearchResultsPage: React.FC = () => {
         axios
           .delete(`favorite-music/me?id_music=${id_music}`)
           .then((response: any) => {
-            console.log("Album unliked successfully", response);
+            // console.log("Album unliked successfully", response);
             dispatch({
               type: "FAVORITE_MUSIC",
               payload: [
@@ -91,7 +91,7 @@ const SearchResultsPage: React.FC = () => {
         axios
           .post(`favorite-music/me`, { id_music })
           .then((response: any) => {
-            console.log("Album liked successfully", response);
+            // console.log("Album liked successfully", response);
             dispatch({
               type: "FAVORITE_MUSIC",
               payload: [...state.favoriteMusic, { id_music }],

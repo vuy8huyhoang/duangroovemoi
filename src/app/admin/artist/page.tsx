@@ -46,12 +46,12 @@ export default function AdminArtist() {
       .then((response: any) => {
         // console.log("Full API response:", response);
         if (response && response.result && response.result.data) {
-          setArtists(response.result.data);
-          fetchMusicByArtists(
+          setArtists(
             response.result.data.map((i, index) => {
               return { ...i, index };
             })
           );
+          fetchMusicByArtists(response.result.data);
         } else {
           console.error("Response data is undefined or empty:", response);
           setArtists([]);
@@ -188,7 +188,7 @@ export default function AdminArtist() {
   const handleExportToXlsx = () => {
     const data = getObjectsAtIndices(artists, select);
 
-    exportToExcel(data, "User_List");
+    exportToExcel(data, "Artist_List");
   };
 
   useEffect(() => {
@@ -293,7 +293,7 @@ export default function AdminArtist() {
               </svg>
               Export xlsx
             </button>
-            <button className="gap-1 flex item-center py-1 px-3 border font-medium text-sm rounded-full border-yellow-500 text-yellow-500 hover:bg-yellow-100 transition duration-300">
+            {/* <button className="gap-1 flex item-center py-1 px-3 border font-medium text-sm rounded-full border-yellow-500 text-yellow-500 hover:bg-yellow-100 transition duration-300">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -307,7 +307,7 @@ export default function AdminArtist() {
                 />
               </svg>
               Import
-            </button>
+            </button> */}
             <button
               onClick={() => fetch()}
               className="flex gap-1 items-center py-1 px-3 border font-medium text-sm rounded-full border-lime-500 text-lime-500 hover:bg-lime-100 transition duration-300"

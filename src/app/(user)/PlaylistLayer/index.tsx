@@ -44,19 +44,11 @@ const PlaylistLayer = () => {
           setLoading(false);
         });
 
-      dispatch({
-        type: "PLAYLIST",
-        payload: state?.playlist.map((playlist) =>
-          playlist.id_playlist === playlistId
-            ? {
-                ...playlist,
-                musics: [
-                  ...playlist.musics,
-                  { id_music: state?.playlistLayer },
-                ],
-              }
-            : playlist
-        ),
+      axios.get("playlist/me").then((res: any) => {
+        dispatch({
+          type: "PLAYLIST",
+          payload: res?.result.data,
+        });
       });
     } else {
       // Remove song from playlist
@@ -111,8 +103,8 @@ const PlaylistLayer = () => {
             className="size-6 w-[20px]"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               d="M6 18 18 6M6 6l12 12"
             />
           </svg>
@@ -131,7 +123,10 @@ const PlaylistLayer = () => {
           id="name"
           onChange={(e) => setName(e.target.value)}
         />
-        <button className="h-[40px] bg-[#a155f1] text-white rounded-[100px] mb-[20px] text-[14px] text-gray-300 font-medium">
+        <button
+          disabled={loading}
+          className="h-[40px] bg-[#a155f1] text-white rounded-[100px] mb-[20px] text-[14px] text-gray-300 font-medium"
+        >
           {loading ? "Đang gửi" : "Thêm"}
         </button>
       </form>
@@ -160,8 +155,8 @@ const PlaylistLayer = () => {
           className="size-6 w-[20px]"
         >
           <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             d="M6 18 18 6M6 6l12 12"
           />
         </svg>

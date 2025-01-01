@@ -1,0 +1,135 @@
+.container {
+  width: 700px;
+  max-width: 100%;
+  margin: 30px auto;
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+
+  h2 {
+    text-align: center;
+    color: #222;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    font-weight: 600;
+  }
+
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+
+    &:focus {
+      border-color: #4a90e2;
+      background-color: #ffffff;
+      outline: none;
+      box-shadow: 0 0 4px rgba(74, 144, 226, 0.4);
+    }
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+
+  .customFileUpload {
+    display: block;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #ffffff;
+    background-color: #4a90e2;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #357ab8;
+    }
+  }
+
+  .preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+
+    img {
+      width: 150px;
+      height: 150px;
+      border-radius: 10px;
+      object-fit: cover;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    background-color: #4caf50;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #45a049;
+    }
+
+    &:disabled {
+      background-color: #bdbdbd;
+      cursor: not-allowed;
+    }
+  }
+
+  .errorMessage {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    // margin-top: -10px;
+  }
+
+  .message {
+    color: #27ae60;
+    font-size: 1rem;
+    text-align: center;
+    margin-top: 15px;
+  }
+}
+
+.visibilityRadioButtons {
+  display: flex;
+  gap: 20px;
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  label {
+    font-size: 16px;
+    color: #999;
+    cursor: pointer;
+    text-wrap: nowrap;
+
+    input {
+      margin-right: 4px;
+    }
+  }
+}

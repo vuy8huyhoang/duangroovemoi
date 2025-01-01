@@ -1,6 +1,6 @@
 "use client"; // Thêm dòng này để đánh dấu là Client Component
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { act, useContext, useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import style from "./playlist.module.scss";
 import { ReactSVG } from "react-svg";
@@ -9,6 +9,7 @@ import { AppContext } from "@/app/layout";
 import clsx from "clsx";
 import { Img } from "react-image";
 import Link from "next/link";
+import { addListMusicToTheFirst } from "@/app/component/musicplayer";
 
 interface Playlist {
   id_playlist: string;
@@ -210,9 +211,51 @@ const PlaylistPage = () => {
         {activePlaylist !== "none" && (
           <div className="col-span-4">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-white">
-                Bài hát trong "{state?.playlist?.[activePlaylist].name}"
-              </h2>
+              <div className="flex gap-2 items-center">
+                <button
+                  onClick={() => {
+                    const musicList = [];
+                    state?.playlist?.[activePlaylist].musics.map((music) => {
+                      musicList.push({
+                        id_music: music?.id_music,
+                        name: music?.name,
+                        url_path: music?.url_path,
+                        url_cover: music?.url_cover,
+                        composer: music?.id_composer?.name,
+                        artists: Array.isArray(music?.artists)
+                          ? music.artists.map((artist) => {
+                              return {
+                                artist: {
+                                  id_artist: artist.artist.id_artist,
+                                  name: artist?.artist?.name,
+                                },
+                              };
+                            })
+                          : [],
+                      });
+                    });
+
+                    addListMusicToTheFirst(state, dispatch, musicList);
+                  }}
+                  className="flex gap-2 items-center text-md text-[#cccccc80] rounded-full p-2 py-1"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="size-6 w-4"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+                <h2 className="text-lg font-semibold text-white">
+                  Bài hát trong "{state?.playlist?.[activePlaylist].name}"
+                </h2>
+              </div>
               <button
                 className="text-red-800 font-normal text-[12px]"
                 onClick={deletePlaylist}
@@ -226,48 +269,50 @@ const PlaylistPage = () => {
                   <p className="text-gray-500 text-sm">Chưa có bài hát nào</p>
                 </div>
               ) : (
-                <div>
-                  {state?.playlist?.[activePlaylist].musics.map(
-                    (music, index) => (
-                      <div
-                        key={index}
-                        className="grid grid-cols-12 gap-4 items-center p-3 rounded-md hover:bg-gray-800 transition group"
-                      >
-                        <Img
-                          src={music.url_cover}
-                          alt={music.name}
-                          className="col-span-3 w-full h-full aspect-square object-cover rounded"
-                          unloader={
-                            <img
-                              src="/default.png"
-                              alt="default"
-                              className="w-full h-full aspect-square object-cover rounded-full"
-                            />
-                          }
-                        />
-                        <Link
-                          href={"/musicdetail/" + music.id_music}
-                          className="col-span-8"
+                <>
+                  <div>
+                    {state?.playlist?.[activePlaylist].musics.map(
+                      (music, index) => (
+                        <div
+                          key={index}
+                          className="grid grid-cols-12 gap-4 items-center p-3 rounded-md hover:bg-gray-800 transition group"
                         >
-                          <div className="text-white font-medium truncate">
-                            {music.name}
-                          </div>
-                          <p className="text-gray-400 text-sm truncate">
-                            {music?.artists
-                              ?.map((artist) => artist.artist.name)
-                              .join(", ")}
-                          </p>
-                        </Link>
-                        <button
-                          onClick={() => handleRemoveMusic(music.id_music)}
-                          className="col-span-1 text-red-800 font-normal text-[12px] hidden group-hover:block"
-                        >
-                          Xóa
-                        </button>
-                      </div>
-                    )
-                  )}
-                </div>
+                          <Img
+                            src={music.url_cover}
+                            alt={music.name}
+                            className="col-span-3 w-full h-full aspect-square object-cover rounded"
+                            unloader={
+                              <img
+                                src="/default.png"
+                                alt="default"
+                                className="w-full h-full aspect-square object-cover rounded-full"
+                              />
+                            }
+                          />
+                          <Link
+                            href={"/musicdetail/" + music.id_music}
+                            className="col-span-8"
+                          >
+                            <div className="text-white font-medium truncate">
+                              {music.name}
+                            </div>
+                            <p className="text-gray-400 text-sm truncate">
+                              {music?.artists
+                                ?.map((artist) => artist.artist.name)
+                                .join(", ")}
+                            </p>
+                          </Link>
+                          <button
+                            onClick={() => handleRemoveMusic(music.id_music)}
+                            className="col-span-1 text-red-800 font-normal text-[12px] hidden group-hover:block"
+                          >
+                            Xóa
+                          </button>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </>
               )}
             </div>
           </div>

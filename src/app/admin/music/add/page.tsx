@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "@/lib/axios";
-import styles from "./AddMusic.module.scss";
+import styles from "../../form.module.scss";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
 import { useRouter } from "next/navigation";
@@ -46,6 +46,12 @@ interface Song {
   types: string[];
 }
 
+interface Lyric {
+  lyrics: string;
+  start_time: number;
+  end_time: number;
+}
+
 export default function AddMusic() {
   const [song, setSong] = useState<Song>({
     id_music: "",
@@ -75,6 +81,7 @@ export default function AddMusic() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [previewAudio, setPreviewAudio] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
+  const [lyrics, setLyrics] = useState<Lyric[]>([]);
   const validationSchema = yup.object().shape({
     name: yup.string().required("Tên bài hát là bắt buộc."),
     producer: yup.string().required("Nhà sản xuất là bắt buộc."),
@@ -189,11 +196,14 @@ export default function AddMusic() {
         return;
       }
 
+      console.log(lyrics);
+
       const songData = {
         ...values,
         slug: values.name.toLowerCase().replace(/\s+/g, "-"),
         url_cover: imageUrl,
         url_path: audioUrl,
+        lyrics: lyrics,
       };
 
       const response = await axios.post("/music", songData, {
@@ -242,7 +252,7 @@ export default function AddMusic() {
               <ErrorMessage
                 name="name"
                 component="div"
-                className={styles.error}
+                className={styles.errorMessage}
               />
             </div>
 
@@ -252,7 +262,7 @@ export default function AddMusic() {
               <ErrorMessage
                 name="producer"
                 component="div"
-                className={styles.error}
+                className={styles.errorMessage}
               />
             </div>
 
@@ -280,7 +290,7 @@ export default function AddMusic() {
               <ErrorMessage
                 name="artists"
                 component="div"
-                className={styles.error}
+                className={styles.errorMessage}
               />
             </div>
 
@@ -307,7 +317,7 @@ export default function AddMusic() {
               <ErrorMessage
                 name="types"
                 component="div"
-                className={styles.error}
+                className={styles.errorMessage}
               />
             </div>
 
@@ -327,35 +337,146 @@ export default function AddMusic() {
               <ErrorMessage
                 name="composer"
                 component="div"
-                className={styles.error}
+                className={styles.errorMessage}
               />
             </div>
 
             <Field name="is_show">
               {({ field, form }: any) => (
                 <div className={styles.anhien}>
-                  <div className={styles.anhien}>
-                    <label>Hiện</label>
-                    <input
-                      type="radio"
-                      {...field}
-                      value="1"
-                      checked={form.values.is_show === 1}
-                      onChange={() => form.setFieldValue("is_show", 1)}
-                    />
+                  <div className={styles.visibilityRadioButtons}>
+                    <div>
+                      <label>Hiện</label>
+                      <input
+                        type="radio"
+                        {...field}
+                        value="1"
+                        checked={form.values.is_show === 1}
+                        onChange={() => form.setFieldValue("is_show", 1)}
+                      />
+                    </div>
 
-                    <label>Ẩn</label>
-                    <input
-                      type="radio"
-                      {...field}
-                      value="0"
-                      checked={form.values.is_show === 0}
-                      onChange={() => form.setFieldValue("is_show", 0)}
-                    />
+                    <div>
+                      <label>Ẩn</label>
+                      <input
+                        type="radio"
+                        {...field}
+                        value="0"
+                        checked={form.values.is_show === 0}
+                        onChange={() => form.setFieldValue("is_show", 0)}
+                      />
+                    </div>
                   </div>
                 </div>
               )}
             </Field>
+
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-4">
+                <label>Lời bài hát</label>
+                <div
+                  onClick={() =>
+                    setLyrics([
+                      ...lyrics,
+                      { lyrics: "", start_time: 0, end_time: 0 },
+                    ])
+                  }
+                  className="rounded-full p-2 bg-gray-100 hover:bg-gray-200 cursor-pointer"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6 w-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 4.5v15m7.5-7.5h-15"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="flex flex-col gap-6 p-5 shadow">
+                {lyrics.map((lyric, index) => (
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500 text-lg flex-1">
+                      {index + 1}.{" "}
+                    </span>
+                    <div key={index} className="flex flex-col gap-3">
+                      <input
+                        placeholder="Lời bài hát..."
+                        value={lyric.lyrics}
+                        onChange={(e) =>
+                          setLyrics(
+                            lyrics.map((l, i) =>
+                              i === index ? { ...l, lyrics: e.target.value } : l
+                            )
+                          )
+                        }
+                        className={styles.textarea}
+                      />
+                      <div className="flex gap-3 items-center">
+                        <input
+                          type="number"
+                          placeholder="Thời gian bắt đầu (s)"
+                          value={lyric.start_time || ""}
+                          onChange={(e) =>
+                            setLyrics(
+                              lyrics.map((l, i) =>
+                                i === index
+                                  ? { ...l, start_time: Number(e.target.value) }
+                                  : l
+                              )
+                            )
+                          }
+                          className={styles.input}
+                        />
+                        <input
+                          type="number"
+                          placeholder="Thời gian kết thúc (s)"
+                          value={lyric.end_time || ""}
+                          onChange={(e) =>
+                            setLyrics(
+                              lyrics.map((l, i) =>
+                                i === index
+                                  ? { ...l, end_time: Number(e.target.value) }
+                                  : l
+                              )
+                            )
+                          }
+                          className={styles.input}
+                        />
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setLyrics(lyrics.filter((_, i) => i !== index))
+                      }
+                      className="hover:!bg-red-500 hover:!text-white !text-gray-500 !bg-transparent !rounded-full !w-10 !h-10 flex items-center justify-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6 w-4"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 12h14"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <div>
               <input
@@ -381,7 +502,7 @@ export default function AddMusic() {
               <ErrorMessage
                 name="file"
                 component="div"
-                className={styles.error}
+                className={styles.errorMessage}
               />
             </div>
 
@@ -411,14 +532,14 @@ export default function AddMusic() {
               <ErrorMessage
                 name="audioFile"
                 component="div"
-                className={styles.error}
+                className={styles.errorMessage}
               />
             </div>
 
             <button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Đang gửi..." : "Thêm bài hát"}
             </button>
-            {message && <div className={styles.error}>{message}</div>}
+            {message && <div className={styles.errorMessage}>{message}</div>}
           </Form>
         )}
       </Formik>

@@ -15,7 +15,7 @@ const ProtectRoute = () => {
   };
 
   const userAuth = () => {
-    console.log("User middle...");
+    // console.log("User middle...");
     if (typeof window !== "undefined") {
       if (localStorage.getItem("accessToken")) {
         axios("/profile")
@@ -39,7 +39,7 @@ const ProtectRoute = () => {
   };
 
   const adminAuth = () => {
-    console.log("Admin middle...");
+    // console.log("Admin middle...");
     if (typeof window !== "undefined") {
       if (localStorage.getItem("accessToken")) {
         axios("/profile")

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "@/lib/axios";
-import styles from "../EditUser.module.scss";
+import styles from "../../../form.module.scss";
 
 interface User {
   id_user: string;
@@ -201,27 +201,31 @@ export default function EditUser({ params }: { params: { id: string } }) {
     <div className={styles.container}>
       <h2>Chỉnh sửa thông tin người dùng</h2>
       <div className={styles.formGroup}>
-        <input
-          type="text"
-          name="fullname"
-          placeholder="Full Name"
-          value={user.fullname}
-          onChange={handleChange}
-        />
-        {errorMessages.fullname && (
-          <div className={styles.errorMessage}>{errorMessages.fullname}</div>
-        )}
+        <div>
+          <input
+            type="text"
+            name="fullname"
+            placeholder="Full Name"
+            value={user.fullname}
+            onChange={handleChange}
+          />
+          {errorMessages.fullname && (
+            <div className={styles.errorMessage}>{errorMessages.fullname}</div>
+          )}
+        </div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={user.email}
-          onChange={handleChange}
-        />
-        {errorMessages.email && (
-          <div className={styles.errorMessage}>{errorMessages.email}</div>
-        )}
+        <div>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={user.email}
+            onChange={handleChange}
+          />
+          {errorMessages.email && (
+            <div className={styles.errorMessage}>{errorMessages.email}</div>
+          )}
+        </div>
 
         <select name="role" value={user.role} onChange={handleChange}>
           <option value="user">User</option>
@@ -247,7 +251,7 @@ export default function EditUser({ params }: { params: { id: string } }) {
         )}
 
         <div className={styles.visibilityRadioButtons}>
-          <div>
+          <div className="flex gap-2 items-center">
             <label>Hoạt động</label>
             <input
               type="radio"
@@ -257,7 +261,7 @@ export default function EditUser({ params }: { params: { id: string } }) {
               onChange={() => setUser({ ...user, is_banned: 0 })}
             />
           </div>
-          <div>
+          <div className="flex gap-2 items-center">
             <label>Bị khóa</label>
             <input
               type="radio"

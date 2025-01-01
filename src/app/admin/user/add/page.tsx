@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import axios from "@/lib/axios";
-import styles from "./AddUser.module.scss";
+import styles from "../../form.module.scss";
 
 interface User {
   fullname: string;
@@ -174,16 +174,18 @@ export default function AddUser() {
     <div className={styles.container}>
       <h2>Thêm mới người dùng</h2>
       <div className={styles.formGroup}>
-        <input
-          type="text"
-          name="fullname"
-          placeholder="Tên người dùng"
-          value={user.fullname}
-          onChange={handleChange}
-        />
-        {errorMessages.fullname && (
-          <div className={styles.errorMessage}>{errorMessages.fullname}</div>
-        )}
+        <div>
+          <input
+            type="text"
+            name="fullname"
+            placeholder="Tên người dùng"
+            value={user.fullname}
+            onChange={handleChange}
+          />
+          {errorMessages.fullname && (
+            <div className={styles.errorMessage}>{errorMessages.fullname}</div>
+          )}
+        </div>
 
         <input
           type="email"

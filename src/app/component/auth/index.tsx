@@ -236,7 +236,7 @@ const Login = () => {
 
     setLoading(true);
     // Gửi otp, đặt otp vào local
-    console.log(user);
+    // console.log(user);
     if (!isOtpSent) {
       axios
         .post("verify-email", { email: user.email })
@@ -362,7 +362,7 @@ const Login = () => {
                       onChange={handleChange}
                     />
                     {errors.email && (
-                      <p className={styles.errorText}>{errors.email}</p>
+                      <p className={styles.errorMessage}>{errors.email}</p>
                     )}
                   </div>
                   <div className={styles.formGroup}>
@@ -376,7 +376,7 @@ const Login = () => {
                       onChange={handleChange}
                     />
                     {errors.password && (
-                      <p className={styles.errorText}>{errors.password}</p>
+                      <p className={styles.errorMessage}>{errors.password}</p>
                     )}
                   </div>
                   <div className={clsx("flex justify-between")}>
@@ -424,7 +424,7 @@ const Login = () => {
                       onChange={handleChange}
                     />
                     {errors.otp && (
-                      <p className={styles.errorText}>{errors.otp}</p>
+                      <p className={styles.errorMessage}>{errors.otp}</p>
                     )}
                   </div>
                   <div className={clsx("flex justify-between")}>
@@ -472,7 +472,7 @@ const Login = () => {
                       onChange={handleChange}
                     />
                     {errors.fullname && (
-                      <p className={styles.errorText}>{errors.fullname}</p>
+                      <p className={styles.errorMessage}>{errors.fullname}</p>
                     )}
                   </div>
                   <div className={styles.formGroup}>
@@ -486,7 +486,7 @@ const Login = () => {
                       onChange={handleChange}
                     />
                     {errors.email && (
-                      <p className={styles.errorText}>{errors.email}</p>
+                      <p className={styles.errorMessage}>{errors.email}</p>
                     )}
                   </div>
                   <div className={styles.formGroup}>
@@ -500,7 +500,7 @@ const Login = () => {
                       onChange={handleChange}
                     />
                     {errors.password && (
-                      <p className={styles.errorText}>{errors.password}</p>
+                      <p className={styles.errorMessage}>{errors.password}</p>
                     )}
                   </div>
                   <div className={styles.formGroup}>
@@ -514,7 +514,9 @@ const Login = () => {
                       onChange={handleChange}
                     />
                     {errors.resetPassword && (
-                      <p className={styles.errorText}>{errors.resetPassword}</p>
+                      <p className={styles.errorMessage}>
+                        {errors.resetPassword}
+                      </p>
                     )}
                   </div>
                   <div className={clsx("flex justify-between")}>
@@ -566,7 +568,7 @@ const Login = () => {
                 />
               </div>
               {errors.email && (
-                <p className={styles.errorText}>{errors.email}</p>
+                <p className={styles.errorMessage}>{errors.email}</p>
               )}
               <div className={clsx("flex justify-between")}>
                 <div

@@ -41,7 +41,7 @@ export default function ChangePasswordPage() {
     setErrors({});
 
     if (!validateFields()) {
-      console.log("Có lỗi trong form, không gửi yêu cầu");
+      // console.log("Có lỗi trong form, không gửi yêu cầu");
       return;
     }
 
@@ -53,7 +53,7 @@ export default function ChangePasswordPage() {
     }
 
     try {
-      console.log("Gửi yêu cầu đổi mật khẩu", { oldPassword, newPassword });
+      // console.log("Gửi yêu cầu đổi mật khẩu", { oldPassword, newPassword });
       const response = await axios
         .patch("/change-password", {
           oldPassword,
@@ -68,7 +68,7 @@ export default function ChangePasswordPage() {
             error.response &&
             error.response.data.message === "Wrong password"
           ) {
-            console.log(1);
+            // console.log(1);
 
             setErrors((prev) => {
               return { ...prev, oldPassword: "Sai mật khẩu" };

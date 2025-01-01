@@ -84,7 +84,7 @@ export const addListMusicToTheFirst = (state, dispatch, list) => {
   if (typeof window !== "undefined") {
     localStorage.removeItem("currentPlaylist");
   }
-  console.log(state?.currentPlaylist);
+  // console.log(state?.currentPlaylist);
   dispatch({ type: "IS_PLAYING", payload: true });
 
   // Tạo playlist mới không trùng lặp
@@ -128,7 +128,7 @@ const MusicPlayer: React.FC = () => {
       if (audioRef.current) {
         audioRef.current.load();
         setCurrentTime(0); // Reset time when loading new audio
-        console.log(isPlaying);
+        // console.log(isPlaying);
 
         if (isPlaying) audioRef.current?.play();
         else audioRef.current?.pause();
@@ -202,7 +202,7 @@ const MusicPlayer: React.FC = () => {
         axios
           .delete(`favorite-music/me?id_music=${id_music}`)
           .then((response: any) => {
-            console.log("Xóa bài hát yêu thích thành công", response);
+            // console.log("Xóa bài hát yêu thích thành công", response);
             setHeart(false);
 
             // Cập nhật state bằng cách loại bỏ id_music khỏi mảng
@@ -220,7 +220,7 @@ const MusicPlayer: React.FC = () => {
         axios
           .post(`favorite-music/me`, { id_music })
           .then((response: any) => {
-            console.log("Thêm bài hát yêu thích thành công", response);
+            // console.log("Thêm bài hát yêu thích thành công", response);
             setHeart(true);
 
             // Cập nhật state bằng cách thêm { id_music } vào mảng
@@ -247,7 +247,7 @@ const MusicPlayer: React.FC = () => {
       return () => clearInterval(interval);
     } else {
       setCurrentTime(currentTime);
-      console.log(currentTime, showingCurrentTime);
+      // console.log(currentTime, showingCurrentTime);
     }
   }, [isPlaying]);
 
@@ -277,24 +277,24 @@ const MusicPlayer: React.FC = () => {
   }, [state?.currentPlaylist]);
 
   useEffect(() => {
-    const audio = audioRef?.current;
+    const audio = audioRef.current;
 
     const handleTimeUpdate = () => {
       dispatch({ type: "CURRENT_DURATION", payload: audio.currentTime });
     };
 
     if (audio) {
-      // Lắng nghe sự kiện timeupdate của audio
+      // Listen to the timeupdate event on the audio element
       audio.addEventListener("timeupdate", handleTimeUpdate);
     }
 
-    // Dọn dẹp sự kiện khi component unmount hoặc audioRef thay đổi
+    // Cleanup the event listener when the component unmounts or audioRef changes
     return () => {
       if (audio) {
         audio.removeEventListener("timeupdate", handleTimeUpdate);
       }
     };
-  }, [audioRef, dispatch]);
+  }, [audioRef.current, dispatch]); // Use audioRef.current as a dependency
 
   // useEffect(() => {
   //   const audio = audioRef.current;

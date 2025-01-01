@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "@/lib/axios";
-import styles from "./addAlbum.module.scss";
+import styles from "../../form.module.scss";
 
 interface Artist {
   id_artist: string;

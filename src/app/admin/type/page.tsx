@@ -229,7 +229,7 @@ const TypeManagement = () => {
               </svg>
               Export xlsx
             </button>
-            <button className="gap-1 flex item-center py-1 px-3 border font-medium text-sm rounded-full border-yellow-500 text-yellow-500 hover:bg-yellow-100 transition duration-300">
+            {/* <button className="gap-1 flex item-center py-1 px-3 border font-medium text-sm rounded-full border-yellow-500 text-yellow-500 hover:bg-yellow-100 transition duration-300">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -243,7 +243,7 @@ const TypeManagement = () => {
                 />
               </svg>
               Import
-            </button>
+            </button> */}
             <button
               onClick={() => fetch()}
               className="flex gap-1 items-center py-1 px-3 border font-medium text-sm rounded-full border-lime-500 text-lime-500 hover:bg-lime-100 transition duration-300"
