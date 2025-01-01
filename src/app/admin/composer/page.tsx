@@ -165,7 +165,7 @@ export default function AdminComposer() {
 
               <input
                 type="text"
-                placeholder="Tìm kiếm người dùng..."
+                placeholder="Tìm kiếm nhạc sĩ..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={styles.searchInput}

@@ -347,83 +347,90 @@ export default function EditMusic({ params }: { params: { id: string } }) {
                   </svg>
                 </div>
               </div>
-              <div className="flex flex-col gap-6 p-5 shadow">
-                {lyrics.map((lyric, index) => (
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-500 text-lg flex-1">
-                      {index + 1}.{" "}
-                    </span>
-                    <div key={index} className="flex flex-col gap-3">
-                      <input
-                        placeholder="Lời bài hát..."
-                        value={lyric.lyrics}
-                        onChange={(e) =>
-                          setLyrics(
-                            lyrics.map((l, i) =>
-                              i === index ? { ...l, lyrics: e.target.value } : l
-                            )
-                          )
-                        }
-                        className={styles.textarea}
-                      />
-                      <div className="flex gap-3 items-center">
+              {lyrics && lyrics?.length > 0 && (
+                <div className="flex flex-col gap-6 p-5 shadow">
+                  {lyrics.map((lyric, index) => (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500 text-lg flex-1">
+                        {index + 1}.{" "}
+                      </span>
+                      <div key={index} className="flex flex-col gap-3">
                         <input
-                          type="number"
-                          placeholder="Thời gian bắt đầu (s)"
-                          value={lyric.start_time || ""}
+                          placeholder="Lời bài hát..."
+                          value={lyric.lyrics}
                           onChange={(e) =>
                             setLyrics(
                               lyrics.map((l, i) =>
                                 i === index
-                                  ? { ...l, start_time: Number(e.target.value) }
+                                  ? { ...l, lyrics: e.target.value }
                                   : l
                               )
                             )
                           }
-                          className={styles.input}
+                          className={styles.textarea}
                         />
-                        <input
-                          type="number"
-                          placeholder="Thời gian kết thúc (s)"
-                          value={lyric.end_time || ""}
-                          onChange={(e) =>
-                            setLyrics(
-                              lyrics.map((l, i) =>
-                                i === index
-                                  ? { ...l, end_time: Number(e.target.value) }
-                                  : l
+                        <div className="flex gap-3 items-center">
+                          <input
+                            type="number"
+                            placeholder="Thời gian bắt đầu (s)"
+                            value={lyric.start_time || ""}
+                            onChange={(e) =>
+                              setLyrics(
+                                lyrics.map((l, i) =>
+                                  i === index
+                                    ? {
+                                        ...l,
+                                        start_time: Number(e.target.value),
+                                      }
+                                    : l
+                                )
                               )
-                            )
-                          }
-                          className={styles.input}
-                        />
+                            }
+                            className={styles.input}
+                          />
+                          <input
+                            type="number"
+                            placeholder="Thời gian kết thúc (s)"
+                            value={lyric.end_time || ""}
+                            onChange={(e) =>
+                              setLyrics(
+                                lyrics.map((l, i) =>
+                                  i === index
+                                    ? { ...l, end_time: Number(e.target.value) }
+                                    : l
+                                )
+                              )
+                            }
+                            className={styles.input}
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setLyrics(lyrics.filter((_, i) => i !== index))
-                      }
-                      className="hover:!bg-red-500 hover:!text-white !text-gray-500 !bg-transparent !rounded-full !w-10 !h-10 flex items-center justify-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-6 w-4"
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setLyrics(lyrics.filter((_, i) => i !== index))
+                        }
+                        className="hover:!bg-red-500 hover:!text-white !text-gray-500 !bg-transparent !rounded-full !w-10 !h-10 flex items-center justify-center"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M5 12h14"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-              </div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-6 w-4"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M5 12h14"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div>

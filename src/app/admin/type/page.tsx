@@ -156,7 +156,7 @@ const TypeManagement = () => {
 
               <input
                 type="text"
-                placeholder="Tìm kiếm người dùng..."
+                placeholder="Tìm kiếm người thể loại..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={styles.searchInput}

@@ -1,112 +1,50 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import axios from "@/lib/axios";
 import styles from "../tables.module.scss";
 import { ReactSVG } from "react-svg";
-import Link from "next/link";
-import { Img } from "react-image";
 import { exportToExcel } from "@/utils/files";
+import { formatTimeFromNow } from "@/utils/String";
 
-interface Music {
-  id_music: string;
-  name: string;
-  url_path: string;
-}
-
-interface Artist {
-  id_artist: string;
-  name: string;
-}
-
-interface Album {
-  id_album: string;
-  name: string;
-  release_date: string;
+interface Type {
+  id_payment: string;
+  vip_code: string;
+  method: string;
+  amount: number;
   created_at: string;
-  is_show: number;
-  url_cover: string;
-  artist: Artist;
-  musics: Music[];
+  last_update: string;
+  status: string;
   index: number;
 }
 
-export default function AdminAlbum() {
-  const [albums, setAlbums] = useState<Album[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+const TypeManagement = () => {
+  const [orders, setOrders] = useState<Type[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [typesPerPage, setTypesPerPage] = useState<number>(10);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [sortOption, setSortOption] = useState<string>("latest");
-  const [albumsPerPage, setAlbumsPerPage] = useState<number>(10);
+  const [sortOption, setSortOption] = useState<string>("nameAsc");
   const [select, setSelect] = useState([]);
 
-  const filteredAlbums = albums.filter(
-    (album) =>
-      album.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      album.artist.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const sortedAlbums = filteredAlbums.sort((a, b) => {
-    if (sortOption === "latest") {
-      return (
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-    } else if (sortOption === "oldest") {
-      return (
-        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-      );
-    } else if (sortOption === "nameAsc") {
-      return a.name.localeCompare(b.name);
-    } else if (sortOption === "nameDesc") {
-      return b.name.localeCompare(a.name);
-    }
-    return 0;
-  });
-
-  const indexOfLastAlbum = currentPage * albumsPerPage;
-  const indexOfFirstAlbum = indexOfLastAlbum - albumsPerPage;
-  const currentAlbums = sortedAlbums.slice(indexOfFirstAlbum, indexOfLastAlbum);
-  const totalPages = Math.ceil(filteredAlbums.length / albumsPerPage);
-
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  const fetch = () => {
+  const fetchOrder = async () => {
     setLoading(true);
-    axios
-      .get("/album")
-      .then((response: any) => {
-        // console.log("Full API response:", response);
-        if (response && response.result && response.result.data) {
-          setAlbums(
-            response.result.data.map((i, index) => {
-              return { ...i, index };
-            })
-          );
-        } else {
-          console.error("Response data is undefined or empty:", response);
-          setAlbums([]);
-        }
-      })
-      .catch((error: any) => {
-        console.error("Lỗi fetch album:", error);
-        setAlbums([]);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const response: any = await axios.get("/payment");
+      setOrders(
+        response.result.data.map((i, index) => {
+          return { ...i, index };
+        })
+      );
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => {
-    fetch();
-  }, []);
-
-  const handleDeleteAlbum = async (id_album: string) => {
-    try {
-      await axios.delete(`/album/${id_album}`);
-      setAlbums(albums.filter((album) => album.id_album !== id_album));
-    } catch (error) {
-      console.error("Lỗi xóa album:", error);
-    }
+  const fetch = () => {
+    fetchOrder();
   };
 
   function isArrayComplete(arr, n): boolean {
@@ -123,7 +61,7 @@ export default function AdminAlbum() {
   }
 
   const toggleSelectAll = () => {
-    const n = albums.length;
+    const n = orders.length;
     if (isArrayComplete(select, n - 1)) {
       setSelect([]);
     } else {
@@ -150,25 +88,69 @@ export default function AdminAlbum() {
   }
 
   const handleExportToXlsx = () => {
-    const data = getObjectsAtIndices(albums, select);
+    const data = getObjectsAtIndices(orders, select);
 
-    exportToExcel(data, "Album_List");
+    exportToExcel(data, "Order_List");
   };
 
-  const handleToggleVisibility = async (id_album: string, is_show: number) => {
-    try {
-      const updatedAlbum = { is_show: is_show === 1 ? 0 : 1 };
-      await axios.put(`/album/${id_album}`, updatedAlbum);
-      setAlbums((prevAlbums) =>
-        prevAlbums.map((album) =>
-          album.id_album === id_album
-            ? { ...album, is_show: updatedAlbum.is_show }
-            : album
-        )
+  useEffect(() => {
+    fetchOrder();
+  }, []);
+
+  const filteredTypes = orders.filter(
+    (order) =>
+      order.id_payment.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.vip_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.method === searchTerm.toLowerCase() ||
+      order.amount == Number(searchTerm.toLowerCase()) ||
+      order.status == searchTerm.toLowerCase()
+  );
+
+  const sortedTypes = filteredTypes.sort((a, b) => {
+    if (sortOption === "lastDateAsc") {
+      return (
+        new Date(a.last_update).getTime() - new Date(b.last_update).getTime()
       );
-    } catch (error) {
-      console.error("Lỗi cập nhật trạng thái ẩn/hiện album:", error);
+    } else if (sortOption === "lastDateDesc") {
+      return (
+        new Date(b.last_update).getTime() - new Date(a.last_update).getTime()
+      );
+    } else if (sortOption === "dateAsc") {
+      return (
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+    } else if (sortOption === "dateDesc") {
+      return (
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
     }
+    return 0;
+  });
+
+  const indexOfLastType = currentPage * typesPerPage;
+  const indexOfFirstType = indexOfLastType - typesPerPage;
+  const currentOrder = sortedTypes.slice(indexOfFirstType, indexOfLastType);
+  const totalPages = Math.ceil(sortedTypes.length / typesPerPage);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, typesPerPage]);
+
+  const handleStatusChange = (newStatus, id) => {
+    axios
+      .patch(`payment/${id}`, { status: newStatus })
+      .then((payment) => {
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id_payment === id ? { ...order, status: newStatus } : order
+          )
+        );
+      })
+      .catch(() => {
+        alert("Lỗi khi cập nhật trạng thái");
+      });
   };
 
   return (
@@ -176,7 +158,7 @@ export default function AdminAlbum() {
       <div className={styles.tableContainer}>
         <div className={styles.header}>
           <div className="flex gap-4 items-center">
-            <h1 className="font-bold text-2xl">Quản lý Album</h1>
+            <h1 className="font-bold text-2xl">Quản lý thanh toán</h1>
             <div className={styles.searchContainer}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -193,28 +175,28 @@ export default function AdminAlbum() {
 
               <input
                 type="text"
-                placeholder="Tìm kiếm album..."
+                placeholder="Tìm kiếm đơn thanh toán..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={styles.searchInput}
               />
             </div>
           </div>
-          <Link href="/admin/album/add" passHref>
+          {/* <Link href="/admin/order/add" passHref>
             <button className={styles.addButton}>
               <ReactSVG className={styles.csvg} src="/plus.svg" />
               <div className={styles.addText}>Thêm mới</div>
             </button>
-          </Link>
+          </Link> */}
         </div>
         <div className="flex gap-4 mt-4 justify-between">
           <div className="flex gap-4">
             <div className={styles.paginationControl}>
-              <label htmlFor="albumsPerPage">Số lượng:</label>
+              <label htmlFor="typesPerPage">Số lượng:</label>
               <select
-                id="albumsPerPage"
-                value={albumsPerPage}
-                onChange={(e) => setAlbumsPerPage(Number(e.target.value))}
+                id="typesPerPage"
+                value={typesPerPage}
+                onChange={(e) => setTypesPerPage(Number(e.target.value))}
                 className={styles.paginationSelect}
               >
                 <option value={5}>5</option>
@@ -222,8 +204,6 @@ export default function AdminAlbum() {
                 <option value={15}>15</option>
                 <option value={20}>20</option>
                 <option value={25}>25</option>
-                <option value={30}>30</option>
-                <option value={50}>50</option>
               </select>
             </div>
             <div className={styles.sortContainer}>
@@ -233,10 +213,10 @@ export default function AdminAlbum() {
                 onChange={(e) => setSortOption(e.target.value)}
                 className={styles.sortSelect}
               >
-                <option value="latest">Ngày tạo (Mới nhất)</option>
-                <option value="oldest">Ngày tạo (Cũ nhất)</option>
-                <option value="nameAsc">Tên album (A-Z)</option>
-                <option value="nameDesc">Tên album (Z-A)</option>
+                <option value="lastDateAsc">Ngày cập nhật (Cũ nhất)</option>
+                <option value="lastDateDesc">Ngày cập nhật (Mới nhất)</option>
+                <option value="dateAsc">Ngày tạo (Cũ nhất)</option>
+                <option value="dateDesc">Ngày tạo (Mới nhất)</option>
               </select>
             </div>
           </div>
@@ -388,85 +368,67 @@ export default function AdminAlbum() {
                 <input
                   type="checkbox"
                   onChange={toggleSelectAll}
-                  checked={isArrayComplete(select, albums.length - 1)}
+                  checked={isArrayComplete(select, orders.length - 1)}
                 />
               </th>
               <th>ID</th>
-              <th>Hình ảnh</th>
-              <th>Tên album</th>
-              <th>Nghệ sĩ</th>
-              <th>Ngày tạo</th>
-              <th>Bài hát</th>
+              <th>User VIP code</th>
+              <th>Phương thức</th>
+              <th>Số tiền</th>
+              <th>Thời gian tạo</th>
+              <th>Cập nhật</th>
               <th>Trạng thái</th>
-              <th>Tính năng</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={9} className={styles.loading}>
+                <td colSpan={8} className={styles.loading}>
                   Đang tải...
                 </td>
               </tr>
             ) : (
-              currentAlbums.map((album) => (
-                <tr key={album.id_album}>
+              currentOrder.map((order) => (
+                <tr key={order.id_payment}>
                   <td>
                     <input
                       type="checkbox"
-                      checked={select.includes(album.index)}
-                      onChange={() => toggleSelect(album.index)}
+                      checked={select.includes(order.index)}
+                      onChange={() => toggleSelect(order.index)}
                     />
                   </td>
-                  <td>#{album.id_album}</td>
-                  <td className="flex justify-center">
-                    <Img
-                      src={album.url_cover}
-                      alt={album.name}
-                      unloader={<img src="/default.png" />}
-                    />
+                  <td className="max-w-[100px]">#{order.id_payment}</td>
+                  <td className="w-[100px] text-nowrap overflow-auto max-w-[100px]">
+                    {order.vip_code}
                   </td>
-                  <td>{album.name}</td>
-                  <td>{album.artist.name}</td>
+                  <td className="text-center">{order.method}</td>
+                  <td className="text-right">{order.amount}</td>
                   <td className="text-center">
-                    {new Date(album.created_at).toLocaleString("vi-VN", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                    })}
+                    {formatTimeFromNow(order.created_at)}
                   </td>
-                  <td>
-                    <ul className={styles.songList}>
-                      {album.musics.map((music) => (
-                        <li key={music.id_music}>
-                          <a
-                            href={music.url_path}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {music.name}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
+                  <td className="text-center !w-[unset]">
+                    {formatTimeFromNow(order.last_update)}
                   </td>
-                  <td className="text-center">
-                    <span
-                      className={`inline-block px-3 py-1 rounded-full text-sm font-regular ${
-                        album.is_show === 0
-                          ? "bg-red-200 text-red-600"
-                          : "bg-green-200 text-green-600"
-                      }`}
+                  <td className="text-center !w-[unset]">
+                    <select
+                      value={order.status}
+                      onChange={(e) =>
+                        handleStatusChange(e.target.value, order.id_payment)
+                      }
+                      className={`inline-block px-3 py-1 rounded-full text-sm font-regular outline-none
+          ${order.status === "paid" ? "bg-green-200 text-green-600" : ""} 
+          ${order.status === "cancel" ? "bg-red-200 text-red-600" : ""} 
+          ${order.status === "pending" ? "bg-gray-200 text-gray-600" : ""}`}
                     >
-                      {album.is_show === 0 ? "Ẩn" : "Hiện"}
-                    </span>
+                      <option value="paid">Paid</option>
+                      <option value="cancel">Cancel</option>
+                      <option value="pending">Pending</option>
+                    </select>
                   </td>
-                  <td className={styles.actions}>
+
+                  {/* <td className={styles.actions}>
                     <button className={styles.editButton}>
-                      <Link
-                        href={`/admin/album/edit/${album.id_album}`}
-                        passHref
-                      >
+                      <Link href={`/admin/type/edit/${type.id_type}`} passHref>
                         <ReactSVG
                           className={styles.csvg}
                           src="/Rectangle 80.svg"
@@ -475,14 +437,14 @@ export default function AdminAlbum() {
                     </button>
                     <button
                       className={styles.deleteButton}
-                      onClick={() => handleDeleteAlbum(album.id_album)}
+                      onClick={() => handleDeleteType(type.id_type)}
                     >
                       <ReactSVG
                         className={styles.csvg}
                         src="/Rectangle 79.svg"
                       />
                     </button>
-                  </td>
+                  </td> */}
                 </tr>
               ))
             )}
@@ -491,4 +453,6 @@ export default function AdminAlbum() {
       </div>
     </div>
   );
-}
+};
+
+export default TypeManagement;

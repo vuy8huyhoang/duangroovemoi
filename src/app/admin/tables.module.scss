@@ -153,6 +153,7 @@
     &:last-of-type,
     &:nth-last-of-type(2) {
       width: 100px;
+      max-width: 100px;
       overflow: auto;
       text-wrap: nowrap;
     }

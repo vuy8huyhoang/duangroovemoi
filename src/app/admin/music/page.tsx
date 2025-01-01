@@ -188,7 +188,7 @@ export default function AdminMusic() {
 
               <input
                 type="text"
-                placeholder="Tìm kiếm người dùng..."
+                placeholder="Tìm kiếm bài hát..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={styles.searchInput}
