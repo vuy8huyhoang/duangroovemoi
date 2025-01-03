@@ -546,10 +546,17 @@ export default function ArtistDetail({ params }) {
                             <button
                               onClick={() => {
                                 if (state?.profile) {
-                                  dispatch({
-                                    type: "PLAYLIST_LAYER",
-                                    payload: music?.id_music,
-                                  });
+                                  if (state?.profile?.is_vip === 1) {
+                                    dispatch({
+                                      type: "PLAYLIST_LAYER",
+                                      payload: music?.id_music,
+                                    });
+                                  } else {
+                                    dispatch({
+                                      type: "SHOW_VIP",
+                                      payload: true,
+                                    });
+                                  }
                                 } else {
                                   dispatch({
                                     type: "SHOW_LOGIN",
