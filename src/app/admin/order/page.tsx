@@ -254,7 +254,7 @@ const TypeManagement = () => {
               </svg>
               Export xlsx
             </button>
-            <button
+            {/* <button
               className={`flex gap-1 items-center py-1 px-3 border font-medium text-sm rounded-full transition duration-300 border-red-500 text-red-500 hover:bg-red-100`}
               onClick={openImport}
             >
@@ -273,7 +273,7 @@ const TypeManagement = () => {
                 />
               </svg>
               Import
-            </button>
+            </button> */}
             {/* <button className="gap-1 flex item-center py-1 px-3 border font-medium text-sm rounded-full border-yellow-500 text-yellow-500 hover:bg-yellow-100 transition duration-300">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
