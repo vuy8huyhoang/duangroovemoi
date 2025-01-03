@@ -188,7 +188,7 @@ const Login = () => {
             );
           }
           // console.log("Profile Data Set:", fetchedProfileData);
-          alert("Đăng nhập thành công!");
+          // alert("Đăng nhập thành công!");
           togglePopup();
 
           if (fetchedProfileData.role === "admin") {

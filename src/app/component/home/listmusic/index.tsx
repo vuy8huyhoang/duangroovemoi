@@ -277,7 +277,7 @@ const ListMusic: React.FC = () => {
                   </Link>
                 </div>
                 <div className={style.view}>
-                  <Link href={"#"}>Lượt xem: {album?.view}</Link>
+                  <Link href={"#"}>Lượt xem: {album?.view || 0}</Link>
                 </div>
               </div>
 
@@ -306,12 +306,19 @@ const ListMusic: React.FC = () => {
                       }}
                     >
                       <button
-                        onClick={() =>
-                          dispatch({
-                            type: "PLAYLIST_LAYER",
-                            payload: album?.id_music,
-                          })
-                        }
+                        onClick={() => {
+                          if (state?.profile) {
+                            dispatch({
+                              type: "PLAYLIST_LAYER",
+                              payload: album?.id_music,
+                            });
+                          } else {
+                            dispatch({
+                              type: "SHOW_LOGIN",
+                              payload: true,
+                            });
+                          }
+                        }}
                       >
                         Thêm vào playlist
                       </button>

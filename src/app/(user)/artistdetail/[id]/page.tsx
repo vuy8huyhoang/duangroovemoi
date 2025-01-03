@@ -544,12 +544,19 @@ export default function ArtistDetail({ params }) {
                             }}
                           >
                             <button
-                              onClick={() =>
-                                dispatch({
-                                  type: "PLAYLIST_LAYER",
-                                  payload: music?.id_music,
-                                })
-                              }
+                              onClick={() => {
+                                if (state?.profile) {
+                                  dispatch({
+                                    type: "PLAYLIST_LAYER",
+                                    payload: music?.id_music,
+                                  });
+                                } else {
+                                  dispatch({
+                                    type: "SHOW_LOGIN",
+                                    payload: true,
+                                  });
+                                }
+                              }}
                             >
                               Thêm vào playlist
                             </button>

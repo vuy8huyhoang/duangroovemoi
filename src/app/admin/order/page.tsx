@@ -1,11 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Link from "next/link";
 import axios from "@/lib/axios";
 import styles from "../tables.module.scss";
 import { ReactSVG } from "react-svg";
 import { exportToExcel } from "@/utils/files";
 import { formatTimeFromNow } from "@/utils/String";
+import { AppContext } from "@/app/layout";
 
 interface Type {
   id_payment: string;
@@ -131,6 +132,7 @@ const TypeManagement = () => {
   const indexOfFirstType = indexOfLastType - typesPerPage;
   const currentOrder = sortedTypes.slice(indexOfFirstType, indexOfLastType);
   const totalPages = Math.ceil(sortedTypes.length / typesPerPage);
+  const { state, dispatch } = useContext(AppContext);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -151,6 +153,10 @@ const TypeManagement = () => {
       .catch(() => {
         alert("Lỗi khi cập nhật trạng thái");
       });
+  };
+
+  const openImport = () => {
+    dispatch({ type: "IMPORT_LAYER", payload: true });
   };
 
   return (
@@ -247,6 +253,26 @@ const TypeManagement = () => {
                 />
               </svg>
               Export xlsx
+            </button>
+            <button
+              className={`flex gap-1 items-center py-1 px-3 border font-medium text-sm rounded-full transition duration-300 border-red-500 text-red-500 hover:bg-red-100`}
+              onClick={openImport}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+                />
+              </svg>
+              Import
             </button>
             {/* <button className="gap-1 flex item-center py-1 px-3 border font-medium text-sm rounded-full border-yellow-500 text-yellow-500 hover:bg-yellow-100 transition duration-300">
               <svg
@@ -372,11 +398,11 @@ const TypeManagement = () => {
                 />
               </th>
               <th>ID</th>
-              <th>User VIP code</th>
+              <th>VIP code</th>
               <th>Phương thức</th>
               <th>Số tiền</th>
               <th>Thời gian tạo</th>
-              <th>Cập nhật</th>
+              {/* <th>Cập nhật</th> */}
               <th>Trạng thái</th>
             </tr>
           </thead>
@@ -403,12 +429,17 @@ const TypeManagement = () => {
                   </td>
                   <td className="text-center">{order.method}</td>
                   <td className="text-right">{order.amount}</td>
-                  <td className="text-center">
-                    {formatTimeFromNow(order.created_at)}
-                  </td>
                   <td className="text-center !w-[unset]">
-                    {formatTimeFromNow(order.last_update)}
+                    {new Date(order.created_at).toLocaleString("vi-VN", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour12: false,
+                    })}
                   </td>
+                  {/* <td className="text-center !w-[unset]">
+                    {formatTimeFromNow(order.last_update)}
+                  </td> */}
                   <td className="text-center !w-[unset]">
                     <select
                       value={order.status}

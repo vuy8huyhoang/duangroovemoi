@@ -226,7 +226,7 @@ export default function GrooveChartPage() {
                     "row-span-2 flex items-center"
                   )}
                 >
-                  Lượt xem: {music.view}
+                  Lượt xem: {music.view || 0}
                 </p>
                 <p className={styles.musicArtist}>{music.composer}</p>
               </div>

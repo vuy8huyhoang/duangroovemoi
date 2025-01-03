@@ -253,7 +253,7 @@ const MusicType = ({ type, musicList, id_type }: any) => {
                   </Link>
                 </div>
                 <div className={style.view}>
-                  <Link href={"#"}>Lượt xem: {album?.view}</Link>
+                  <Link href={"#"}>Lượt xem: {album?.view || 0}</Link>
                 </div>
               </div>
 
@@ -282,12 +282,19 @@ const MusicType = ({ type, musicList, id_type }: any) => {
                       }}
                     >
                       <button
-                        onClick={() =>
-                          dispatch({
-                            type: "PLAYLIST_LAYER",
-                            payload: album?.id_music,
-                          })
-                        }
+                        onClick={() => {
+                          if (state?.profile) {
+                            dispatch({
+                              type: "PLAYLIST_LAYER",
+                              payload: album?.id_music,
+                            });
+                          } else {
+                            dispatch({
+                              type: "SHOW_LOGIN",
+                              payload: true,
+                            });
+                          }
+                        }}
                       >
                         Thêm vào playlist
                       </button>

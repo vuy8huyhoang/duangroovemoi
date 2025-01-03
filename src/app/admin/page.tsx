@@ -13,6 +13,7 @@ export default function AdminDashboard() {
   const [user, setUser] = useState<number>(0);
   const [vipUser, setVipUser] = useState<number>(0);
   const [composer, setComposer] = useState<number>(0);
+  const [revenue, setRevenue] = useState([]);
   const [notifications, setNotifications] = useState<string[]>([]); // Khai báo đúng kiểu là mảng chuỗi
 
   useEffect(() => {
@@ -69,6 +70,15 @@ export default function AdminDashboard() {
       .then((response: any) => {
         if (response && response.result && response.result.data) {
           setComposer(response.result.data.length);
+        }
+      })
+      .catch((error: any) => console.error("Error fetching composers:", error));
+
+    axios
+      .get("/payment")
+      .then((response: any) => {
+        if (response && response.result && response.result.data) {
+          setRevenue(response.result.data);
         }
       })
       .catch((error: any) => console.error("Error fetching composers:", error));
@@ -195,7 +205,7 @@ export default function AdminDashboard() {
               className="size-6"
             >
               <path
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 d="M15.75 1.5a6.75 6.75 0 0 0-6.651 7.906c.067.39-.032.717-.221.906l-6.5 6.499a3 3 0 0 0-.878 2.121v2.818c0 .414.336.75.75.75H6a.75.75 0 0 0 .75-.75v-1.5h1.5A.75.75 0 0 0 9 19.5V18h1.5a.75.75 0 0 0 .53-.22l2.658-2.658c.19-.189.517-.288.906-.22A6.75 6.75 0 1 0 15.75 1.5Zm0 3a.75.75 0 0 0 0 1.5A2.25 2.25 0 0 1 18 8.25a.75.75 0 0 0 1.5 0 3.75 3.75 0 0 0-3.75-3.75Z"
                 clipRule="evenodd"
               />
@@ -273,9 +283,28 @@ export default function AdminDashboard() {
             </svg>
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">DOANH THU</h3>
+            <h3 className="text-lg font-semibold text-gray-800">
+              TỔNG DOANH THU (30 NGÀY)
+            </h3>
             <p className="text-gray-600">
-              {composer ? `${composer} VNĐ` : "Đang tải..."}
+              {new Intl.NumberFormat("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }).format(
+                revenue
+                  .filter((item) => {
+                    const createdAtDate = new Date(item.created_at);
+                    const now = new Date();
+                    const thirtyDaysAgo = new Date();
+                    thirtyDaysAgo.setDate(now.getDate() - 30);
+                    return (
+                      item.status === "paid" &&
+                      createdAtDate >= thirtyDaysAgo &&
+                      createdAtDate <= now
+                    );
+                  })
+                  .reduce((total, item) => total + item.amount, 0)
+              )}
             </p>
           </div>
         </div>
@@ -311,7 +340,7 @@ export default function AdminDashboard() {
         </div>
         <div className="col-span-6 bg-white shadow-md rounded-md">
           <h3 className="text-base font-semibold text-gray-800 mb-4 p-4 pb-0">
-            Biểu đồ top bài hát nhiều lượt xem nhất
+            Thống kê doanh thu 30 ngày nhất
           </h3>
           <ChartRanking />
         </div>
