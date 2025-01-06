@@ -346,7 +346,7 @@ export default function EditAlbum({ params }: { params: { id: string } }) {
           )}
         </select>
 
-        {/* <h3>Danh sách bài hát đã chọn</h3>
+        <h3>Danh sách bài hát đã chọn</h3>
         {selectedSongs.length > 0 ? (
           selectedSongs.map((songId) => {
             const selectedSong = musics.find(
@@ -363,7 +363,7 @@ export default function EditAlbum({ params }: { params: { id: string } }) {
           })
         ) : (
           <p>Chưa chọn bài hát nào.</p>
-        )} */}
+        )}
         <div className={styles.submit}>
           <button onClick={handleSubmit} disabled={loading}>
             {loading ? "Đang cập nhật..." : "Cập nhật album"}

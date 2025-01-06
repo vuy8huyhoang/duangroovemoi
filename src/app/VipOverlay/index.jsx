@@ -2,18 +2,52 @@
 import { useContext, useState } from "react";
 import { AppContext } from "../layout";
 import axios from "@/lib/axios";
+import { loadStripe } from "@stripe/stripe-js";
 
 const VipOverlay = () => {
   const { state, dispatch } = useContext(AppContext);
   const [showPayment, setShowPayment] = useState(false);
   const [selectedTab, setSelectedTab] = useState("momo");
 
-  const completePayment = () => {
-    axios.post("complete-payment", {
-      email: state?.profile?.email,
-      vip_code: state?.profile?.vip_code,
+  // const completePayment = () => {
+  //   axios.post("complete-payment", {
+  //     email: state?.profile?.email,
+  //     vip_code: state?.profile?.vip_code,
+  //   });
+  //   dispatch({ type: "SHOW_VIP", payload: false });
+  // };
+
+  const handleStripePayment = async () => {
+    const stripe = await loadStripe(
+      "pk_test_51QdYcEIi1IfwjLb3YQ5kl4yi3SxCXUYhuqfbwpiIg9ugQcxvXdbr36dX4Yw3DsM4NpgJdr2HiJz4oxb6iVo1U0NH00J8WQiR4q"
+    );
+
+    const body = {
+      price: 200,
+    };
+
+    const headers = { "Content-Type": "application/json" };
+
+    const response = await fetch(
+      "http://localhost:8888/create-payment-method",
+      {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(body),
+      }
+    );
+
+    const session = await response.json();
+    // console.log(session);
+    // return;
+
+    const result = stripe.redirectToCheckout({
+      sessionId: session.sessionId,
     });
-    dispatch({ type: "SHOW_VIP", payload: false });
+
+    if (result.error) {
+      console.log("error: ", result.error);
+    }
   };
 
   return (
@@ -31,7 +65,7 @@ const VipOverlay = () => {
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke="currentColor"
               className="size-6"
             >
@@ -64,7 +98,8 @@ const VipOverlay = () => {
             <li className="text-gray-500 text-sm">Không cần gia hạn</li>
           </ul>
           <button
-            onClick={() => setShowPayment(true)}
+            onClick={() => handleStripePayment()}
+            // onClick={() => setShowPayment(true)}
             className="w-full mt-6 bg-yellow-400 text-white py-2 rounded-md hover:opacity-75 font-bold"
           >
             Nâng cấp
