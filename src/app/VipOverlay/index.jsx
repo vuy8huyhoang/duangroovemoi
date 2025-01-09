@@ -19,7 +19,7 @@ const VipOverlay = () => {
 
   const handleStripePayment = async () => {
     const stripe = await loadStripe(
-      "pk_test_51QdYcEIi1IfwjLb3YQ5kl4yi3SxCXUYhuqfbwpiIg9ugQcxvXdbr36dX4Yw3DsM4NpgJdr2HiJz4oxb6iVo1U0NH00J8WQiR4q"
+      "pk_test_51QfKh0FkinF2kfXAHcVaiE06oGXYbnCPm9RlPqKLVW94ys317ZEtGLwYjoiAYA2mugJiOm5w5fBpeaQik9ITT01000RAHDxbXs"
     );
 
     const body = {
