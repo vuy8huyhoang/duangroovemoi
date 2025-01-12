@@ -66,11 +66,14 @@ const ProtectRoute = () => {
     const relativeUserRoutes = [];
     const relativeAdminRoutes = [];
 
-    axios("/profile")
-      .then()
-      .catch(() => {
-        localStorage.removeItem("accessToken");
-      });
+    if (window && localStorage?.getItem("accesToken")) {
+      axios("/profile")
+        .then()
+        .catch(() => {
+          localStorage.removeItem("accessToken");
+          window.location.reload();
+        });
+    }
 
     if (
       relativeUserRoutes.includes(pathname) ||

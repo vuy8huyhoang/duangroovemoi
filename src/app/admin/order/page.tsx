@@ -10,7 +10,7 @@ import { AppContext } from "@/app/layout";
 
 interface Type {
   id_payment: string;
-  vip_code: string;
+  id_user: string;
   method: string;
   amount: number;
   created_at: string;
@@ -101,7 +101,7 @@ const TypeManagement = () => {
   const filteredTypes = orders.filter(
     (order) =>
       order.id_payment.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.vip_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.id_user.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.method === searchTerm.toLowerCase() ||
       order.amount == Number(searchTerm.toLowerCase()) ||
       order.status == searchTerm.toLowerCase()
@@ -398,7 +398,7 @@ const TypeManagement = () => {
                 />
               </th>
               <th>ID</th>
-              <th>VIP code</th>
+              <th>Người dùng</th>
               <th>Phương thức</th>
               <th>Số tiền</th>
               <th>Thời gian tạo</th>
@@ -425,7 +425,7 @@ const TypeManagement = () => {
                   </td>
                   <td className="max-w-[100px]">#{order.id_payment}</td>
                   <td className="w-[100px] text-nowrap overflow-auto max-w-[100px]">
-                    {order.vip_code}
+                    {order.id_user}
                   </td>
                   <td className="text-center">{order.method}</td>
                   <td className="text-right">{order.amount}</td>

@@ -506,7 +506,7 @@ const Login = () => {
                   <div className={styles.formGroup}>
                     {/* <label htmlFor="password">Mật khẩu</label> */}
                     <input
-                      type="resetPassword"
+                      type="password"
                       id="resetPassword"
                       name="resetPassword"
                       placeholder="Nhập lại mật khẩu..."

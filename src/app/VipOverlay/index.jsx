@@ -40,14 +40,21 @@ const VipOverlay = () => {
     const session = await response.json();
     // console.log(session);
     // return;
+    axios
+      .post("/auth/payment", { amount: 20000, method: "transfer" })
+      .then((res) => {
+        localStorage.setItem("currentPayment", JSON.stringify(res?.newID));
+        console.log("New updated", localStorage.getItem("currentPayment"));
 
-    const result = stripe.redirectToCheckout({
-      sessionId: session.sessionId,
-    });
+        const result = stripe.redirectToCheckout({
+          sessionId: session.sessionId,
+        });
 
-    if (result.error) {
-      console.log("error: ", result.error);
-    }
+        if (result.error) {
+          console.log("error: ", result.error);
+        } else {
+        }
+      });
   };
 
   return (
