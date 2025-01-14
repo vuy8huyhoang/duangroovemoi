@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
 
 const PaymentSuccess = () => {
-  const id = JSON.parse(localStorage.getItem("currentPayment"));
+  let id;
+  if (typeof window !== undefined) {
+    id = JSON.parse(localStorage.getItem("currentPayment"));
+  }
   const router = useRouter();
   const { state, dispatch } = useContext(AppContext);
 
