@@ -349,7 +349,7 @@ const SongDetailPage = ({ params }: any) => {
                 return (
                   <Link
                     key={index}
-                    href={"/artistdetail/" + i.id_music}
+                    href={"/artistdetail/" + i.id_artist}
                     className="p-1 px-2 rounded-[100px] border border-gray-500 ml-2 inline-block"
                   >
                     {i.artist.name}
