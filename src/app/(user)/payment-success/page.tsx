@@ -14,6 +14,7 @@ const PaymentSuccess = () => {
 
   useEffect(() => {
     axiosLib.patch(`/auth/payment/${id}`, { status: "paid" });
+    router.push("/");
   }, [state?.profile]);
 
   const handleBackToHome = () => {
