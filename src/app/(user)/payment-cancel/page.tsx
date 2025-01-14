@@ -4,7 +4,10 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const PaymentFailed = () => {
-  const id = JSON.parse(localStorage.getItem("currentPayment"));
+  let id;
+  if (typeof window !== undefined) {
+    id = JSON.parse(localStorage.getItem("currentPayment"));
+  }
   const router = useRouter();
 
   useEffect(() => {
