@@ -1,15 +1,17 @@
 "use client";
+import { AppContext } from "@/app/layout";
 import axiosLib from "@/lib/axios";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 
 const PaymentSuccess = () => {
   const id = JSON.parse(localStorage.getItem("currentPayment"));
   const router = useRouter();
+  const { state, dispatch } = useContext(AppContext);
 
   useEffect(() => {
     axiosLib.patch(`/auth/payment/${id}`, { status: "paid" });
-  }, []);
+  }, [state?.profile]);
 
   const handleBackToHome = () => {
     router.push("/");
