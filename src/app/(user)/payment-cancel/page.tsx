@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 const PaymentFailed = () => {
   let id;
-  if (typeof window !== undefined) {
+  if (typeof window !== "undefined") {
     id = JSON.parse(localStorage.getItem("currentPayment"));
   }
   const router = useRouter();

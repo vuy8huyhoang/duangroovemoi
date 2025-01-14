@@ -244,7 +244,9 @@ const Login = () => {
           if (res.result.code) {
             alert("Đăng ký thành công! Mã OTP đã được gửi đến email của bạn.");
             setIsOtpSent(true);
-            localStorage.setItem("otp", res.result.code);
+            if (typeof window !== "undefined") {
+              localStorage.setItem("otp", res.result.code);
+            }
           } else {
             alert("Đã xảy ra lỗi khi gửi OTP.");
           }

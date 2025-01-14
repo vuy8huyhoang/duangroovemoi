@@ -6,7 +6,7 @@ import { useContext, useEffect } from "react";
 
 const PaymentSuccess = () => {
   let id;
-  if (typeof window !== undefined) {
+  if (typeof window !== "undefined") {
     id = JSON.parse(localStorage.getItem("currentPayment"));
   }
   const router = useRouter();

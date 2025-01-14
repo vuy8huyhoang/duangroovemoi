@@ -66,7 +66,7 @@ const ProtectRoute = () => {
     const relativeUserRoutes = [];
     const relativeAdminRoutes = [];
 
-    if (window && localStorage?.getItem("accesToken")) {
+    if (typeof window !== "undefined" && localStorage?.getItem("accesToken")) {
       axios("/profile")
         .then()
         .catch(() => {

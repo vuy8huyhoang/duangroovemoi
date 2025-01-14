@@ -43,8 +43,10 @@ const VipOverlay = () => {
     axios
       .post("/auth/payment", { amount: 20000, method: "transfer" })
       .then((res) => {
-        localStorage.setItem("currentPayment", JSON.stringify(res?.newID));
-        console.log("New updated", localStorage.getItem("currentPayment"));
+        if (typeof window !== undefined) {
+          localStorage.setItem("currentPayment", JSON.stringify(res?.newID));
+          console.log("New updated", localStorage.getItem("currentPayment"));
+        }
 
         const result = stripe.redirectToCheckout({
           sessionId: session.sessionId,
