@@ -62,11 +62,7 @@ const AdminSidebar: React.FC = () => {
             { "!px-0": !state?.adminSidebar }
           )}
         >
-          <img
-            className={styles.avatar}
-            src={profileData?.url_avatar ? profileData.url_avatar : "/logo.svg"}
-            alt="User Avatar"
-          />
+          <img className={styles.avatar} src="/logo.svg" alt="User Avatar" />
         </Link>
 
         <ul className="flex flex-col gap-1">
