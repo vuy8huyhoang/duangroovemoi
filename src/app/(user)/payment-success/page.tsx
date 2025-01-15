@@ -13,8 +13,9 @@ const PaymentSuccess = () => {
   const { state, dispatch } = useContext(AppContext);
 
   useEffect(() => {
-    axiosLib.patch(`/auth/payment/${id}`, { status: "paid" });
-    router.push("/");
+    axiosLib.patch(`/auth/payment/${id}`, { status: "paid" }).then(() => {
+      router.push("/");
+    });
   }, [state?.profile]);
 
   const handleBackToHome = () => {
